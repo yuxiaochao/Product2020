@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTJobrightsassignmentMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTJobrightsassignment">
+		<result column="JRAT001" property="jrat001" />
+		<result column="JRAT002" property="jrat002" />
+		<result column="JRAT003" property="jrat003" />
+		<result column="JRAT004" property="jrat004" />
+		<result column="JRAT005" property="jrat005" />
+		<result column="JRAT006" property="jrat006" />
+	</resultMap>
+
+</mapper>

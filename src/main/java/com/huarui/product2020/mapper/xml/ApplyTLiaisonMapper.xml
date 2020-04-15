@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ApplyTLiaisonMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ApplyTLiaison">
+		<id column="LIAI001" property="liai001" />
+		<result column="LIAI002" property="liai002" />
+		<result column="LIAI003" property="liai003" />
+		<result column="LIAI004" property="liai004" />
+		<result column="LIAI005" property="liai005" />
+		<result column="LIAI006" property="liai006" />
+		<result column="LIAI007" property="liai007" />
+		<result column="LIAI008" property="liai008" />
+		<result column="LIAI009" property="liai009" />
+	</resultMap>
+
+</mapper>

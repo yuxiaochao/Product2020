@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTTaskresultMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTTaskresult">
+		<id column="TARE001" property="tare001" />
+		<result column="TARE002" property="tare002" />
+		<result column="TARE003" property="tare003" />
+		<result column="TARE004" property="tare004" />
+		<result column="TARE005" property="tare005" />
+	</resultMap>
+
+</mapper>

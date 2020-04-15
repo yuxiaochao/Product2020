@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestcatalogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestcatalog">
+		<id column="TSCA001" property="tsca001" />
+		<result column="TSCA002" property="tsca002" />
+		<result column="TSCA003" property="tsca003" />
+		<result column="TSCA004" property="tsca004" />
+		<result column="TSCA005" property="tsca005" />
+		<result column="TSCA006" property="tsca006" />
+		<result column="TSCA007" property="tsca007" />
+		<result column="TSCA008" property="tsca008" />
+		<result column="TSCA009" property="tsca009" />
+		<result column="TSCA010" property="tsca010" />
+		<result column="TSCA011" property="tsca011" />
+		<result column="TSCA012" property="tsca012" />
+	</resultMap>
+
+</mapper>

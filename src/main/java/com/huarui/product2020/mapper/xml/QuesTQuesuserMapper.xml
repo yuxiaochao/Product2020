@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuesuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuesuser">
+		<id column="QUSE001" property="quse001" />
+		<result column="QUSE002" property="quse002" />
+		<result column="QUSE003" property="quse003" />
+		<result column="QUSE004" property="quse004" />
+		<result column="QUSE005" property="quse005" />
+		<result column="QUSE006" property="quse006" />
+		<result column="QUSE007" property="quse007" />
+		<result column="QUSE008" property="quse008" />
+	</resultMap>
+
+</mapper>

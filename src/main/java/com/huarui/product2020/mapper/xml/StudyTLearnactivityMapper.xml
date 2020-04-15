@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTLearnactivityMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTLearnactivity">
+		<id column="LEAC001" property="leac001" />
+		<result column="LEAC002" property="leac002" />
+		<result column="LEAC003" property="leac003" />
+		<result column="LEAC004" property="leac004" />
+		<result column="LEAC005" property="leac005" />
+		<result column="LEAC006" property="leac006" />
+		<result column="LEAC007" property="leac007" />
+		<result column="LEAC008" property="leac008" />
+		<result column="LEAC009" property="leac009" />
+		<result column="LEAC010" property="leac010" />
+		<result column="LEAC011" property="leac011" />
+		<result column="LEAC012" property="leac012" />
+		<result column="LEAC013" property="leac013" />
+		<result column="LEAC014" property="leac014" />
+		<result column="LEAC015" property="leac015" />
+		<result column="LEAC016" property="leac016" />
+		<result column="LEAC017" property="leac017" />
+		<result column="LEAC018" property="leac018" />
+		<result column="LEAC019" property="leac019" />
+		<result column="LEAC020" property="leac020" />
+		<result column="LEAC021" property="leac021" />
+		<result column="LEAC022" property="leac022" />
+		<result column="LEAC023" property="leac023" />
+		<result column="LEAC024" property="leac024" />
+		<result column="LEAC025" property="leac025" />
+		<result column="LEAC026" property="leac026" />
+		<result column="LEUS022" property="leus022" />
+		<result column="LEUS023" property="leus023" />
+		<result column="LEUS024" property="leus024" />
+		<result column="LEUS025" property="leus025" />
+		<result column="LEAC027" property="leac027" />
+		<result column="LEAC028" property="leac028" />
+		<result column="LEAC029" property="leac029" />
+		<result column="LEAC030" property="leac030" />
+		<result column="LEAC031" property="leac031" />
+		<result column="LEAC032" property="leac032" />
+	</resultMap>
+	<select id="selectStudyNum" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT COUNT(1) AS COURSENUM
+	  	FROM STUDY_T_LEARNCWRSULT A
+	  	LEFT JOIN STUDY_T_LEARNUSER F ON A.LCWR002 = F.LEUS002
+	                               AND A.LCWR003 = F.LEUS004
+	  	LEFT JOIN STUDY_T_LEARNACTIVITY B ON A.LCWR002 = B.LEAC001
+	  	LEFT JOIN (SELECT C.LECW002,SUM(DECODE(D.COUR003, 0, 0, 1, 0, 1)) PHOTOPVIEW
+	               FROM STUDY_T_LEARNCW C
+	              INNER JOIN HRSW_T_COURSEWARE D ON C.LECW006 = D.COUR001
+	              WHERE NVL(D.COUR018, 0) != 1
+	              GROUP BY C.LECW002) E ON A.LCWR002 = E.LECW002
+	 	WHERE NVL(A.LCWR010, 0) = 0
+	   	AND A.LCWR003 =#{user001}
+	   	<![CDATA[AND NVL(E.PHOTOPVIEW, 0) < 1]]>
+	   	AND NOT EXISTS (SELECT 1
+	          FROM STUDY_T_LEARNCWRSULT t
+	         WHERE LCWR002 = A.LCWR002
+	           AND LCWR003 = #{user001}
+	           AND LCWR002 IS NOT NULL)
+	</select>
+	<select id="selectNewestCourseList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT A.LEAC001, A.LEAC004, A.LEAC005, A.LEAC009, A.LEAC029, TO_CHAR(A.LEAC030, 'YYYY-MM-DD HH24:MI') LEAC030, Y.TEAC002,
+		       NVL(C.XKRS, 0) SELECTNUMBEROF,
+		       NVL(D.SECO006, 0) SECO006,
+		       CASE
+		         WHEN NVL(X.USER001, '0') = '0' THEN
+		          0
+		         WHEN D.SECO006 IS NULL THEN
+		          1
+		         WHEN W.LCWR010 IS NULL THEN
+		          2
+		         WHEN W.LCWR010 IS NOT NULL THEN
+		          3
+		         ELSE
+		          -1
+		       END LEARNINGSTUDY
+		  FROM STUDY_T_LEARNACTIVITY A
+		  LEFT JOIN STUDY_T_LEARNTEACHER Z ON A.LEAC001 = Z.LETE002
+		  LEFT JOIN HRSW_T_TEACHER Y ON Z.LETE003 = Y.TEAC001
+		  LEFT JOIN STUDY_V_LEARNCENTERUSER X ON X.LEUS002 = A.LEAC001
+		  LEFT JOIN STUDY_T_LEARNCWRSULT W ON W.LCWR002 = A.LEAC001
+		                                  AND W.LCWR003 = X.USER001
+		  LEFT JOIN (SELECT SECO002, COUNT(SECO003) XKRS
+		               FROM STUDY_T_SELECTCOURSE
+		              WHERE NVL(SECO005, 0) = 0
+		                AND NVL(SECO006, 0) = 0
+		              GROUP BY SECO002) C ON A.LEAC001 = C.SECO002
+		              ]]> 
+		  LEFT JOIN (SELECT SECO002, SECO006
+		               FROM STUDY_T_SELECTCOURSE
+		              WHERE NVL(SECO005, 0) = 0
+		                AND SECO003 = #{user001}) D ON A.LEAC001 =D.SECO002
+		   <![CDATA[             
+		 where A.LEAC006 = 1
+		   AND NVL(A.LEAC005, 0) = 0
+		   AND A.LEAC019 IN (1, 2)
+		   AND ROWNUM < 4
+		   ]]> 
+		   AND X.USER001 = #{user001}
+		   AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') BETWEEN
+		       TO_CHAR(A.LEAC007, 'YYYY-MM-DD HH24:MI') AND
+		       TO_CHAR(A.LEAC008, 'YYYY-MM-DD HH24:MI')
+		 ORDER BY A.LEAC030 DESC
+		
+	</select>
+	
+	<select id="selectHottestCourseList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT A.LEAC001,A.LEAC004, A.LEAC005, A.LEAC009, A.LEAC029,TO_CHAR(A.LEAC030, 'YYYY-MM-DD HH24:MI') LEAC030, Y.TEAC002,NVL(C.XKRS, 0) SELECTNUMBEROF,
+		       NVL(D.SECO006, 0) SECO006,
+		       CASE
+		         WHEN NVL(X.USER001, '0') = '0' THEN
+		          0
+		         WHEN D.SECO006 IS NULL THEN
+		          1
+		         WHEN W.LCWR010 IS NULL THEN
+		          2
+		         WHEN W.LCWR010 IS NOT NULL THEN
+		          3
+		         ELSE
+		          -1
+		       END LEARNINGSTUDY
+		  FROM STUDY_T_LEARNACTIVITY A
+		  LEFT JOIN STUDY_T_LEARNTEACHER Z ON A.LEAC001 = Z.LETE002
+		  LEFT JOIN HRSW_T_TEACHER Y ON Z.LETE003 = Y.TEAC001
+		  LEFT JOIN STUDY_V_LEARNCENTERUSER X ON X.LEUS002 = A.LEAC001
+		  LEFT JOIN STUDY_T_LEARNCWRSULT W ON W.LCWR002 = A.LEAC001
+		                                  AND W.LCWR003 = X.USER001
+		  LEFT JOIN (SELECT SECO002, COUNT(SECO003) XKRS
+		               FROM STUDY_T_SELECTCOURSE
+		              WHERE NVL(SECO005, 0) = 0
+		                AND NVL(SECO006, 0) = 0
+		              GROUP BY SECO002) C ON A.LEAC001 = C.SECO002
+		   ]]>           
+		  LEFT JOIN (SELECT SECO002, SECO006
+		               FROM STUDY_T_SELECTCOURSE
+		              WHERE NVL(SECO005, 0) = 0
+		                AND SECO003 = #{user001}) D ON A.LEAC001 =
+		  <![CDATA[                                                                     D.SECO002
+		  LEFT JOIN (SELECT UMES002, COUNT(*) PLRS
+		               FROM STUDY_T_USERMESSAGE
+		              WHERE NVL(UMES005, 0) = 0
+		              GROUP BY UMES002) E ON A.LEAC001 = E.UMES002
+		 where A.LEAC006 = 1
+		   AND NVL(A.LEAC005, 0) = 0
+		   AND A.LEAC019 IN (1, 2)
+		   AND ROWNUM < 4
+		    ]]>     
+		   AND X.USER001 = #{user001}
+		   AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') BETWEEN
+		       TO_CHAR(A.LEAC007, 'YYYY-MM-DD HH24:MI') AND
+		       TO_CHAR(A.LEAC008, 'YYYY-MM-DD HH24:MI')
+		 ORDER BY E.PLRS DESC,A.LEAC007 DESC
+	</select>
+</mapper>

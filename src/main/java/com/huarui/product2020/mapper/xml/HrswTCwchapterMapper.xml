@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCwchapterMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCwchapter">
+		<id column="CWCH001" property="cwch001" />
+		<result column="CWCH002" property="cwch002" />
+		<result column="CWCH003" property="cwch003" />
+		<result column="CWCH004" property="cwch004" />
+		<result column="CWCH005" property="cwch005" />
+		<result column="CWCH006" property="cwch006" />
+		<result column="CWCH007" property="cwch007" />
+		<result column="CWCH008" property="cwch008" />
+		<result column="CWCH009" property="cwch009" />
+		<result column="CWCH010" property="cwch010" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTrainuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTrainuser">
+		<id column="EXTU001" property="extu001" />
+		<result column="EXTU002" property="extu002" />
+		<result column="EXTU003" property="extu003" />
+		<result column="EXTU004" property="extu004" />
+		<result column="EXTU005" property="extu005" />
+		<result column="EXTU006" property="extu006" />
+	</resultMap>
+
+</mapper>

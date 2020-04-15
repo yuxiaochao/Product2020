@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy11Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy11">
+		<id column="CMDY1101" property="cmdy1101" />
+		<result column="CMDY1102" property="cmdy1102" />
+		<result column="CMDY1103" property="cmdy1103" />
+		<result column="CMDY1104" property="cmdy1104" />
+	</resultMap>
+
+
+    <!-- 根据商品ID获取相关课程 -->
+    <select id="findRelatedCourses" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        <![CDATA[ 
+            SELECT
+			    A.CMDY1101,
+			    A.CMDY1102,
+			    A.CMDY1103,
+			    A.CMDY1104,
+			    B.CMDY0404 AS CMDY1103N,
+			    B.CMDY0406 AS PRODUCTIMAGE,
+			    B.CMDY0407 AS PRODUCTPRICE
+			FROM
+			    TBCMDY11 A
+			LEFT JOIN tbCMDY04 B ON
+			    B.CMDY0401 = A.CMDY1103
+        ]]>
+        <where>
+                <if test="cmdy1101 != null">
+                     <![CDATA[ AND CMDY1101 = #{cmdy1101} ]]>
+                </if>
+                <if test="cmdy1102 != null">
+                     <![CDATA[ AND CMDY1102 = #{cmdy1102} ]]>
+                </if>
+                <if test="cmdy1103 != null">
+                     <![CDATA[ AND CMDY1103 = #{cmdy1103} ]]>
+                </if>
+                <if test="cmdy1104 != null">
+                     <![CDATA[ AND CMDY1104 = #{cmdy1104} ]]>
+                </if>
+        </where>
+        <![CDATA[  ORDER BY CMDY1104 ]]>
+    </select>
+</mapper>

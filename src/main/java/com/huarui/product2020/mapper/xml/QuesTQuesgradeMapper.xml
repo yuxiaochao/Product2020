@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuesgradeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuesgrade">
+		<id column="QGTA001" property="qgta001" />
+		<result column="QGTA002" property="qgta002" />
+		<result column="QGTA003" property="qgta003" />
+		<result column="QGTA004" property="qgta004" />
+		<result column="QGTA005" property="qgta005" />
+		<result column="QGTA006" property="qgta006" />
+		<result column="QGTA007" property="qgta007" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestuser">
+		<id column="TUSE001" property="tuse001" />
+		<result column="TUSE002" property="tuse002" />
+		<result column="TUSE003" property="tuse003" />
+		<result column="TUSE004" property="tuse004" />
+		<result column="TUSE005" property="tuse005" />
+		<result column="TUSE006" property="tuse006" />
+		<result column="TUSE007" property="tuse007" />
+		<result column="TUSE008" property="tuse008" />
+	</resultMap>
+
+</mapper>

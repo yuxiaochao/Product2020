@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTraintacticMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTraintactic">
+		<id column="ETAC001" property="etac001" />
+		<result column="ETAC002" property="etac002" />
+		<result column="ETAC003" property="etac003" />
+		<result column="ETAC004" property="etac004" />
+		<result column="ETAC005" property="etac005" />
+		<result column="ETAC006" property="etac006" />
+		<result column="ETAC007" property="etac007" />
+		<result column="ETAC008" property="etac008" />
+		<result column="ETAC009" property="etac009" />
+		<result column="ETAC010" property="etac010" />
+		<result column="ETAC011" property="etac011" />
+		<result column="ETAC012" property="etac012" />
+		<result column="ETAC013" property="etac013" />
+	</resultMap>
+
+</mapper>

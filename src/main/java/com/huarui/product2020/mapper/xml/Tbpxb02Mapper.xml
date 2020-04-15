@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb02">
+		<id column="PXB0201" property="pxb0201" />
+		<result column="PXB0202" property="pxb0202" />
+		<result column="PXB0203" property="pxb0203" />
+		<result column="PXB0204" property="pxb0204" />
+		<result column="PXB0205" property="pxb0205" />
+		<result column="PXB0206" property="pxb0206" />
+		<result column="PXB0207" property="pxb0207" />
+		<result column="PXB0208" property="pxb0208" />
+		<result column="PXB0209" property="pxb0209" />
+		<result column="PXB0210" property="pxb0210" />
+	</resultMap>
+	<select id="findByPage" resultType="HashMap" parameterType="com.huarui.common.Req">
+		SELECT a.pxb0201,a.pxb0202,a.pxb0203,a.pxb0204,a.pxb0205,a.pxb0206,a.pxb0207,a.pxb0208,a.pxb0209,a.pxb0210,
+			   a.pxb0211,a.pxb0212,a.pxb0213,a.pxb0214,
+			   b.jxsj0601,b.jxsj0602,b.jxsj0603,b.jxsj0604,b.jxsj0605,
+			   c.jxsj0501,c.jxsj0502,c.jxsj0503,c.jxsj0504,c.jxsj0505,
+			   decode(pxb0204, 0, '面授', 1, '线上', 2, '直播') pxb0204n,
+			   cour010,
+			       case pxb0214
+			         when 1 then
+			          e.teac002
+			         when 2 then
+			          a.pxb0213
+			         else
+			          a.pxb0213
+			       end as pxb0213n,
+			       to_char(pxb0206, 'yyyy-mm-dd hh24:mi') ||'-'||to_char(pxb0207, 'hh24:mi') as pxb0206pxb0207,
+			       decode(pxb0205, 0, '选修', 1, '必修') as pxb0205n
+		  FROM tbPXB02 a
+		  LEFT JOIN tbJXSJ06 b
+		    ON b.JXSJ0602 = a.PXB0202
+		   AND b.JXSJ0603 = a.PXB0203
+		  LEFT JOIN tbJXSJ05 c
+		    ON c.JXSJ0502 = a.PXB0202
+		  LEFT JOIN xzxy_t_course d
+		    ON d.cour001 = a.PXB0203
+		  LEFT JOIN xzxy_t_teacher e
+		    ON e.teac001 = a.PXB0210
+		<where>
+		   AND a.PXB0202 = #{parameterMap.pxb0202}
+		   AND a.PXB0204 = #{parameterMap.pxb0204}
+			<if test="parameterMap.cour010!=null and parameterMap.cour010!=''">
+			AND d.cour010 like concat('%',concat(#{parameterMap.cour010},'%'))
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="findListByTrainingId" resultType="com.huarui.product2020.entity.Tbpxb02">
+		SELECT
+			A.PXB0201,
+			A.PXB0202,
+			A.PXB0203,
+			C.COUR010 AS PXB0203N,
+			A.PXB0204,
+			A.PXB0205,
+			A.PXB0206,
+			A.PXB0207,
+			A.PXB0208,
+			A.PXB0209,
+			B.CLAS002 AS PXB0209N,
+			A.PXB0210,
+			D.TEAC002 AS PXB0210N,
+			A.PXB0211,
+			A.PXB0212,
+			A.PXB0213,
+			A.PXB0214
+		FROM
+			TBPXB02 A
+		LEFT JOIN HR_T_CLASSROOM  B ON 
+			A.PXB0209 = B.CLAS001
+		LEFT JOIN XZXY_T_COURSE C ON
+			A.PXB0203 = C.COUR001
+		LEFT JOIN HRSW_T_TEACHER D ON
+			A.PXB0210 = D.TEAC001
+		<where>
+			<![CDATA[  A.PXB0202= #{pxb0202} ]]> 
+		</where>
+	</select>
+	<select id="findOptionByPxb0202" parameterType="String" resultType="HashMap">
+		SELECT PXB0203 || '_' || PXB0212 as value, cour010 as text
+		  FROM tbPXB02
+		 INNER JOIN xzxy_t_course
+		    ON cour001 = PXB0203
+		 WHERE PXB0212 = 1
+		   AND PXB0202 = #{id}
+		UNION ALL
+		SELECT PXB0201 || '_' || PXB0212 as value, PXB0211 as text
+		  FROM tbPXB02
+		 WHERE PXB0212 = 2
+		   AND PXB0202 = #{id}
+	</select>
+	<select id="findAllCaseCourse" parameterType="com.huarui.common.Req" resultType="HashMap">
+		SELECT decode(PXB0212, 1, cour001, 2, PXB0201) || '_' || PXB0212 AS courId,
+		       decode(PXB0204, 0, '面授', 1, '线上', 2, '直播') AS PXB0204n,
+		       decode(PXB0212, 1, cour010, 2, PXB0211) AS PXB0203n,
+		       decode(PXB0214, 1, TEAC002, 2, PXB0213) AS PXB0210n,
+		       to_char(PXB0206, 'YYYY/MM/DD HH24:MI') || '-' ||
+		       to_char(PXB0207, 'HH24:MI') AS PXB0206andPXB0207,
+		       decode(PXB0205, 0, '选修课', 1, '必修课') AS PXB0205n
+		  FROM tbPXB02
+		  LEFT JOIN xzxy_t_course
+		    ON cour001 = PXB0203
+		  LEFT JOIN hrsw_t_teacher
+		    ON TEAC001 = PXB0210
+	    <where>
+	    	PXB0202 = #{parameterMap.pxb0101}
+	    	<if test="parameterMap.cour010!=null and parameterMap.cour010!=''">
+	    	and
+	    	(cour010 like concat('%',concat(#{parameterMap.cour010},'%'))
+	    	or
+	    	PXB0211 like concat('%',concat(#{parameterMap.cour010},'%')))
+	    	</if>
+	    </where>
+	</select>
+</mapper>

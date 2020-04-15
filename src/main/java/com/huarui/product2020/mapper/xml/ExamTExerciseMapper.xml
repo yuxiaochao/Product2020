@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTExerciseMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTExercise">
+		<id column="EXER001" property="exer001" />
+		<result column="EXER002" property="exer002" />
+		<result column="EXER003" property="exer003" />
+		<result column="EXER004" property="exer004" />
+		<result column="EXER005" property="exer005" />
+		<result column="EXER006" property="exer006" />
+		<result column="EXER007" property="exer007" />
+		<result column="EXER008" property="exer008" />
+		<result column="EXER009" property="exer009" />
+		<result column="EXER010" property="exer010" />
+		<result column="EXER011" property="exer011" />
+		<result column="EXER012" property="exer012" />
+		<result column="EXER013" property="exer013" />
+		<result column="EXER014" property="exer014" />
+		<result column="EXER015" property="exer015" />
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="topicMap" >  
+            <result  property="topi006" column="TOPI006" jdbcType="CLOB"  typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+            <result  property="topi016" column="TOPI016" jdbcType="CLOB"  typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+            <result  property="topi018" column="TOPI018" jdbcType="CLOB"  typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+            <result  property="topi013" column="TOPI013" jdbcType="CLOB"  typeHandler="org.apache.ibatis.type.ClobTypeHandler"/>
+    </resultMap>
+      
+	<select id="findList" parameterType="com.huarui.product2020.entity.ExamTExercise" resultType="java.util.HashMap">
+		SELECT A.EXER001,
+		       A.EXER004,
+		       A.EXER010,
+		       D.USER005,
+		       A.EXER006,
+		       H.EXGR007 AS TYPE,
+		       H.EXGR001
+		  FROM EXAM_T_EXERCISE A
+		 INNER JOIN HRSW_T_CATALOG B
+		    ON A.EXER009 = B.CATA001
+		 INNER JOIN EXAM_T_USERRESOURCERELATION C
+		    ON A.EXER001 = C.URRE013
+		    AND C.URRE011 = 1
+		 INNER JOIN HRSW_T_USER D
+		    ON C.URRE009 = D.USER001
+		 INNER JOIN EXAM_V_EXERCISEUSER E 
+ 			ON A.EXER001=E.EXUS002
+ 		 LEFT JOIN (
+ 		 	SELECT 
+ 		 		EXGR001,EXGR002,EXGR005,EXGR007 
+ 		 	FROM 
+ 		 		EXAM_T_EXERGRADE  
+		 	WHERE 
+		 		(exgr005,exgr002) IN(SELECT MAX(EXGR005),EXGR002 
+		 	FROM 
+		 		EXAM_T_EXERGRADE
+		 	WHERE 
+		 		exgr003 = #{user001}
+		 		GROUP BY EXGR002
+		 	) ) H ON H .EXGR002 = A .EXER001
+ 		<where>
+			AND E.USER001=#{user001}
+			<![CDATA[	AND A.EXER005 <= SYSDATE	]]>
+			<![CDATA[	AND A.EXER006 >= SYSDATE	]]>
+			AND A.EXER007=3
+			 AND A.EXER011  = 1
+			<if test="exer004 != null and exer004 != ''">
+				AND A.exer004 LIKE '%'||#{exer004}||'%'
+			</if>
+ 		</where>
+		ORDER BY EXER008
+	</select>
+	
+	<select id="queryExerciseclassifList" parameterType="com.huarui.product2020.entity.ExamTExercise" resultType="java.util.HashMap">
+		SELECT 
+			DISTINCT CATA001, CATA002, CATA004 
+		FROM
+			(SELECT 
+				A.CATA001, A.CATA002, A.CATA004
+           	FROM 
+           		HRSW_T_CATALOG A
+         	<choose>
+  				<when test="exer009 != null and exer009 != ''">
+	   				START WITH A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001})
+	   				CONNECT BY PRIOR CATA001 = CATA004
+  				</when>
+  				<otherwise>
+	   				WHERE A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001})
+  				</otherwise>
+  			</choose>
+  				ORDER BY A .CATA011
+   			)
+           <where>
+               <if test="exer009 != null and exer009 != ''">
+		   		<![CDATA[ AND CATA004 = #{exer009} ]]> 
+	   		</if>
+           </where>
+	</select>
+	
+	
+	<select id="queryAnswerMap" resultType="java.util.HashMap" parameterType="com.huarui.product2020.entity.ExamTExercise">
+   		<![CDATA[ SELECT COUNT (A.TOPI001) COUNTS,NVL (C.YD, 0) YD,NVL (D.ZQ, 0) ZQ, ]]> 
+   		<![CDATA[ NVL (E.CW, 0) CW,COUNT (DISTINCT ET.TCAT002) - NVL (C.YD, 0) WD,NVL (E .CW, 0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL (C.YD, 0) = 0 THEN 0 ]]> 
+   		<![CDATA[ 	ELSE ROUND (NVL (D .ZQ, 0) / NVL (C.YD, 0) * 100,2) END || '%' ZQL, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.ZQ,0) = 0 THEN '0' ]]> 
+		<![CDATA[ ELSE to_char(ROUND(NVL(D.ZQ,0)/COUNT(DISTINCT ET.TCAT002)*100,2),'FM99990.0') END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG ET ON A .TOPI001 = ET.TCAT002 ]]>
+   		<![CDATA[ INNER JOIN HRSW_T_LEVELRELATION E1 ON E1.LREL002 = ET.TCAT003 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) YD FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	WHERE B.EATO004 = #{user001} ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{exer009} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) C ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) ZQ FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	WHERE B.EATO004 = #{user001} AND B.EATO007 = 2 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{exer009} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) D ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) CW FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	WHERE B.EATO004 = #{user001} AND B.EATO007 = 1 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{exer009} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) E ON 1=1 ]]>
+   		<![CDATA[ WHERE E1.LREL004 = #{exer009} ]]>
+   		<![CDATA[ GROUP BY C.YD, D.ZQ, E.CW ]]>
+	</select>
+   		
+	
+	
+	
+	<select id="queryKnowledgeList"  parameterType="com.huarui.product2020.entity.ExamTExercise" resultType="java.util.HashMap">
+			<![CDATA[ SELECT A.TOPI003,COUNT(TOPI001) KNOWLEDGENUM, NVL(D.YD,0) YD,NVL(E.ZQ,0) ZQ, ]]> 
+   		<![CDATA[ COUNT(TOPI001) - NVL(D.YD,0) WD, NVL(F.CW,0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.YD,0) = 0 THEN 0 ELSE ROUND(NVL(E.ZQ,0)/NVL(D.YD,0)*100,2) END || '%' ZQL, ]]> 
+   		<![CDATA[ CASE WHEN NVL(E.ZQ,0) = 0 THEN '0' ELSE to_char(ROUND(NVL(E.ZQ,0)/COUNT(TOPI001)* 100 ,2),'FM9990.0') END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG B ON A.TOPI001 = B.TCAT002 ]]> 
+   		<![CDATA[ INNER JOIN hrsw_t_levelrelation E1 ON E1.LREL002 = B.TCAT003  ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_EXERSUBJECT C ON C.EXSU003 = E1.LREL004 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) YD ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{user001} ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) D ON A.TOPI003 = D.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) ZQ ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{user001} AND B.EATO007 = 2 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) E ON A.TOPI003 = E.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) CW ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{user001} AND B.EATO007 = 1 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) F ON A.TOPI003 = F.TOPI003 ]]> 
+	   	<![CDATA[ WHERE C.EXSU002 = #{exer001} ]]> 
+   		<![CDATA[ GROUP BY A.TOPI003,D.YD,E.ZQ,F.CW ]]> 
+	</select>
+	
+	<select id="findExerciseInfo" parameterType="java.lang.String" resultType="java.util.HashMap">
+	    SELECT 
+	    	EXER001,
+	    	EXER004,
+	    	EXER005,
+	    	EXER006,
+	    	EXER007,
+	    	EXER008,
+	    	EXER009,
+	    	EXER010,
+	    	EXER012,
+	    	EXER013,
+	    	EXER015,
+	    	EXER016
+	    FROM 
+	    	EXAM_T_EXERCISE
+	    WHERE 
+	    	EXER001=#{exer001}
+	</select>
+	
+	<insert id="insertExerSample" parameterType="com.huarui.product2020.entity.ExerSampleEntity">
+	    INSERT INTO 
+	    	EXAM_T_EXERSAMPLE(EXSA001,EXSA002,EXSA003,EXSA004,EXSA005,EXSA006,EXSA007,EXSA008,EXSA009,EXSA010)
+	    VALUES
+	    	(#{exsa001},#{exsa002},#{exsa003},#{exsa004},#{exsa005},#{exsa006},#{exsa007},#{exsa008},#{exsa009},#{exsa010})
+	</insert>
+	
+	<select id="queryExrciseTopicList" resultType="java.util.Map" parameterType="java.util.Map">
+		 <![CDATA[ SELECT * FROM ( ]]>
+		 <![CDATA[ SELECT TOPI001 ID,E.EXSU002 TPID,TOPI001 TOPICID,TOPI002,TOPI003 TTOP008,TOPI004,TOPI005 BTXTITLE,TOPI006 TOPIC,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011 TOPICMARK,TOPI012 TOPICCOUNT,TOPI013 TOPICOPTION,TOPI014,TOPI015 TOPICK, ]]>
+		 <![CDATA[ TOPI016 TTOP021,TOPI017 TOPICKEY,TOPI018 TOPREMARK,TOPI019 PARENTID,TOPI020,TOPI021,TOPI022,
+		 NVL(ZQ,0) TOPI023,NVL(DC,0) TOPI024,
+		 CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' TOPI025,
+		 F.BTX003 BASETYPE
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_TOPICCATALOG B ON B.TCAT002=A.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E3 ON E3.LREL002 = B.TCAT003
+		 INNER JOIN EXAM_T_EXERSUBJECT E ON E.EXSU003 = E3.LREL004
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) C ON C.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) D ON D.EATO005 = A.TOPI001
+		 INNER JOIN EXAM_T_BASETX F ON A.TOPI004=F.BTX001
+		 WHERE EXSU002= #{exer001}]]> 
+		 <if test="cata001 != '-1'">
+		 	<![CDATA[ AND EXSU003 = #{cata001} ]]>
+		 </if>
+		 <if test="topi003 != ''">
+		 	<![CDATA[ AND TOPI003= #{topi003} ]]>
+		 </if>
+		 <if test="type != null">
+		 	<choose>
+		    	<when test="type == 'topic'">
+		     		AND nvl(TOPI019,'0')='0'
+				</when>
+		     	<when test="type == 'child'">
+		     		AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		 </if>
+	 	<![CDATA[ ORDER BY F.BTX003 ]]>
+	 	<![CDATA[ ) WHERE ROWNUM <= #{randomTopicNum} ]]>
+		 
+	</select>
+	
+	<select id="findExertopic"  resultType="java.util.Map" parameterType="java.util.Map">
+		 <![CDATA[ SELECT TOPI001 ID, TOPI001 TOPICID,TOPI002,TOPI003 TTOP008,TOPI004,TOPI005 BTXTITLE,TOPI006 TOPIC, TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011 TOPICMARK,TOPI012 TOPICCOUNT,TOPI013 TOPICOPTION,TOPI014,TOPI015 TOPICK, ]]>
+		 <![CDATA[ TOPI016 TTOP021,TOPI017 TOPICKEY,TOPI018 TOPREMARK,TOPI019 PARENTID,TOPI020,TOPI021,TOPI022,
+		 NVL(ZQ,0) TOPI023,NVL(DC,0) TOPI024,
+		 CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' TOPI025,
+		 F.BTX003 BASETYPE
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_EXERTOPIC B ON B.exto005 = A .TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) C ON C.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) D ON D.EATO005 = A.TOPI001
+		 INNER JOIN EXAM_T_BASETX F ON A.TOPI004=F.BTX001
+		 WHERE B.EXTO002= #{exer001} AND B.EXTO003= #{egid} AND B.EXTO004= #{exsa001} ]]> 
+		 <if test="type != null">
+		 	<choose>
+		    	<when test="type == 'topic'">
+		     		AND nvl(TOPI019,'0')='0'
+				</when>
+		     	<when test="type == 'child'">
+		     		AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		 </if>
+		  ORDER BY F.BTX003
+	</select>
+	
+	<select id="findTxByExerciseId" resultType="com.huarui.product2020.entity.ExamTBasetx" parameterType="java.util.Map">
+		 <![CDATA[ SELECT DISTINCT BTX001,BTX002,BTX003,BTX005,BTX006,A.BTX007 
+		 FROM EXAM_T_BASETX A
+		 INNER JOIN EXAM_T_TOPIC B ON A.BTX001=B.TOPI004
+		 INNER JOIN EXAM_T_TOPICCATALOG C ON C.TCAT002=B.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E ON E.LREL002 = C.TCAT003
+		 INNER JOIN EXAM_T_EXERSUBJECT D ON D.EXSU003 = E.LREL004
+		 WHERE EXSU002= #{exer001}]]> 
+		 <if test="cata001 != '-1'">
+		 	<![CDATA[ AND EXSU003 = #{cata001} ]]>
+		 </if>
+		 <if test="topi003 != ''">
+		 	<![CDATA[ AND TOPI003= #{topi003} ]]>
+		 </if>
+		 ORDER BY A.BTX003
+	</select>
+	
+	<insert id="addExertopic" parameterType="java.util.Map">
+	    INSERT INTO 
+	    	EXAM_T_EXERTOPIC(
+	    		EXTO001,
+	    		EXTO002,
+	    		EXTO003,
+	    		EXTO004,
+	    		EXTO005,
+	    		EXTO006,
+	    		EXTO007,
+	    		EXTO008,
+	    		EXTO009,
+	    		EXTO010,
+	    		EXTO011,
+	    		EXTO012,
+	    		EXTO013,
+	    		EXTO014,
+	    		EXTO015,
+	    		EXTO016,
+	    		EXTO017,
+	    		EXTO018,
+	    		EXTO019,
+	    		EXTO020,
+	    		EXTO021,
+	    		EXTO022,
+	    		EXTO023,
+	    		EXTO024,
+	    		EXTO025,
+	    		EXTO026
+	    	)
+	    VALUES(
+	    		#{EXTO001},
+	    		#{EXTO002},
+	    		#{EXTO003},
+	    		#{EXTO004},
+	    		#{EXTO005},
+	    		#{EXTO006},
+	    		#{EXTO007},
+	    		#{EXTO008},
+	    		#{EXTO009},
+	    		#{EXTO010},
+	    		#{EXTO011},
+	    		#{EXTO012},
+	    		#{EXTO013},
+	    		#{EXTO014},
+	    		#{EXTO015},
+	    		#{EXTO016},
+	    		#{EXTO017},
+	    		#{EXTO018},
+	    		#{EXTO019},
+	    		#{EXTO020},
+	    		#{EXTO021},
+	    		#{EXTO022},
+	    		#{EXTO023},
+	    		#{EXTO024},
+	    		#{EXTO025},
+	    		#{EXTO026}
+	    )
+	    
+	</insert>
+	
+	<select id="findExerSampleInfo" resultType="java.util.Map" parameterType="com.huarui.product2020.entity.ExerSampleEntity">
+	    SELECT
+	    	EXSA001,
+	    	EXSA002,
+	    	EXSA003,
+	    	EXSA004,
+	    	EXSA005,
+	    	EXSA006,
+	    	EXSA007,
+	    	EXSA008,
+	    	EXSA009,
+	    	EXSA010
+	    FROM
+	    	EXAM_T_EXERSAMPLE
+	    <where>
+	       AND exsa002 = #{exsa002} 
+	       AND exsa003 = #{exsa003} 
+	       AND exsa004 = #{exsa004}
+	    </where> 
+	</select>
+	
+	<select id="findReview" parameterType="java.util.Map" resultType="java.util.Map">
+	    <![CDATA[ SELECT EMES001,EMES002,EMES003,EMES004,EMES006, ]]> 
+		 <![CDATA[ EMES005,USER005,C.ATTA007 ]]> 
+		 <![CDATA[ FROM EXAM_T_EXERMESSAGE A ]]> 
+		 <![CDATA[ INNER JOIN HRSW_T_USER B ON A.EMES003 = B.USER001 ]]> 
+		 <![CDATA[ LEFT JOIN HRSW_T_ATTACHMENT C ON C.ATTA002 = A.EMES003 AND C.ATTA004 = 1 ]]> 
+		<where>
+				<if test="user001 != null and user001 != ''">
+				     <![CDATA[ AND EMES003 = #{user001} ]]>
+				</if>
+				<if test="topicId != null and topicId != ''">
+				     <![CDATA[ AND EMES002 = #{topicId} ]]>
+				</if>
+				<![CDATA[ AND EMES006 IS NULL ]]>
+		</where>
+	    ORDER BY EMES005
+	</select>
+	
+	<select id="findReviewList" parameterType="java.util.Map" resultType="java.util.Map">
+	     <![CDATA[ SELECT A.EMES001,A.EMES002,A.EMES003,A.EMES004,A.EMES006, ]]> 
+		 <![CDATA[ A.EMES005, ]]> 
+		 <![CDATA[ D.USER005 || '回复' || B.USER005 EMES003NAME,D.ATTA007 ]]> 
+		 <![CDATA[ FROM EXAM_T_EXERMESSAGE A ]]> 
+		 <![CDATA[ INNER JOIN HRSW_T_USER B ON A.EMES003 = B.USER001 ]]> 
+		 <![CDATA[ LEFT JOIN EXAM_T_EXERMESSAGE C ON C.EMES001 = A.EMES006 ]]> 
+		 <![CDATA[ LEFT JOIN HRSW_T_USER D ON C.EMES003 = D.USER001 ]]> 
+		 <![CDATA[ LEFT JOIN HRSW_T_ATTACHMENT D ON D.ATTA002 = A.EMES003 AND D.ATTA004 = 1 ]]> 
+		 <![CDATA[ WHERE A.EMES006 IS NOT NULL ]]> 
+		 <![CDATA[ START WITH A.EMES001 = #{emes001} ]]> 
+		 <![CDATA[ CONNECT BY A.EMES006 = PRIOR A.EMES001 ORDER BY EMES005]]> 
+	</select>
+	
+	<insert id="submitComment" parameterType="java.util.Map">
+	    INSERT INTO 
+	    	EXAM_T_EXERMESSAGE(EMES001,EMES002,EMES003,EMES004,EMES005,EMES006,EMES007)
+	    VALUES(#{emes001},#{emes002},#{emes003},#{emes004},#{emes005},#{emes006},#{emes007})
+	</insert>
+	
+	<delete id="delComment" parameterType="java.lang.String">
+	    DELETE FROM EXAM_T_EXERMESSAGE WHERE EMES001=#{emes001}
+	</delete>
+	
+	<select id="findTopicAnswerByExerciseId" resultType="com.huarui.product2020.entity.ExamTTopic" parameterType="java.util.Map">
+		 <![CDATA[ SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005,TOPI006,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012,TOPI013,TOPI014,TOPI015, ]]>
+		 <![CDATA[ TOPI016,TOPI017,TOPI018,TOPI019,TOPI020,TOPI021,TOPI022
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_EXERTOPIC B ON B.EXTO005=A.TOPI001
+		 WHERE EXTO003= #{egid} AND exto004=#{exsa001} ]]> 		 
+	</select>
+	
+	  <select id="findAnwserTopic" resultType="com.huarui.product2020.entity.ExamTExeranwsertopic" parameterType="java.util.Map">
+		 <![CDATA[ SELECT EATO001,EATO002,EATO003,EATO004,EATO005,EATO006,EATO007,EATO008 ]]> 
+		 <![CDATA[ FROM exam_t_ExerAnwserTopic ]]> 
+		 <![CDATA[ WHERE EATO003 =#{eato003} ]]> 
+		 <![CDATA[ AND EATO004 =#{eato004} AND EATO005 =#{eato005} ]]> 
+	</select>
+</mapper>
+
+
+
+
+
+
+
+

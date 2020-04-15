@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestmarktopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestmarktopic">
+		<id column="TMTO001" property="tmto001" />
+		<result column="TMTO002" property="tmto002" />
+		<result column="TMTO003" property="tmto003" />
+		<result column="TMTO004" property="tmto004" />
+		<result column="TMTO005" property="tmto005" />
+		<result column="TMTO006" property="tmto006" />
+		<result column="TMTO007" property="tmto007" />
+		<result column="TMTO008" property="tmto008" />
+		<result column="TMTO009" property="tmto009" />
+	</resultMap>
+
+</mapper>

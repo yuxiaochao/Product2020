@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTDocumentaryfactsreportMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTDocumentaryfactsreport">
+		<id column="DOFR001" property="dofr001" />
+		<result column="DOFR002" property="dofr002" />
+		<result column="DOFR003" property="dofr003" />
+		<result column="DOFR004" property="dofr004" />
+		<result column="DOFR005" property="dofr005" />
+		<result column="DOFR006" property="dofr006" />
+		<result column="DOFR007" property="dofr007" />
+	</resultMap> 
+	
+	<select id="selectidentity" parameterType="java.util.Map" resultType="com.huarui.product2020.entity.HrswTUser">
+	   SELECT 
+	     * 
+	   FROM 
+	   hrsw_t_user 
+	   WHERE USER001=#{user001} AND USER002 in(SELECT ORGA001 FROM hrsw_t_organ WHERE ORGA005 LIKE '%党建办%')
+	   
+	    <!-- ='0001L61000000002IBUK' -->
+	   
+	   <!--乐学 ('fdefed38792144ccaf14ae193b9f5a93','1a2fe7908ff74bf6af34e459c6202628') -->
+	</select>
+	
+	<select id="selectFactsReport" parameterType="java.util.Map" resultType="java.util.Map">
+	SELECT 
+	DISTINCT
+	AA.*,
+	BB.USER005 tjname,
+	ee.user005 qdname,
+	to_char(AA.DOFR004,'yyyy-mm-dd hh24:mi') datetime, 
+	to_char(AA.DOFR006,'yyyy-mm-dd hh24:mi') endtime,
+	case WHEN dd.MREA001 is null then 0 ELSE 1 END isReader,
+	cc.dofa002,
+	BB.USER001
+	FROM hrsw_t_DocumentaryFactsReport aa
+    INNER JOIN HRSW_T_USER bb ON bb.user001=aa.dofr003
+    left JOIN HRSW_T_USER ee ON ee.user001=aa.dofr005
+    INNER JOIN hrsw_t_DocumentaryFactsTask cc ON cc.dofa001=aa.dofr002
+    LEFT JOIN hrsw_t_messageReader dd ON dd.MREA002=aa.dofr001 AND dd.MREA003=#{user001}
+    WHERE AA.DOFR007=#{dofr007} ORDER BY AA.DOFR004 desc
+	</select>
+	
+	<select id="selectFactsReportdetails" parameterType="java.util.Map" resultType="java.util.Map">
+	SELECT
+       WW.dofa003,
+       ww.listImg,
+       nvl(WW.dofa009,'') dofa009,
+       ROWNUM number01
+       from(
+			SELECT 
+			DISTINCT 
+			bb.*,
+			wwe.listImg
+			FROM hrsw_t_DocumentaryFactsReport aa 
+		    INNER JOIN hrsw_t_DocumentaryFacts bb ON BB.dofa002	=AA.dofr002 AND bb.dofa006=aa.dofr003
+		    INNER JOIN             
+				(
+				SELECT
+				DISTINCT
+				bbr.dofa001,
+				listagg(jj.dofp004,',') within GROUP (order by bbr.dofa007) listImg
+				FROM 
+				hrsw_t_DocumentaryFacts bbr 
+				LEFT JOIN hrsw_t_DocumentaryFactsPicture jj ON jj.dofp003=bbr.dofa001 AND jj.dofp002=#{dofr005}
+				GROUP BY bbr.dofa001
+				) wwe 
+			ON wwe.dofa001=  bb.dofa001
+		    WHERE AA.dofr002=#{dofr002} AND AA.dofr003=#{dofr003} 
+		    AND BB.dofa005=#{dofr005} AND AA.dofr007=#{dofr007} ORDER BY bb.dofa007) ww
+	</select>
+	
+	<update id="updateFactsReport" parameterType="java.util.Map">
+	update hrsw_t_DocumentaryFactsReport 
+	SET dofr005=#{user001} ,dofr006=sysdate ,dofr007=1 WHERE dofr002=#{dofr002} AND dofr003=#{dofr003}
+	</update>
+	
+	
+	<select id="selectNoReaderFactsReport" parameterType="java.util.Map" resultType="java.lang.Integer">
+	    SELECT sum(dd.isReader)
+		FROM (
+		SELECT 
+		AA.DOFR001,
+		case when bb.MREA001 is null then 1 else 0 end isReader
+		FROM hrsw_t_DocumentaryFactsReport aa 
+		LEFT JOIN hrsw_t_messageReader bb ON BB.MREA002=AA.DOFR001 AND BB.MREA003=#{user001}
+		WHERE aa.dofr002=#{dofa001} ) dd
+	</select>
+	
+	<select id="queryFactsReportHistory" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+		aa.*,BB.USER005 tjName,
+		cc.user005 qdName,
+		ff.dofa002,
+		to_char(AA.DOFR004,'yyyy-mm-dd hh24:mi') datetime, 
+	    to_char(AA.DOFR006,'yyyy-mm-dd hh24:mi') endtime
+		FROM hrsw_t_DocumentaryFactsReport aa
+		INNER JOIN hrsw_t_DocumentaryFactsTask ff ON ff.dofa001=aa.dofr002
+		INNER JOIN HRSW_T_USER bb ON aa.DOFR003=BB.USER001
+		LEFT JOIN HRSW_T_USER cc on cc.USER001=aa.dofr005
+		WHERE aa.dofr003=#{user001}
+	</select>
+
+</mapper>

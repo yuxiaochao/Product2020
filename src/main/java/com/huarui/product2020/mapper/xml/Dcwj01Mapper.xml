@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Dcwj01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Dcwj01">
+		<id column="DCWJ0101" property="dcwj0101" />
+		<result column="DCWJ0102" property="dcwj0102" />
+		<result column="DCWJ0103" property="dcwj0103" />
+		<result column="DCWJ0104" property="dcwj0104" />
+		<result column="DCWJ0105" property="dcwj0105" />
+		<result column="DCWJ0106" property="dcwj0106" />
+		<result column="DCWJ0107" property="dcwj0107" />
+		<result column="DCWJ0108" property="dcwj0108" />
+	</resultMap>
+
+</mapper>

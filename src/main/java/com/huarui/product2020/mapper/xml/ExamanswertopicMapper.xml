@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamanswertopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTExamanswertopic">
+		<id column="EATO001" property="eato001" />
+		<result column="EATO002" property="eato002" />
+		<result column="EATO003" property="eato003" />
+		<result column="EATO004" property="eato004" />
+		<result column="EATO005" property="eato005" />
+		<result column="EATO006" property="eato006" />
+		<result column="EATO007" property="eato007" />
+	</resultMap>
+	
+	<insert id="insertBatch" parameterType="java.util.List" flushCache="true">  
+	    <![CDATA[ INSERT INTO EXAM_T_EXAMANSWERTOPIC(
+	    EATO001,
+	    EATO002,
+	    EATO003,
+	    EATO004,
+	    EATO005,
+	    EATO006,
+	    EATO007,
+	    EATO008
+	)
+	 ]]> 
+	<foreach collection="list" item="item" index="index" separator="union all">
+		(select 
+		    #{item.eato001,jdbcType=VARCHAR},
+		    #{item.eato002,jdbcType=VARCHAR},
+		    #{item.eato003,jdbcType=VARCHAR},
+		    #{item.eato004,jdbcType=VARCHAR},
+		    #{item.eato005,jdbcType=VARCHAR},
+		    #{item.eato006,jdbcType=FLOAT},
+		    #{item.eato007,jdbcType=INTEGER},
+		    #{item.eato008,jdbcType=VARCHAR}
+		from dual)
+	</foreach>
+
+    </insert>  
+</mapper>

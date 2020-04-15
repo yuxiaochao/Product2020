@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbdd01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbdd01">
+		<id column="DD0101" property="dd0101" />
+		<result column="DD0102" property="dd0102" />
+		<result column="DD0103" property="dd0103" />
+		<result column="DD0104" property="dd0104" />
+		<result column="DD0105" property="dd0105" />
+		<result column="DD0106" property="dd0106" />
+		<result column="DD0107" property="dd0107" />
+		<result column="DD0108" property="dd0108" />
+		<result column="DD0109" property="dd0109" />
+		<result column="DD0110" property="dd0110" />
+		<result column="DD0111" property="dd0111" />
+		<result column="CMDY0306" property="cmdy0306" />
+		<result column="DD0204" property="dd0204" />
+		<result column="DD0105T" property="dd0105t" />
+		<result column="DD0205" property="dd0205" />
+		<result column="DD0106T" property="dd0106t" />
+	</resultMap>
+
+	<select id="selectPage" resultMap="BaseResultMap">
+		SELECT
+			A.DD0101,
+			A.DD0104,
+			C.CMDY0306,
+			A.DD0107,
+			D.DD0204 ,
+			A.DD0105,
+			TO_CHAR( A.DD0105, 'YYYY-MM-DD' ) || ',' || TO_CHAR( A.DD0105 + 2, 'YYYY-MM-DD' ) DD0105T,
+			DECODE(
+				D.DD0205,
+				0,
+				'支付宝',
+				1,
+				'微信',
+				2,
+				'网银',
+				3,
+				'药师币',
+				4,
+				'天猫开课',
+				'--' 
+			)  DD0205,
+			DECODE(
+				A.DD0106,
+				1,
+				'已付款',
+				2,
+				'已取消',
+				3,
+				'已失效',
+				'待支付' 
+			) DD0106T,
+			A.DD0106
+		FROM
+			TBDD01 A
+			INNER JOIN TBGWC01 B ON A.DD0103 = B.GWC0101
+			INNER JOIN (
+			SELECT
+				C1.GWC0208,
+				LISTAGG ( C2.CMDY0302 || C2.CMDY0306, ',' ) WITHIN GROUP ( ORDER BY C2.CMDY0302, C2.CMDY0306 ) CMDY0306 
+			FROM
+				(
+				SELECT
+					GWC0202,
+					GWC0208 
+				FROM
+					TBGWC02 
+				GROUP BY
+					GWC0202,
+					GWC0208 
+				) C1
+				INNER JOIN TBCMDY03 C2 ON C1.GWC0202 = C2.CMDY0301 
+			GROUP BY
+				C1.GWC0208 
+			) C ON B.GWC0101 = C.GWC0208
+			LEFT JOIN TBDD02 D ON A.DD0101 = D.DD0202 
+			AND A.DD0103 = D.DD0203 
+			${ew.getSqlSegment}
+	</select>
+	
+	<select id="myOrderCountQuery" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			(
+			SELECT
+				COUNT( 1 ) 
+			FROM
+				(
+					SELECT
+						DD0102
+					FROM
+						TBDD01 A1
+					INNER JOIN 
+						TBDD02 A2
+					ON
+						A1.DD0101 = A2.DD0202
+					WHERE A1.DD0106 = 1
+					UNION ALL
+					SELECT
+						DD0102
+					FROM 
+						TBDD01
+					WHERE 	DD0106 <![CDATA[ <>]]> 1
+				) A
+			WHERE
+				DD0102 = A.USER001 
+			) "allNum",
+			(
+			SELECT
+				COUNT( 1 ) 
+			FROM
+				TBDD01 
+			WHERE
+				DD0102 = A.USER001 
+				AND DD0106 = 0 
+			) "pendingNum",
+			(
+			SELECT
+				COUNT( 1 ) 
+			FROM
+				TBDD01 A1
+			INNER JOIN 
+				TBDD02 A2
+			ON
+				A1.DD0101 = A2.DD0202
+			WHERE
+				A1.DD0102 = A.USER001 
+			AND A1.DD0106 = 1 
+			) "alreadyNum",
+			(
+			SELECT
+				COUNT( 1 ) 
+			FROM
+				TBDD01 
+			WHERE
+				DD0102 = A.USER001 
+				AND DD0106 = 2 
+			) "cancelledNum",
+			(
+			SELECT
+				COUNT( 1 ) 
+			FROM
+				TBDD01 
+			WHERE
+				DD0102 = A.USER001 
+				AND DD0106 = 3 
+			) "expiredNum" 
+		FROM
+			HRSW_T_USER A 
+		WHERE
+			A.USER001 = #{userId}
+	</select>
+	
+	<insert id="addCourse" parameterType="java.lang.String">
+		{call pro_InquireAboutGoodsOrder(#{dd0101}) }
+	</insert>
+
+</mapper>

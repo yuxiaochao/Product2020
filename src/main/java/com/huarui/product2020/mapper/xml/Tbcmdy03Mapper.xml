@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy03">
+		<id column="CMDY0301" property="cmdy0301" />
+		<result column="CMDY0302" property="cmdy0302" />
+		<result column="CMDY0303" property="cmdy0303" />
+		<result column="CMDY0304" property="cmdy0304" />
+		<result column="CMDY0305" property="cmdy0305" />
+		<result column="CMDY0306" property="cmdy0306" />
+		<result column="CMDY0307" property="cmdy0307" />
+		<result column="CMDY0308" property="cmdy0308" />
+		<result column="CMDY0309" property="cmdy0309" />
+		<result column="CMDY0310" property="cmdy0310" />
+		<result column="CMDY0311" property="cmdy0311" />
+		<result column="CMDY0312" property="cmdy0312" />
+		<result column="CMDY0313" property="cmdy0313" />
+		<result column="CMDY0314" property="cmdy0314" />
+		<result column="CMDY0315" property="cmdy0315" />
+		<result column="CMDY0316" property="cmdy0316" />
+		<result column="CMDY0317" property="cmdy0317" />
+		<result column="CMDY0318" property="cmdy0318" />
+		<result column="CMDY0319" property="cmdy0319" />
+		<result column="CMDY0320" property="cmdy0320" />
+		<result column="CMDY0321" property="cmdy0321" />
+		<result column="CMDY0322" property="cmdy0322" />
+		<result column="CMDY0326" property="cmdy0326" />
+		<result column="CMDY0312T" property="cmdy0312t" />
+		<association property="tbcmdy09" javaType="com.huarui.product2020.entity.Tbcmdy09">
+	    	<id column="CMDY0901" property="cmdy0901" />
+			<result column="CMDY0902" property="cmdy0902" />
+			<result column="CMDY0903" property="cmdy0903" />
+	    </association>
+		<collection property="tbcmdy06List" ofType="com.huarui.product2020.entity.Tbcmdy06">
+			<id column="CMDY0601" property="cmdy0601" />
+			<result column="CMDY0602" property="cmdy0602" />
+			<result column="CMDY0603" property="cmdy0603" />
+			<result column="CMDY0604" property="cmdy0604" />
+			<result column="CMDY0605" property="cmdy0605" />
+			<result column="CMDY0606" property="cmdy0606" />
+			<result column="CMDY0607" property="cmdy0607" />
+			<result column="CMDY0608" property="cmdy0608" />
+			<result column="CMDY0609" property="cmdy0609" />
+			<collection property="tbcmdy07List" ofType="com.huarui.product2020.entity.Tbcmdy07">
+				<id column="CMDY0701" property="cmdy0701" />
+				<result column="CMDY0702" property="cmdy0702" />
+				<result column="CMDY0703" property="cmdy0703" />
+				<result column="CMDY0704" property="cmdy0704" />
+				<result column="CMDY0705" property="cmdy0705" />
+				<result column="CMDY0706" property="cmdy0706" />
+				<association property="tbcmdy04" javaType="com.huarui.product2020.entity.Tbcmdy04">
+			    	<id column="CMDY0401" property="cmdy0401" />
+					<result column="CMDY0402" property="cmdy0402" />
+					<result column="CMDY0403" property="cmdy0403" />
+					<result column="CMDY0404" property="cmdy0404" />
+					<result column="CMDY0405" property="cmdy0405" />
+					<result column="CMDY0406" property="cmdy0406" />
+					<result column="CMDY0407" property="cmdy0407" />
+					<result column="CMDY0408" property="cmdy0408" />
+					<result column="CMDY0409" property="cmdy0409" />
+					<result column="CMDY0410" property="cmdy0410" />
+					<result column="CMDY0411" property="cmdy0411" />
+					<result column="CMDY0412" property="cmdy0412" />
+					<result column="CMDY0413" property="cmdy0413" />
+					<result column="CMDY0414" property="cmdy0414" />
+					<result column="CMDY0415" property="cmdy0415" />
+					<result column="CMDY0417" property="cmdy0417" />
+					<result column="CMDY0418" property="cmdy0418" />
+					<result column="CMDY0419" property="cmdy0419" />
+					<result column="CMDY0420" property="cmdy0420" />
+					<result column="CMDY0416" property="cmdy0416" />
+					<result column="CMDY0421" property="cmdy0421" />
+					<result column="CMDY0422" property="cmdy0422" />
+					<result column="CMDY0423" property="cmdy0423" />
+			    </association>
+			</collection>
+		</collection>
+	</resultMap>
+
+	<select id="queryCmdy03List" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+			A.CMDY0306,
+			B.CMDY0605,
+			A.CMDY0319,
+			B.CMDY0607,
+			B.CMDY0608,
+			B.CMDY0609,
+			D.CMDY0903,
+			A.CMDY0301,
+			A.CMDY0326,
+			D.CMDY0903,
+			D.CMDY0901,
+			B.CMDY0601,
+			B.CMDY0603  
+		FROM
+			TBCMDY03 A
+			LEFT JOIN TBCMDY06 B ON A.CMDY0301 = B.CMDY0602
+			LEFT JOIN TBCMDY09 D ON A.CMDY0301 = D.CMDY0902 
+		WHERE
+			A.CMDY0304 = #{cmdy0304}
+			AND A.CMDY0320 = 2
+			AND A.CMDY0307 = 1
+		ORDER BY A.CMDY0308,B.CMDY0604
+	</select>
+	
+	<select id="queryCmdy03Info" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+			A.CMDY0301,
+			A.CMDY0306,
+			A.CMDY0311,
+			A.CMDY0316,
+			A.CMDY0317,
+			A.CMDY0318,
+			A.CMDY0319,
+			DECODE(
+				A.CMDY0312,
+				0,
+				'至' || TO_CHAR( A.CMDY0313, 'YYYY"年"MM"月"DD"日"' ),
+				1,
+				A.CMDY0314 || '天',
+				'--' 
+			) CMDY0312T,
+			B.CMDY0601,
+			B.CMDY0603,
+			B.CMDY0605,
+			B.CMDY0607,
+			B.CMDY0608,
+			B.CMDY0609,
+			D.CMDY0903,
+			F.CMDY0401,
+			F.CMDY0404,
+			F.CMDY0417,
+			E.CMDY0701 
+		FROM
+			TBCMDY03 A
+			LEFT JOIN TBCMDY06 B ON A.CMDY0301 = B.CMDY0602
+			LEFT JOIN TBCMDY09 D ON A.CMDY0301 = D.CMDY0902
+			LEFT JOIN TBCMDY07 E ON B.CMDY0601 = E.CMDY0702 
+			AND A.CMDY0301 = E.CMDY0706
+			LEFT JOIN TBCMDY04 F ON F.CMDY0401 = E.CMDY0703 
+		WHERE
+			A.CMDY0301 = #{cmdy0301}
+		ORDER BY B.CMDY0604,E.CMDY0704
+	</select>
+</mapper>

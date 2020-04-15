@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTesttxMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTesttx">
+		<id column="TTX001" property="ttx001" />
+		<result column="TTX002" property="ttx002" />
+		<result column="TTX003" property="ttx003" />
+		<result column="TTX004" property="ttx004" />
+		<result column="TTX005" property="ttx005" />
+		<result column="TTX006" property="ttx006" />
+		<result column="TTX007" property="ttx007" />
+		<result column="TTX008" property="ttx008" />
+	</resultMap>
+	<select id="findByExamId" resultType="com.huarui.product2020.entity.ExamTTesttx">
+		 <![CDATA[ SELECT TTX001,TTX002,B.BTX003 AS TTX003,B.BTX002 AS TTX004,TTX005,TTX006,TTX007,TTX008 
+		 FROM EXAM_T_TESTTX A
+		 INNER JOIN EXAM_T_BASETX B ON A.TTX008=B.BTX001
+		 WHERE TTX002= #{ttx002} 
+		 ORDER BY TTX005 ASC]]> 
+	</select>
+</mapper>

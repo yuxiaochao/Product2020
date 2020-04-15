@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTUsernoteMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTUsernote">
+		<id column="UNOT001" property="unot001" />
+		<result column="UNOT002" property="unot002" />
+		<result column="UNOT003" property="unot003" />
+		<result column="UNOT004" property="unot004" />
+		<result column="UNOT005" property="unot005" />
+		<result column="UNOT006" property="unot006" />
+		<result column="UNOT007" property="unot007" />
+		<result column="UNOT008" property="unot008" />
+	</resultMap>
+	
+<select id="selectNoteListByUser" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT A.LEAC004, B.MYNOTENUM, C.SHARENOTENUM,A.LEAC009
+		  FROM STUDY_T_LEARNACTIVITY A 
+		  LEFT JOIN (SELECT COUNT(1) MYNOTENUM, UNOT002
+		               FROM STUDY_T_USERNOTE
+		              WHERE UNOT003 = #{user001}
+		              GROUP BY UNOT002) B ON A.LEAC001 = B.UNOT002
+		              <![CDATA[
+		  LEFT JOIN (SELECT COUNT(1) SHARENOTENUM, UNOT002
+		               FROM STUDY_T_USERNOTE
+		              WHERE UNOT009 = '1'
+		              GROUP BY UNOT002) C ON A.LEAC001 = C.UNOT002
+		  WHERE B.MYNOTENUM > 0
+		  OR C.SHARENOTENUM > 0
+		  ]]>
+		  <if test="leac004 != ''">
+		   AND UPPER(A.LEAC004) LIKE UPPER(CONCAT(CONCAT('%',#{leac004}), '%')) 
+		 </if>
+		  
+	</select>
+	
+	<select id="selectMyNoteListByUser" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT B.LEAC001, C.LECW003,TO_CHAR(A.UNOT008, 'YYYY-MM-DD HH24:MI:SS') UNOT008, A.UNOT005, A.UNOT006
+		  FROM STUDY_T_USERNOTE A
+		  LEFT JOIN STUDY_T_LEARNACTIVITY B ON A.UNOT002 = B.LEAC001
+		 INNER JOIN STUDY_T_LEARNCW C ON B.LEAC001 = C.LECW002
+		                             AND C.LECW006 = A.UNOT005
+		 WHERE A.UNOT003 = #{user001}
+		  <if test="lecw003 != ''">
+		   AND UPPER(C.LECW003) LIKE UPPER(CONCAT(CONCAT('%',#{lecw003}), '%')) 
+		 </if>
+		 ORDER BY UNOT008 DESC
+	</select>
+	
+	<select id="selectShareNoteListByUser" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT B.LEAC001, C.LECW003,TO_CHAR(A.UNOT008, 'YYYY-MM-DD HH24:MI:SS') UNOT008, A.UNOT005, A.UNOT006
+		  FROM STUDY_T_USERNOTE A
+		  LEFT JOIN STUDY_T_LEARNACTIVITY B ON A.UNOT002 = B.LEAC001
+		 INNER JOIN STUDY_T_LEARNCW C ON B.LEAC001 = C.LECW002
+		                             AND C.LECW006 = A.UNOT005
+		 WHERE A.UNOT009 = '1'
+		 <if test="lecw003 != ''">
+		   AND UPPER(C.LECW003) LIKE UPPER(CONCAT(CONCAT('%',#{lecw003}), '%')) 
+		 </if>
+		 ORDER BY UNOT008 DESC
+	</select>
+</mapper> 

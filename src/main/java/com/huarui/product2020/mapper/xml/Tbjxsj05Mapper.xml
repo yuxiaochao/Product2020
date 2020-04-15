@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj05Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj05">
+		<id column="JXSJ0501" property="jxsj0501" />
+		<result column="JXSJ0502" property="jxsj0502" />
+		<result column="JXSJ0503" property="jxsj0503" />
+		<result column="JXSJ0504" property="jxsj0504" />
+		<result column="JXSJ0505" property="jxsj0505" />
+	</resultMap>
+	<select id="findByPage" resultType="HashMap" parameterType="com.huarui.common.Req">
+		SELECT a.pxb0201,a.pxb0202,a.pxb0203,a.pxb0204,a.pxb0205,a.pxb0206,a.pxb0207,a.pxb0208,a.pxb0209,a.pxb0210,
+			   a.pxb0211,a.pxb0212,a.pxb0213,a.pxb0214,a.pxb0215,a.pxb0216,
+			   b.jxsj0601,b.jxsj0602,b.jxsj0603,b.jxsj0604,b.jxsj0605,
+			   c.jxsj0501,c.jxsj0502,c.jxsj0503,c.jxsj0504,c.jxsj0505,
+			   decode(pxb0204, 0, '面授', 1, '线上', 2, '直播') pxb0204n,
+			   cour010,
+			       case pxb0214
+			         when 1 then
+			          e.teac002
+			         when 2 then
+			          a.pxb0213
+			         else
+			          a.pxb0213
+			       end as pxb0213n,
+			       to_char(pxb0206, 'yyyy-mm-dd hh24:mi') ||'-'||to_char(pxb0207, 'hh24:mi') as pxb0206pxb0207,
+			       decode(pxb0205, 0, '选修', 1, '必修') as pxb0205n
+		  FROM tbPXB02 a
+		  LEFT JOIN tbJXSJ06 b
+		    ON b.JXSJ0602 = a.PXB0202
+		   AND b.JXSJ0603 = a.PXB0203
+		  LEFT JOIN tbJXSJ05 c
+		    ON c.JXSJ0502 = a.PXB0202
+		  LEFT JOIN xzxy_t_course d
+		    ON d.cour001 = a.PXB0203
+		  LEFT JOIN xzxy_t_teacher e
+		    ON e.teac001 = a.PXB0210
+		 WHERE a.PXB0202 = #{parameterMap.pxb0202}
+		   AND a.PXB0204 = #{parameterMap.pxb0204}
+	</select>
+</mapper>

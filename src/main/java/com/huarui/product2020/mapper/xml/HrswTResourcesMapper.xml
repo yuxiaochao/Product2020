@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTResourcesMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTResources">
+		<id column="RESO001" property="reso001" />
+		<result column="RESO002" property="reso002" />
+		<result column="RESO003" property="reso003" />
+		<result column="RESO004" property="reso004" />
+		<result column="RESO005" property="reso005" />
+		<result column="RESO006" property="reso006" />
+		<result column="RESO007" property="reso007" />
+		<result column="RESO008" property="reso008" />
+		<result column="RESO009" property="reso009" />
+		<result column="RESO010" property="reso010" />
+		<result column="RESO011" property="reso011" />
+		<result column="RESO012" property="reso012" />
+		<result column="RESO013" property="reso013" />
+		<result column="ROW_ID" property="serialNumber" />
+		
+		
+	</resultMap>
+	
+	<select id="selectPage"  resultMap="BaseResultMap">
+		SELECT RESO001,RESO002,RESO003,RESO004,RESO005,RESO006,RESO007,
+		RESO008,RESO009,RESO010,RESO011,
+		RESO012,RESO013
+		FROM HRSW_T_RESOURCES 
+		${ew.getSqlSegment}
+	</select>
+	
+	<select id="findResourcesTree" resultType="HashMap" parameterType="com.huarui.common.Req">
+		SELECT RESO001,RESO002,RESO003,RESO004,RESO005,RESO006,RESO007,RESO008,RESO009,RESO010,RESO011,RESO012,	
+		(SELECT COUNT(*) FROM HRSW_T_RESOURCES WHERE RESO009=A.RESO001) CHILDCOUNT
+		FROM HRSW_T_RESOURCES A
+		<where>
+			<!-- source 该角色来源 1,'运营单位',2,'认证单位',3,'报名单位' -->
+			<if test="parameterMap.userId != null and parameterMap.source != 1">
+			exists (
+			        select 1 from HRSW_T_RESOURCES t
+			        inner join hrsw_t_rolepurview t2 on t.reso001 = t2.RPUR003
+			        inner join hrsw_t_userpurview t3 on t2.RPUR002 = t3.Upur003
+			        where t3.UPUR002 = #{parameterMap.userId}
+			        and t.RESO001 = a.reso001
+			  )
+			</if>
+		</where>
+		ORDER BY RESO008 ASC
+	</select>
+	
+	<select id="findRoleResourcesTree" resultType="HashMap">
+		SELECT RESO001,RESO002,RESO003,RESO004,RESO005,RESO006,RESO007,RESO008,RESO009,RESO010,RESO011,RESO012,	
+		(SELECT COUNT(*) FROM HRSW_T_RESOURCES WHERE RESO009=A.RESO001) CHILDCOUNT
+		FROM HRSW_T_RESOURCES A
+		INNER JOIN HRSW_T_ROLEPURVIEW B ON A.RESO001=B.RPUR003
+		WHERE B.RPUR002=#{roleId}
+		ORDER BY RESO008 ASC
+	</select>
+	
+	
+	<select id="findTopMenu" resultType="HashMap">
+		 SELECT RESO001, RESO002, RESO003, RESO004, RESO005, RESO009
+	      FROM HRSW_T_RESOURCES A
+	      INNER JOIN (
+	       SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+	       INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+	       WHERE C.UPUR002 = #{user001}
+	       GROUP BY B.RPUR003
+	     ) D ON A.RESO001 = D.RPUR003
+	     WHERE RESO005 = 1
+	       AND RESO006 = 1
+	       AND RESO007 = 1
+	     ORDER BY RESO008 ASC
+	</select>
+	
+	<select id="findMenu" parameterType="java.lang.String" resultType="HashMap">
+		SELECT A.RESO001,
+		       A.RESO002,
+		       A.RESO003,
+		       A.RESO004,
+		       A.RESO005,
+		       A.RESO006,
+		       A.RESO007,
+		       A.RESO012,
+		       A.RESO013,
+			   C.PARENT_ZFBM PARENTZFBM
+		FROM HRSW_T_RESOURCES A
+		 INNER JOIN (
+	       SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+	       INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+	       WHERE C.UPUR002 = #{userid}
+	       GROUP BY B.RPUR003
+	     ) D ON A.RESO001 = D.RPUR003
+	     LEFT JOIN (
+			SELECT A.RESO001,
+		       A.RESO009,
+		       A.RESO003,
+		       CONNECT_BY_ROOT(A.RESO001) PARENT_ID, 
+		       CONNECT_BY_ROOT(A.RESO003) PARENT_ZFBM
+			FROM HRSW_T_RESOURCES A
+			START WITH A.RESO009 = '-1' 
+			CONNECT BY PRIOR RESO001= A.RESO009
+		) C ON C.RESO001 = D.RPUR003
+		 	<where>
+		 		AND A.RESO006 = 1
+		 		AND A.RESO007 = 1
+				AND A.RESO009 = #{parentMenuID}
+			</where>
+		ORDER BY A.RESO008 ASC
+	</select>
+	
+	<resultMap id="menuDataItemMap" type="com.huarui.product2020.entity.MenuDataItemEntity">
+		<id column="RESO001" property="id" />
+		<result column="RESO002" property="name" />
+		<result column="RESO003" property="key" />
+		<result column="RESO004" property="path" />
+		<result column="RESO009" property="parentId" />
+		<result column="RESO010" property="parentKey" />
+		<result column="RESO011" property="chidrenName" />
+		<result column="RESO013" property="icon" />
+		<collection property="children" column="{id=RESO001}" ofType="com.huarui.product2020.entity.MenuDataItemEntity" select="findMenuByParentId">
+			<id column="RESO001" property="id" />
+			<result column="RESO002" property="name" />
+			<result column="RESO003" property="key" />
+			<result column="RESO004" property="path" />
+			<result column="RESO009" property="parentId" />
+			<result column="RESO013" property="icon" />
+		</collection>
+	</resultMap>
+	
+	<resultMap id="menuDataItemMap1" type="com.huarui.product2020.entity.MenuDataItemEntity">
+		<id column="RESO001" property="id" />
+		<result column="RESO002" property="name" />
+		<result column="RESO003" property="key" />
+		<result column="RESO004" property="path" />
+		<result column="RESO009" property="parentId" />
+		<result column="RESO011" property="chidrenName" />
+		<result column="RESO013" property="icon" />
+	</resultMap>
+	
+	<resultMap id="menuDataItemMap2" type="com.huarui.product2020.entity.MenuDataItemEntity">
+		<id column="RESO001" property="id" />
+		<result column="RESO002" property="name" />
+		<result column="RESO003" property="key" />
+		<result column="RESO004" property="path" />
+		<result column="RESO009" property="parentId" />
+		<result column="RESO011" property="chidrenName" />
+		<result column="RESO013" property="icon" />
+		<result column="userid" property="userid" />
+		<collection property="children" column="{id=RESO001, userid=userid}" ofType="com.huarui.product2020.entity.MenuDataItemEntity" select="findBusinessMenu2">
+			<id column="RESO001" property="id" />
+			<result column="RESO002" property="name" />
+			<result column="RESO003" property="key" />
+			<result column="RESO004" property="path" />
+			<result column="RESO009" property="parentId" />
+			<result column="RESO013" property="icon" />
+		</collection>
+	</resultMap>
+
+	<resultMap id="menuDataItemMap3" type="com.huarui.product2020.entity.MenuDataItemEntity">
+		<id column="RESO001" property="id" />
+		<result column="RESO002" property="name" />
+		<result column="RESO003" property="key" />
+		<result column="RESO004" property="path" />
+		<result column="RESO009" property="parentId" />
+		<result column="RESO010" property="parentKey" />
+		<result column="RESO011" property="chidrenName" />
+		<result column="RESO013" property="icon" />
+		<result column="userid" property="userid" />
+		<collection property="children" column="{id=RESO001, userid=userid}" ofType="com.huarui.product2020.entity.MenuDataItemEntity" select="findLeftMenuNotInBusiness2">
+			<id column="RESO001" property="id" />
+			<result column="RESO002" property="name" />
+			<result column="RESO003" property="key" />
+			<result column="RESO004" property="path" />
+			<result column="RESO009" property="parentId" />
+			<result column="RESO010" property="parentKey" />
+			<result column="RESO013" property="icon" />
+		</collection>
+	</resultMap>
+
+	<resultMap id="menuDataItemMap4" type="com.huarui.product2020.entity.MenuDataItemEntity">
+		<id column="RESO001" property="id" />
+		<result column="RESO002" property="name" />
+		<result column="RESO003" property="key" />
+		<result column="RESO004" property="path" />
+		<result column="RESO009" property="parentId" />
+		<result column="RESO010" property="parentKey" />
+		<result column="RESO011" property="chidrenName" />
+		<result column="RESO013" property="icon" />
+		<result column="userid" property="userid" />
+		<collection property="children" column="{id=RESO001, userid=userid}" ofType="com.huarui.product2020.entity.MenuDataItemEntity" select="findLeftMenuInBusiness2">
+			<id column="RESO001" property="id" />
+			<result column="RESO002" property="name" />
+			<result column="RESO003" property="key" />
+			<result column="RESO004" property="path" />
+			<result column="RESO009" property="parentId" />
+			<result column="RESO010" property="parentKey" />
+			<result column="RESO013" property="icon" />
+		</collection>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		RESO001,
+ 		RESO002,
+ 		RESO003,
+ 		RESO004,
+ 		RESO007,
+ 		RESO009,
+ 		RESO010,
+ 		RESO011,
+ 		RESO013
+	</sql>
+	
+	<select id="findMenuByParentId" resultMap="menuDataItemMap">
+		SELECT
+	 		<include refid="Base_Column_List" />
+		FROM HRSW_T_RESOURCES
+		<where>
+			RESO009 = #{id}
+			AND RESO007 = 1
+		</where>
+		ORDER BY RESO008
+	</select>
+	
+	<select id="findHeadMenu" resultMap="menuDataItemMap1">
+		SELECT
+	 		<include refid="Base_Column_List" />
+		FROM HRSW_T_RESOURCES
+		<where>
+			RESO009 = '-1'
+			AND RESO007 = 1
+		</where>
+		ORDER BY RESO008
+	</select>
+	
+	<select id="findBusinessMenu" resultMap="menuDataItemMap2">
+		SELECT
+	 		<include refid="Base_Column_List" />,
+			#{userid} as userid
+		FROM HRSW_T_RESOURCES t
+		<if test="userid != null">
+			INNER JOIN (
+				SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+				INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+				WHERE C.UPUR002 = #{userid}
+				GROUP BY B.RPUR003
+			) t2 ON t.RESO001 = t2.RPUR003
+		</if>
+		<where>
+			RESO009 = #{id}
+			AND RESO007 = 1
+			AND RESO005 IN (2)
+		</where>
+		ORDER BY RESO008
+	</select>
+
+	<select id="findBusinessMenu2" resultMap="menuDataItemMap1">
+		SELECT
+		<include refid="Base_Column_List" />,
+		#{userid} as userid
+		FROM HRSW_T_RESOURCES t
+		<if test="userid != null">
+			INNER JOIN (
+			SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+			INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+			WHERE C.UPUR002 = #{userid}
+			GROUP BY B.RPUR003
+			) t2 ON t.RESO001 = t2.RPUR003
+		</if>
+		<where>
+			RESO009 = #{id}
+			AND RESO007 = 1
+			AND RESO005 IN (3)
+		</where>
+		ORDER BY RESO008
+	</select>
+
+	<select id="findLeftMenuNotInBusiness" resultMap="menuDataItemMap3">
+		SELECT
+		t.RESO001,
+		t.RESO002,
+		t.RESO003,
+		t.RESO004,
+		t.RESO007,
+		t.RESO009,
+		t.RESO010,
+		t.RESO011,
+		t.RESO013,
+		t3.RESO002 parentName,
+		#{userid} as userid
+		FROM HRSW_T_RESOURCES t
+		INNER JOIN (
+			SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+			INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+			WHERE C.UPUR002 = #{userid}
+			GROUP BY B.RPUR003
+		) t2 ON t.RESO001 = t2.RPUR003
+		LEFT JOIN HRSW_T_RESOURCES t3
+			on t.RESO009 = t3.RESO001
+		<where>
+			t.RESO007 = 1
+			AND t.RESO005 IN (2)
+			and not exists (
+				select 1 from HRSW_T_RESOURCES a
+				where a.reso001 = t.reso001
+				start with a.RESO003 = 'yewuguanli'
+				connect by prior a.reso001 = a.reso009
+			)
+		</where>
+		ORDER BY t.RESO008
+	</select>
+
+	<select id="findLeftMenuNotInBusiness2" resultMap="menuDataItemMap1">
+		SELECT
+		t.RESO001,
+		t.RESO002,
+		t.RESO003,
+		t.RESO004,
+		t.RESO007,
+		t.RESO009,
+		t.RESO010,
+		t.RESO011,
+		t.RESO013,
+		t3.RESO002 parentName
+		FROM HRSW_T_RESOURCES t
+		INNER JOIN (
+		SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+		INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+		WHERE C.UPUR002 = #{userid}
+		GROUP BY B.RPUR003
+		) t2 ON t.RESO001 = t2.RPUR003
+		LEFT JOIN HRSW_T_RESOURCES t3
+		on t.RESO009 = t3.RESO001
+		<where>
+			t.RESO009 = #{id}
+			AND t.RESO007 = 1
+			AND t.RESO005 IN (3)
+			and not exists (
+			select 1 from HRSW_T_RESOURCES a
+			where a.reso001 = t.reso001
+			start with a.RESO003 = 'yewuguanli'
+			connect by prior a.reso001 = a.reso009
+			)
+		</where>
+		ORDER BY t.RESO008
+	</select>
+
+	<select id="findLeftMenuInBusiness" resultMap="menuDataItemMap4">
+		SELECT
+		t.RESO001,
+		t.RESO002,
+		t.RESO003,
+		t.RESO004,
+		t.RESO007,
+		t.RESO009,
+		t.RESO010,
+		t.RESO011,
+		t.RESO013,
+		t3.RESO002 parentName,
+		#{userid} as userid
+		FROM HRSW_T_RESOURCES t
+		INNER JOIN (
+			SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+			INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+			WHERE C.UPUR002 = #{userid}
+			GROUP BY B.RPUR003
+		) t2 ON t.RESO001 = t2.RPUR003
+		LEFT JOIN HRSW_T_RESOURCES t3
+		on t.RESO009 = t3.RESO001
+		<where>
+			and t.RESO007 = 1
+			AND t.RESO005 IN (3)
+			and exists (
+				select 1 from HRSW_T_RESOURCES a
+				where a.reso001 = t.reso001
+				start with a.RESO003 = 'yewuguanli'
+				connect by prior a.reso001 = a.reso009
+			)
+		</where>
+		ORDER BY t.RESO008
+	</select>
+
+	<select id="findLeftMenuInBusiness2" resultMap="menuDataItemMap1">
+		SELECT
+		t.RESO001,
+		t.RESO002,
+		t.RESO003,
+		t.RESO004,
+		t.RESO007,
+		t.RESO009,
+		t.RESO010,
+		t.RESO011,
+		t.RESO013,
+		t3.RESO002 parentName
+		FROM HRSW_T_RESOURCES t
+		INNER JOIN (
+		SELECT B.RPUR003 FROM HRSW_T_ROLEPURVIEW B
+		INNER JOIN HRSW_T_USERPURVIEW C ON B.RPUR002 = C.UPUR003
+		WHERE C.UPUR002 = #{userid}
+		GROUP BY B.RPUR003
+		) t2 ON t.RESO001 = t2.RPUR003
+		LEFT JOIN HRSW_T_RESOURCES t3
+		on t.RESO009 = t3.RESO001
+		<where>
+			t.RESO009 = #{id}
+			AND t.RESO007 = 1
+			AND t.RESO005 IN (4)
+			and exists (
+			select 1 from HRSW_T_RESOURCES a
+			where a.reso001 = t.reso001
+			start with a.RESO003 = 'yewuguanli'
+			connect by prior a.reso001 = a.reso009
+			)
+		</where>
+		ORDER BY t.RESO008
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

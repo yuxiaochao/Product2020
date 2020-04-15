@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTLevelrelationMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTLevelrelation">
+		<id column="LREL001" property="lrel001" />
+		<result column="LREL002" property="lrel002" />
+		<result column="LREL003" property="lrel003" />
+		<result column="LREL004" property="lrel004" />
+		<result column="LREL005" property="lrel005" />
+		<result column="LREL006" property="lrel006" />
+		<result column="LREL007" property="lrel007" />
+	</resultMap>
+
+</mapper>

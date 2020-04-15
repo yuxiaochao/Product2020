@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.LearnListMapper">
+
+  <select id="findByLearnList" resultType="java.util.HashMap" 
+		parameterType="java.util.Map">
+		SELECT A.LEAC001,A.LEAC004,A.LEAC009,DECODE(A.LEAC005,0,'选修','必修')LEAC005,A.LEAC029,
+			B.LECW002, NVL(B.TEAC002,'--')COUR008TEXT, C.ORGA005 LEAC003TEXT,
+			TO_CHAR(D.LCWR009,'YYYY-MM-DD HH24:MI')LCWR009,
+		    CASE WHEN NVL(E.LERE008,0) = 0 THEN NVL(E.LERE005,0) ELSE 100 END LERE005,
+		    NVL(F.PRAISENUMBER,0)PRAISENUMBER,
+		    NVL(G.LEARNINGPEOPLE,0)LEARNINGPEOPLE
+		    FROM STUDY_T_LEARNACTIVITY A
+		    INNER JOIN (
+		      SELECT B1.LECW002,
+		      WM_CONCAT(DISTINCT C1.TEAC002)TEAC002
+		      FROM HRSW_T_COURSEWARE A1
+		      INNER JOIN STUDY_T_LEARNCW B1
+		      ON A1.COUR001 = B1.LECW006
+		      LEFT JOIN HRSW_T_TEACHER C1
+		      ON A1.COUR008 = C1.TEAC001
+		    <!--   <where>
+				<if test="parameterMap.cour008 != null and parameterMap.cour008 != ''">
+					AND A1.COUR008 = #{parameterMap.cour008}
+				</if>
+			  </where> -->
+		      GROUP BY B1.LECW002
+		    )B
+		    ON A.LEAC001 = B.LECW002
+		    INNER JOIN HRSW_T_ORGAN C
+		    ON A.LEAC003 = C.ORGA001
+		    INNER JOIN STUDY_V_LEARNUSER02
+		    ON A.LEAC001 = LEUS002
+		    AND USER001 = #{userid}
+		    LEFT JOIN(
+		    	SELECT MAX(LCWR009) LCWR009,LCWR002,
+		    	LCWR003
+		    	FROM STUDY_T_LEARNCWRSULT
+		    	WHERE LCWR003 = #{userid}
+		    	GROUP BY LCWR002,LCWR003
+		    )D
+		    ON A.LEAC001 = D.LCWR002
+		    LEFT JOIN(
+		    	SELECT LERE008,LERE005,LERE002,LERE003
+		    	FROM STUDY_T_LEARNRESULT
+		    	WHERE LERE003 = #{userid}
+		    )E
+		    ON A.LEAC001 = E.LERE002
+		    LEFT JOIN(
+		    	SELECT COUNT(1)PRAISENUMBER ,UMES002
+		    	FROM STUDY_T_USERMESSAGE
+		    	WHERE UMES005 = 0
+		    	GROUP BY UMES002
+		    )F
+		    ON A.LEAC001 = F.UMES002
+		    LEFT JOIN(
+		    	SELECT COUNT(1) LEARNINGPEOPLE,LERE002 
+		    	FROM STUDY_T_LEARNRESULT
+		    	GROUP BY LERE002
+		    )G
+		    ON A.LEAC001 = G.LERE002
+            <where>
+            	<!-- A.LEAC006 = 1 AND A.LEAC019 IN (1,2) AND NOT EXISTS(SELECT 1 FROM STUDY_T_LEARNRESULT  -->
+            	A.LEAC006 = 1  AND NOT EXISTS(SELECT 1 FROM STUDY_T_LEARNRESULT 
+            		WHERE LERE002 = A.LEAC001 AND LERE008 != 0 AND LERE003 = #{userid})
+				<!-- <if test="parameterMap.leac005 != null and parameterMap.leac005 != ''">
+					AND A.LEAC005 = #{parameterMap.leac005}
+				</if> -->
+			<!-- 	<if test="parameterMap.leac019 != null and parameterMap.leac019 !=''">
+					AND A.LEAC019 = #{parameterMap.leac019}
+				</if> -->
+				 <if test="keyword != null and keyword !=''">
+					<![CDATA[ AND UPPER(A.LEAC004) LIKE UPPER(CONCAT(CONCAT('%',#{keyword}), '%')) ]]>
+				</if>
+			</where>
+			AND TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI') BETWEEN TO_CHAR(A.LEAC007,'YYYY-MM-DD HH24:MI')
+            AND TO_CHAR(A.LEAC008,'YYYY-MM-DD HH24:MI')
+            ORDER BY D.LCWR009 DESC,A.LEAC012 DESC
+	</select>
+	
+
+</mapper>

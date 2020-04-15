@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNewsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNews">
+		<id column="NEWS001" property="news001" />
+		<result column="NEWS002" property="news002" />
+		<result column="NEWS003" property="news003" />
+		<result column="NEWS004" property="news004" />
+		<result column="NEWS005" property="news005" />
+		<result column="NEWS006" property="news006" />
+		<result column="NEWS007" property="news007" />
+		<result column="NEWS008" property="news008" />
+		<result column="NEWS009" property="news009" />
+		<result column="NEWS010" property="news010" />
+		<result column="NEWS011" property="news011" />
+		<result column="NEWS012" property="news012" />
+		<result column="NEWS013" property="news013" />
+		<result column="NEWS014" property="news014" />
+		<result column="NEWS015" property="news015" />
+		<result column="NEWS016" property="news016" />
+		<result column="NEWS017" property="news017" />
+		<result column="NEWS018" property="news018" />
+		<result column="NEWS019" property="news019" />
+		<result column="NEWS020" property="news020" />
+		<result column="NEWS021" property="news021" />
+		<result column="NEWS022" property="news022" />
+		<result column="NEWS023" property="news023" />
+	</resultMap>
+
+	<select id="selectPortalInfoList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT F.USER001,F.USER002,F.USER004,F.USER005,G.ORGA005,H.LASTTIMECOURSEID,H.LASTTIMETYPE,H.LASTTIMECOURSENAME
+ 		FROM HRSW_T_USER F
+ 		INNER JOIN HRSW_T_ORGAN G ON F.USER002 = G.ORGA001
+  		LEFT JOIN (SELECT A.LCWR003,A.LCWR002 LASTTIMECOURSEID,NVL(LEAC004, '--') LASTTIMECOURSENAME, 0 LASTTIMETYPE
+               FROM STUDY_T_LEARNCWRSULT A
+               LEFT JOIN STUDY_T_LEARNACTIVITY B ON A.LCWR002 = B.LEAC001
+               LEFT JOIN (SELECT C.LECW002,
+                                SUM(DECODE(D.COUR003, 0, 0, 1, 0, 1)) PHOTOPVIEW
+                           FROM STUDY_T_LEARNCW C
+                          INNER JOIN HRSW_T_COURSEWARE D ON C.LECW006 =  D.COUR001
+                          WHERE NVL(D.COUR018, 0) != 1
+                          GROUP BY C.LECW002) E ON A.LCWR002 = E.LECW002
+           ]]>
+              WHERE A.LCWR003 = #{user001}
+           <![CDATA[    AND NVL(E.PHOTOPVIEW, 0) < 1
+                AND ROWNUM = 1
+              ORDER BY A.LCWR009 DESC) H ON F.USER001 = H.LCWR003
+           ]]>
+ 				WHERE F.USER001 = #{user001}
+		
+	</select>
+</mapper>

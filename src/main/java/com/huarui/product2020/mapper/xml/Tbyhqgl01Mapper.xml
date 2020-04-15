@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbyhqgl01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbyhqgl01">
+		<id column="YHQGL0101" property="yhqgl0101" />
+		<result column="YHQGL0102" property="yhqgl0102" />
+		<result column="YHQGL0103" property="yhqgl0103" />
+		<result column="YHQGL0104" property="yhqgl0104" />
+		<result column="YHQGL0105" property="yhqgl0105" />
+		<result column="YHQGL0106" property="yhqgl0106" />
+		<result column="YHQGL0107" property="yhqgl0107" />
+		<result column="YHQGL0108" property="yhqgl0108" />
+		<result column="YHQGL0109" property="yhqgl0109" />
+		<result column="YHQGL0110" property="yhqgl0110" />
+		<result column="YHQGL0111" property="yhqgl0111" />
+		<result column="YHQGL0112" property="yhqgl0112" />
+		<result column="YHQGL0113" property="yhqgl0113" />
+		<result column="YHQGL0114" property="yhqgl0114" />
+		<result column="YHQGL0115" property="yhqgl0115" />
+		<result column="YHQGL0116" property="yhqgl0116" />
+		<result column="YHQGL0117" property="yhqgl0117" />
+		<result column="YHQGL0118" property="yhqgl0118" />
+		<result column="YHQGL0119" property="yhqgl0119" />
+		<result column="YHQGL0120" property="yhqgl0120" />
+	</resultMap>
+
+ 	<select id="getCouponByCardAndPwd" parameterType="java.lang.String" resultType="java.util.Map">
+	     SELECT 
+	     	A.YHQGL0101 "yhqgl0101", 
+	     	B.YHQGL0301 "yhqgl0301",
+	     	C.YHQGL0601 "yhqgl0601",
+	     	D.YHQGL0401 "yhqgl0401"
+		 FROM 
+		 	TBYHQGL01 A
+		 INNER JOIN 
+		 	TBYHQGL03 B
+		 ON 
+		 	A.YHQGL0101 = B.YHQGL0302
+		 INNER JOIN 
+		 	tbYHQGL06 C
+		 ON 
+		 	C.YHQGL0603 = A.YHQGL0101
+		 INNER JOIN 
+		 	tbYHQGL04 D
+		 ON 
+		 	C.YHQGL0602 = D.YHQGL0401
+		 WHERE 
+		 	A.YHQGL0116 = 1
+		 AND A.YHQGL0120 = 1
+		 AND D.YHQGL0403 = 0
+		 AND D.YHQGL0404 = 1
+		 AND B.YHQGL0303 = #{yhqgl0303}
+		 AND B.YHQGL0304 = #{yhqgl0304}
+		 AND TO_CHAR(SYSDATE,'YYYY-MM-DD') <![CDATA[ <= ]]>  TO_CHAR(A.YHQGL0112,'YYYY-MM-DD')
+		 AND EXISTS(SELECT 1 FROM tbYHQGL07 WHERE YHQGL0703=B.YHQGL0301 AND YHQGL0704=0 AND YHQGL0709=0 AND YHQGL0710=0)
+   	</select>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbyhqgl02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbyhqgl02">
+		<id column="YHQGL0201" property="yhqgl0201" />
+		<result column="YHQGL0202" property="yhqgl0202" />
+		<result column="YHQGL0203" property="yhqgl0203" />
+		<result column="YHQGL0204" property="yhqgl0204" />
+	</resultMap>
+
+</mapper>

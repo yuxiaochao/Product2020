@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ContactModuleMapper">
+
+	<select id="queryUserList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[ 
+		SELECT * FROM (SELECT A.USER001,
+     	A.USER004,A.USER005,A.USER006,A.ATTA007, A.USER014,A.APPL005
+    	FROM (SELECT TU.USER001,TU.USER004,TU.USER005,TU.USER006,TU.USER014,TX.ATTA007,
+       	UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(NVL(TU.USER004,'--')),1, 1)) USERNAMETZM,
+        UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(NVL(TU.USER005,'--')),1,1)) USERALIASTZM,
+        nvl(C.APPL005, -1) APPL005
+        FROM HRSW_T_USER TU
+        LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = TU.USER001 AND TX.ATTA004 = 1
+        LEFT JOIN HRSW_T_APPLYFOR C ON C.APPL002 = #{user001} AND C.APPL003 = TU.USER001
+        where tu.USER001 IS NOT NULL
+        ) A
+        WHERE  UPPER(A.USER004) LIKE UPPER(CONCAT(CONCAT('%',#{user004}), '%')) 
+        	OR UPPER(A.USER005) LIKE UPPER(CONCAT(CONCAT('%',#{user004}), '%'))
+        ) DD
+      	]]>
+		<where>
+			<![CDATA[ rownum <= 80]]>
+		</where>
+	</select>
+	
+	<select id="queryGroupByKeyword" resultType="java.util.HashMap" parameterType="java.util.Map">
+		SELECT  A.GROU001, A.GROU002, A.GROU003, A.GROU004,
+			TO_CHAR(A.GROU005, 'YYYY-MM-DD HH24:MI')GROU005,
+			TO_CHAR(A.GROU006, 'YYYY-MM-DD HH24:MI')GROU006, A.GROU007,A.GROU009,
+			B.ATTA007,C.USER005
+			FROM  HRSW_T_GROUPS A 
+			LEFT JOIN HRSW_T_ATTACHMENT B ON A.GROU001 = B.ATTA010 AND B.ATTA004 = 1 
+			LEFT JOIN HRSW_T_USER C ON A.GROU007 = C.USER001
+		<where>
+			A.GROU002 like (CONCAT(CONCAT('%',#{keyword}), '%'))
+		</where>
+	</select>
+	
+	
+	<!-- 添加申请好友记录，发起申请 -->
+	<insert id="addApplyRecord" parameterType="java.util.Map">
+		<![CDATA[ 
+		   MERGE INTO HRSW_T_APPLYFOR A
+		    USING (SELECT 1 FROM DUAL)
+			ON (A.APPL002 = #{appl002} AND A.APPL003 = #{appl003})
+			WHEN MATCHED THEN
+		    UPDATE SET A.APPL004 = SYSDATE, A.APPL005 = 0,A.APPL006 = #{appl006}
+			WHEN NOT MATCHED THEN
+		  	INSERT
+		    (APPL001, APPL002, APPL003, APPL004, APPL005,APPL006)
+		  	VALUES
+		    (#{appl001}, #{appl002}, #{appl003}, SYSDATE, 0,#{appl006})
+		 ]]>
+	</insert>
+	
+	
+	<!-- 查询好友申请列表 -->
+	<select id="queryApplyRecord" resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[ 
+		SELECT APPL001,APPL002,APPL004,APPL005,APPL006,ATTA007,USER004,USER005,USER006 FROM(
+		SELECT T.APPL001, ROW_NUMBER() OVER(PARTITION BY T.APPL003 ORDER BY T.APPL004 DESC)REORDER,
+		T.APPL002,TO_CHAR(T.APPL004, 'YYYY-MM-DD HH24:MI')APPL004,
+		T.APPL005,T.APPL006,TX.ATTA007,U.USER004,U.USER005, U.USER006
+		FROM HRSW_T_APPLYFOR T
+		inner JOIN HRSW_T_USER U ON T.APPL002 = U.USER001
+		LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = T.APPL002 AND TX.ATTA004 = 1
+		WHERE (T.APPL003 = #{userid})
+		ORDER BY T.APPL001 DESC )DD
+      	]]>
+		<where>
+			<![CDATA[ DD.REORDER = 1 ]]>
+		</where>
+	</select>
+	
+	
+	<!-- 查询我对别人的好友申请（我对别人的申请） -->
+	<select id="queryApplicationForAdding" resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[ 
+		SELECT APPL001,
+		       APPL002,
+		       APPL003,
+		       APPL004,
+		       APPL005,
+		       APPL006,
+		       ATTA007,
+		       USER004,
+		       USER005,
+		       USER006
+		  FROM (SELECT T.APPL001,
+		               ROW_NUMBER() OVER(PARTITION BY T.APPL003 ORDER BY T.APPL004 DESC) REORDER,
+		               T.APPL002,
+		               t.APPL003,
+		               TO_CHAR(T.APPL004, 'YYYY-MM-DD HH24:MI') APPL004,
+		               T.APPL005,
+		               T.APPL006,
+		               TX.ATTA007,
+		               U.USER004,
+		               U.USER005,
+		               U.USER006
+		          FROM HRSW_T_APPLYFOR T
+		          inner JOIN HRSW_T_USER U
+		            ON T.APPL003 = U.USER001
+		          LEFT JOIN HRSW_T_ATTACHMENT TX
+		            ON TX.ATTA002 = U.USER001
+		           AND TX.ATTA004 = 1
+		         WHERE (T.APPL002 = #{userid})
+		         ORDER BY T.APPL001 DESC) DD
+      	]]>
+		<where>
+			<![CDATA[ DD.REORDER = 1 ]]>
+		</where>
+	</select>
+	
+	
+	<update id="updateApplyRecordStatus" parameterType="java.util.Map">
+		<![CDATA[  
+			UPDATE HRSW_T_APPLYFOR
+				SET APPL005= #{appl005,jdbcType=VARCHAR}	
+				WHERE (
+					APPL002 =#{userid,jdbcType=VARCHAR}
+				AND APPL003 =#{friendid,jdbcType=VARCHAR} )
+				OR (
+					APPL002 = #{friendid,jdbcType=VARCHAR}
+				AND APPL003 = #{userid,jdbcType=VARCHAR} )
+		]]> 
+	</update>
+	
+	<insert id="agreeBecomeFriend" parameterType="java.util.Map">
+		<![CDATA[ 
+		    MERGE INTO HRSW_T_CONTACTS F
+		    USING (SELECT COUNT(1) C   
+		    FROM VIEW_MY_FRIEND_RELATIONSHIP FR
+		    WHERE FR.CONT002 = #{userid}   AND FR.CONT003 =  #{friendid}) T
+		    ON (T.C <> 0)
+		    WHEN NOT MATCHED THEN
+		    INSERT
+		    	  (F.CONT001, F.CONT002, F.CONT003, F.CONT004, F.CONT005)
+		    VALUES
+		    	(#{uuid}, #{userid}, #{friendid}, #{status}, SYSDATE)
+		 ]]>
+	</insert>
+	
+	<!-- 查询好友详情信息 -->
+	<select id="queryFriendInfo" resultType="java.util.HashMap" parameterType="java.util.Map">
+		 SELECT  A.USER001,A.USER004,A.USER005,A.USER006,A.USER014, 
+		 		 to_char(a.USER007,'yy-mm-dd') USER007,
+         		 to_char(hrsw_fun_BirthdayConvertAge(a.USER007),'fm99999990') age,
+       			 get_xingzuo(a.USER007)xingzuo,
+		 		 B.ATTA007,
+		 		 C.Cont001,C.Cont002,C.Cont003,C.Cont004,d.ORGA005,
+		 		 to_char((select count(1) from hrsw_t_FriendRelatedSetting where FRRS003 = #{friendID} and FRRS005 = '1'),'fm99999990') praise,
+		 		 e.FRRS004,
+		 		 NVL (e.FRRS006, 0) FRRS006,NVL (e.FRRS007, 0) FRRS007, <!--  对好友的备注 -->
+			       nvl(e.FRRS005,'0') FRRS005, <!--  对好友简介是否点赞 -->
+			       f.USPS003, <!--  用户别名 -->
+			       f.USPS004,  <!--  个人简介背景图片（路径） -->
+			       f.USPS005,<!--  个性签名 -->
+			       case when e.FRRS004 is not null then e.FRRS004 when f.USPS003 is not null then f.USPS003 else A.USER005 end firstName,
+			       case when e.FRRS004 is not null then A.USER005 when f.USPS003 is not null then A.USER005 end secondName
+   			FROM  HRSW_T_USER A
+   			LEFT JOIN HRSW_T_ATTACHMENT B ON B.ATTA002 = A.USER001 AND B.ATTA004 = 1
+   			LEFT JOIN view_my_friend_relationship C ON A.USER001 = C.Cont003 AND 
+   			     C.cont002 = #{user001}
+   			left join hrsw_t_organ d
+    			on a.USER002 = d.orga001
+    		left join hrsw_t_FriendRelatedSetting e
+			    on e.FRRS002 = #{user001} and e.FRRS003 = a.user001
+			  left join hrsw_t_UserPreferenceSetting f
+			    on f.USPS002 = #{friendID}
+		<where>
+			 A.USER001 = #{friendID}
+			
+		</where>
+	</select>
+	<!-- 点赞 -->
+	<insert id="thumbsUp" parameterType="java.util.Map">
+		<![CDATA[
+		    merge into hrsw_t_FriendRelatedSetting a
+			using(
+			      select 1 from dual
+			      ) b
+			on(a.FRRS002 = #{user001} and a.FRRS003 = #{friendID})
+			when not matched then
+			  insert(FRRS001,FRRS002,FRRS003,FRRS005)
+			  values(sys_guid(),#{user001},#{friendID},#{FRRS005})
+			  when matched then
+			    update set FRRS005 = #{FRRS005}
+		 ]]>
+	</insert>
+	
+	<!-- 查看该成员是否在自己的好友中 -->
+	<select id="checkMyFriends" resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[ 
+		  SELECT A.USER001,A.USER004,A.USER005
+    		FROM VIEW_MY_FRIEND_RELATIONSHIP T
+	  		LEFT JOIN HRSW_T_USER A ON　A.USER001 = T.CONT003
+      	]]>
+		<where>
+			T.CONT002 = #{user001} AND T.CONT004 = 1
+			AND T.CONT003 = #{friendID}
+			order by F_TRANS_PINYIN_CAPITAL(nvl(A.USER004, A.USER005)) asc
+		</where>
+	</select>
+	
+	<delete id="deleteFriends" parameterType="java.util.Map">
+		 <![CDATA[ DELETE FROM HRSW_T_CONTACTS tc WHERE tc.CONT001 = #{cont001} ]]> 
+	</delete>
+	
+	<select id="queryFrienfList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[ 
+		SELECT 
+		 B.USER001,
+         B.USER002,
+         B.USER004,
+         B.USER005,
+         B.USER006,
+         B.USER014,
+          TRUNC(MONTHS_BETWEEN(　　TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+                                        'YYYY-MM-DD'),
+                              　　TO_DATE(TO_CHAR(B.USER007, 'YYYY-MM-DD'),
+                                        'YYYY-MM-DD') 　　) / 12)USER022, 
+         UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(B.USER005),1,1))USER023,
+         UPPER(F_TRANS_PINYIN_CAPITAL(B.USER005))USER024,
+         C.ATTA006,
+         C.ATTA007,
+       A.CONT001,A.CONT002,A.CONT003,A.CONT004,A.CONT005,e.usst003 
+      FROM view_my_friend_relationship A
+     	INNER JOIN HRSW_T_USER B
+        ON A.CONT003 = B.USER001
+      LEFT JOIN HRSW_T_ATTACHMENT C
+        ON B.USER001 = C.ATTA002
+       AND C.ATTA004 = 1
+      INNER JOIN HRSW_T_USER D ON A.CONT002=D.USER001
+      left join hrsw_t_UserStatus e on e.usst002 = B.USER001
+      ]]>
+		<where>
+			D.USER001 = #{cont002}
+			<if test="user005 != null and user005 != ''">
+		 	<![CDATA[ AND (UPPER(B.USER005) LIKE UPPER(CONCAT(CONCAT('%',#{user005}), '%')) or UPPER(B.USER004) LIKE UPPER(CONCAT(CONCAT('%',#{user005}), '%'))) ]]>
+			</if>
+
+		<!-- <if test="cont003 != null and cont003 != ''">
+				AND B.USER001= #{cont003}
+			</if> -->
+			AND A.CONT004 = #{cont004}
+		</where>
+		order by UPPER(F_TRANS_PINYIN_CAPITAL(B.USER005))
+	</select>
+
+	
+	<!--  群聊——查询我的群组 -->
+	<select id="queryMyGroupList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT  A.GROU001,
+	       		A.GROU002,
+	       		A.GROU003,
+	      		A.GROU004,
+	       		TO_CHAR(A.GROU005, 'YYYY-MM-DD HH24:MI') GROU005,
+	       		C.ATTA007
+	  FROM HRSW_T_GROUPS A
+	  LEFT JOIN HRSW_T_USERGROUP B ON A.GROU001 = B.USGR002
+	  LEFT JOIN HRSW_T_ATTACHMENT C ON A.GROU001 = C.ATTA010 AND C.ATTA004 = 1
+		<where>
+			B.USGR003 = #{userid}
+			ORDER BY A.GROU005 DESC
+		</where>
+	</select>
+	
+	<!-- 根据群组id查询群成员 -->
+	<select id="queryGroupMemberById" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT  
+			A.USGR001,A.USGR002,A.USGR003,A.USGR004,
+			TO_CHAR(A.USGR005,'YYYY-MM-DD HH24:MI:SS')USGR005,
+			C.USER005,C.USER006,D.ATTA007
+		FROM HRSW_T_USERGROUP A
+			LEFT JOIN HRSW_T_USER C ON A.USGR003 = C.USER001
+			LEFT JOIN HRSW_T_ATTACHMENT D ON C.USER001=D.ATTA002 AND ATTA004=1
+		<where>
+			A.USGR002 = #{grou001}
+			ORDER BY A.USGR005 DESC 
+		</where>
+	</select>
+	
+	<!-- 通讯录打开机构列表——根据机构id查询该机构下的子机构，默认显示2级机构 -->
+	<select id="queryOrganListById" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select T.ORGA001,T.ORGA006,NVL(T2.YONGHUSHU,0) YONGHUSHU from hrsw_t_organ t
+		left join (
+			select tt.lrel004,count(1) yonghushu from hrsw_t_levelrelation tt
+			inner join hrsw_t_user tt2 on tt.lrel002 = tt2.USER002
+			where tt.LREL007 = 1
+			group by tt.lrel004
+		) t2 on t.orga001 = t2.lrel004
+		<where>
+		 	<choose><!-- 若传了机构id，查询该机构的子机构，若没传机构id，默认查询层级为2的机构 -->
+				<when test="orga001 != null and orga001 != ''">
+					 <![CDATA[  AND t.ORGA002 = #{orga001} ]]> 
+				</when>
+				<otherwise>
+					 <![CDATA[  AND t.ORGA010 = 2 ]]> 
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+	
+	<!-- 通讯录打开机构列表——查询机构下人员信息 -->
+	<select id="queryUserinfoByOrganid" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select T2.ATTA007,
+			   T.USER001,
+			   T.USER004,
+		       T.USER005,
+		       T.USER006,
+		       T3.USST003,
+		       CASE T3.USST003
+		         WHEN 1 THEN
+		          '工作'
+		         WHEN 2 THEN
+		          '会议'
+		         WHEN 3 THEN
+		          '下班'
+		         WHEN 4 THEN
+		          '休假'
+		         WHEN 5 THEN
+		          '出差'
+		       END USST003N,
+		       t5.capo002,
+       			t5.capo009
+  				from hrsw_t_user t
+  				left join hrsw_t_cadrePost t5 on t5.capo001 = t.user011
+		  left join (select i.ATTA007, i.ATTA002
+		               from hrsw_t_attachment i
+		              where (i.ATTA002, i.ATTA008) in
+		                    (select tt.ATTA002, max(ATTA008)
+		                       from hrsw_t_attachment tt
+		                      where tt.ATTA004 = 1
+		                        and tt.ATTA002 is not null
+		                      group by tt.ATTA002)
+		             
+		             ) t2
+		    on t.user001 = t2.ATTA002
+		  left join (select tt2.usst002, tt2.usst003
+		               from hrsw_t_UserStatus tt2
+		              where (tt2.usst002, tt2.usst005) in
+		                    (select tt.usst002, max(usst005)
+		                       from hrsw_t_UserStatus tt
+		                      group by tt.usst002)) t3
+		    on t3.usst002 = t.user001
+		  left join (select tt.JOUS003,
+		                    rtrim(to_char(xmlagg(xmlparse(content tt2.capo002 || ',' wellformed) order by tt2.capo002)
+		                                  .getclobval()),
+		                          ',') capo002
+		               from hrsw_t_jobuser tt
+		               left join hrsw_t_cadrePost tt2
+		                 on tt.JOUS002 = tt2.capo001
+		              group by tt.JOUS003) t4
+		    on t4.JOUS003 = t.user001
+		<where>
+			<choose><!-- 若传了机构id，查询该机构的用户信息，若没传机构id，默认查询顶级机构用户信息 -->
+				<when test="orga001 != null and orga001 != ''">
+					 <![CDATA[  t.user002 = #{orga001} ]]> 
+				</when>
+				<otherwise>
+					 <![CDATA[ and  t.user002 in (select ORGA001 from hrsw_t_organ
+						where ORGA010 = 1) ]]> 
+				</otherwise>
+			</choose>
+			<!-- 用户名查询（模糊查询） -->
+			<if test="user005 != null and user005 != ''">
+				<![CDATA[  AND t.user005 like CONCAT(CONCAT('%',#{user005}), '%') ]]>
+			</if>
+		</where>
+		order by t5.capo009,T.USER001
+	</select>
+	
+	
+	<!-- 通讯录——常用联系人 -->
+	<select id="topContacts" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT T2.USER001,T2.USER004,T2.USER005,T2.USER006,T3.ATTA007,T4.USST003
+			FROM HRSW_T_TOPCONTACTS T
+			INNER JOIN HRSW_T_USER T2 ON T.TOCT003 = T2.USER001
+			LEFT JOIN HRSW_T_ATTACHMENT T3 ON T2.USER001 = T3.ATTA002 AND T3.ATTA004 = 1
+		LEFT JOIN HRSW_T_USERSTATUS T4 ON T4.USST002 = T2.USER001
+		INNER JOIN HRSW_T_CONTACTS T5 ON T5.CONT003 = T.TOCT003 and T5.CONT002 = #{user001}
+		AND T5.CONT004 = 1
+		<where>
+			T.TOCT002 = #{user001}
+		</where>
+		
+		ORDER BY T.TOCT005,T.TOCT006 DESC
+	</select>
+	
+	<!-- 聊天——保存聊天的消息（包括聊天、群聊、系统消息等） -->
+	<insert id="saveTheMessage" parameterType="java.util.Map">
+		<![CDATA[ 
+		   insert into hrsw_t_chatMessage(chme001,chme002,chme003,chme004,chme005,chme006,chme007,chme008,chme009,chme010,chme011,chme012)
+			values(#{chme001},#{chme002},#{chme003},#{chme004},sysdate,#{chme006},#{chme007},#{chme008},#{chme009},#{chme010},#{chme011},#{chme012})
+		 ]]>
+	</insert>
+	
+	<select id="statisticalChatData" parameterType="java.util.Map" statementType="CALLABLE" >
+    	<![CDATA[ CALL p_statisticsTopContacts(#{userid},#{otherUserid})  ]]>
+    </select>
+    
+   	<!--  聊天——查看聊天的历史记录 -->
+    <select id="chatRecord" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[ 
+		SELECT * FROM (SELECT A.*,
+       B.USER005,
+       B.USER006 as sex,
+       'me' type
+  FROM HRSW_T_CHATMESSAGE A
+  LEFT JOIN HRSW_T_USER B
+    ON A.CHME003 = B.USER001
+ WHERE A.CHME003 = #{userid}
+   AND A.CHME006 = #{otherUserid}
+   and A.CHME002 = 3
+union all
+SELECT A.*,
+       B.USER005,
+       B.USER006 as sex,
+       'you' type
+  FROM HRSW_T_CHATMESSAGE A
+  LEFT JOIN HRSW_T_USER B
+    ON A.CHME003 = B.USER001
+ WHERE A.CHME003 = #{otherUserid}
+   AND A.CHME006 = #{userid}
+   and A.CHME002 = 3) AA ORDER BY AA.chme005 DESC
+      	]]>
+	</select>
+	
+	<!-- 聊天——保存聊天的消息（包括聊天、群聊、系统消息等） -->
+	<insert id="updateVeryConcerned" parameterType="java.util.Map">
+		<![CDATA[ 
+		   
+		 ]]>
+	</insert>
+    
+    <!-- 聊天——查看系统消息 -->
+	<select id="systemMessagesList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select T.CHME011,T.CHME010,T.CHME009,T.CHME008,T.CHME002,T.CHME001,T.CHME005,
+		TO_CHAR(T.CHME005, 'YYYY-MM-DD') CHME005N1,TO_CHAR(T.CHME005, 'HH24:MM') CHME005N2
+		
+		from hrsw_t_chatMessage t
+		<where>
+			and t.chme002 = 1 <!-- 系统消息 -->
+			and t.chme006 = #{chme006}
+		</where>
+		
+		order by chme005 desc
+	</select>
+	
+	<delete id="delectOneSystemMessages" parameterType="java.util.Map">
+	   delete from hrsw_t_chatMessage where CHME001=#{chme001}
+	</delete>
+	
+
+</mapper>

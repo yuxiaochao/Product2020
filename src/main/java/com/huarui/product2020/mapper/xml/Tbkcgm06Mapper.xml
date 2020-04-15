@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbkcgm06Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbkcgm06">
+		<id column="KCGM0601" property="kcgm0601" />
+		<result column="KCGM0602" property="kcgm0602" />
+		<result column="KCGM0603" property="kcgm0603" />
+		<result column="KCGM0604" property="kcgm0604" />
+		<result column="KCGM0605" property="kcgm0605" />
+		<result column="KCGM0606" property="kcgm0606" />
+		<result column="KCGM0607" property="kcgm0607" />
+		<result column="KCGM0608" property="kcgm0608" />
+		<result column="KCGM0609" property="kcgm0609" />
+		<result column="KCGM0610" property="kcgm0610" />
+	</resultMap>
+	
+	<select id="findBindCommodity" resultType="HashMap" parameterType="HashMap">
+		<![CDATA[ SELECT A.KCGM0604 AS SELECTID,C.CMDY0302||B.CMDY0603||'（套包）' AS SELECTNAME,2 AS SELECTTYPE
+		FROM tbKCGM06 A
+		INNER JOIN tbCMDY06 B ON B.CMDY0601 = A.KCGM0604
+		INNER JOIN tbCMDY03 C ON C.CMDY0301 = B.CMDY0602]]>
+		<where>
+			<if test="kcgm0601 != null">
+				<![CDATA[ A.kcgm0601 = #{kcgm0601} ]]>
+			</if>
+		</where>
+		UNION
+		<![CDATA[SELECT A.KCGM0605 AS SELECTID,D.CMDY0404 AS SELECTNAME,1 AS SELECTTYPE
+		FROM tbKCGM06 A
+		INNER JOIN tbCMDY07 C ON C.CMDY0701 = A.KCGM0605
+		LEFT JOIN TBCMDY04 D ON D.CMDY0401 = C.CMDY0703]]>
+		<where>
+			<if test="kcgm0601 != null">
+				<![CDATA[ A.kcgm0601 = #{kcgm0601} ]]>
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateActivation" parameterType="com.huarui.product2020.entity.Tbkcgm06" flushCache="true">
+		<![CDATA[  UPDATE tbKCGM06 ]]> 
+		<set>
+			<if test="kcgm0609 != null">
+			      <![CDATA[ KCGM0609 = #{kcgm0609}, ]]>
+			</if>
+		    <![CDATA[ KCGM0610 = SYSDATE ]]>
+		</set>
+		<![CDATA[  WHERE KCGM0601 = #{kcgm0601} ]]> 
+	</update>
+
+</mapper>

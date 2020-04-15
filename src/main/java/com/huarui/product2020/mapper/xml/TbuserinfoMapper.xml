@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.TbuserinfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbuserinfo">
+		<id column="UINF0101" property="uinf0101" />
+		<result column="UINF0102" property="uinf0102" />
+		<result column="UINF0103" property="uinf0103" />
+		<result column="UINF0104" property="uinf0104" />
+		<result column="UINF0105" property="uinf0105" />
+		<result column="UINF0106" property="uinf0106" />
+		<result column="UINF0107" property="uinf0107" />
+		<result column="UINF0108" property="uinf0108" />
+		<result column="UINF0109" property="uinf0109" />
+		<result column="UINF0110" property="uinf0110" />
+		<result column="UINF0111" property="uinf0111" />
+		<result column="UINF0112" property="uinf0112" />
+		<result column="UINF0113" property="uinf0113" />
+		<result column="UINF0114" property="uinf0114" />
+		<result column="UINF0115" property="uinf0115" />
+		<result column="UINF0116" property="uinf0116" />
+		<result column="UINF0117" property="uinf0117" />
+		<result column="UINF0118" property="uinf0118" />
+	</resultMap>
+	
+	 <select id="selectMapForUserInfo" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+			select a.*, b.user014,b.USER015,b.user004 from TBUSERINFO a left join HRSW_T_USER b on a.UINF0102 = b.USER001
+		]]>
+        WHERE A.UINF0102 = #{arg0}
+    </select>
+	
+
+</mapper>

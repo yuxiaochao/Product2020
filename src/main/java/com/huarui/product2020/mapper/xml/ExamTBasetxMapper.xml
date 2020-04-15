@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTBasetxMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTBasetx">
+		<id column="BTX001" property="btx001" />
+		<result column="BTX002" property="btx002" />
+		<result column="BTX003" property="btx003" />
+		<result column="BTX004" property="btx004" />
+		<result column="BTX005" property="btx005" />
+		<result column="BTX006" property="btx006" />
+		<result column="BTX007" property="btx007" />
+	</resultMap>
+
+</mapper>

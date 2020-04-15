@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTTaglibraryMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTTaglibrary">
+		<id column="TALI001" property="tali001" />
+		<result column="TALI002" property="tali002" />
+		<result column="TALI003" property="tali003" />
+		<result column="TALI004" property="tali004" />
+	</resultMap>
+
+	<select id="taskLabelList"
+		resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[
+			select c.* from hrsw_t_dutyLabelRelation a 
+			inner join hrsw_t_user b on b.user011 = a.dlre002
+			left join hrsw_t_TagLibrary c on c.tali001 = a.dlre003
+			where b.user001 = #{zrUserid}
+		]]>
+	</select>
+
+</mapper>

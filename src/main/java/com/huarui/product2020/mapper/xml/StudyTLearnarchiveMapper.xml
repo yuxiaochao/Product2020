@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTLearnarchiveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTLearnarchive">
+		<id column="STLA001" property="stla001" />
+		<result column="STLA002" property="stla002" />
+		<result column="STLA003" property="stla003" />
+		<result column="STLA004" property="stla004" />
+		<result column="STLA005" property="stla005" />
+		<result column="STLA006" property="stla006" />
+		<result column="STLA007" property="stla007" />
+		<result column="STLA008" property="stla008" />
+		<result column="STLA009" property="stla009" />
+		<result column="STLA010" property="stla010" />
+		<result column="STLA011" property="stla011" />
+		<result column="STLA012" property="stla012" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbyhqgl07Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbyhqgl07">
+		<id column="YHQGL0701" property="yhqgl0701" />
+		<result column="YHQGL0702" property="yhqgl0702" />
+		<result column="YHQGL0703" property="yhqgl0703" />
+		<result column="YHQGL0704" property="yhqgl0704" />
+		<result column="YHQGL0705" property="yhqgl0705" />
+		<result column="YHQGL0706" property="yhqgl0706" />
+		<result column="YHQGL0707" property="yhqgl0707" />
+		<result column="YHQGL0708" property="yhqgl0708" />
+		<result column="YHQGL0709" property="yhqgl0709" />
+		<result column="YHQGL0710" property="yhqgl0710" />
+	</resultMap>
+
+	<select id="queryCouponList" resultType="java.util.Map" parameterType="java.lang.String">
+			SELECT B.YHQGL0303 "cartNumber",
+		       DECODE(A.YHQGL0710, 1, '已使用', '未使用') "status",
+		       C.YHQGL0109 "price",
+		       DECODE(C.YHQGL0115, 1, D.COMMODITYNAME, '全部商品')  "commodityName",
+		       NVL(TO_CHAR(A.YHQGL0706, 'YYYY-MM-DD'), '--') "activeTime",
+		       TO_CHAR(C.YHQGL0112, 'YYYY-MM-DD') "cutoffTime"
+		  FROM TBYHQGL07 A
+		 INNER JOIN TBYHQGL03 B
+		    ON A.YHQGL0703 = B.YHQGL0301
+		 INNER JOIN TBYHQGL01 C
+		    ON B.YHQGL0302 = C.YHQGL0101
+		  LEFT JOIN (SELECT D3.CMDY0306 || D2.CMDY0603 || '(套包)' COMMODITYNAME,
+		                    D1.YHQGL0202
+		               FROM TBYHQGL02 D1
+		              INNER JOIN TBCMDY06 D2
+		                 ON D1.YHQGL0203 = D2.CMDY0601
+		              INNER JOIN TBCMDY03 D3
+		                 ON D3.CMDY0301 = D2.CMDY0602
+		             UNION ALL
+		             SELECT DD3.CMDY0306 || DD4.CMDY0404 COMMODITYNAME,
+		                    DD1.YHQGL0202
+		               FROM TBYHQGL02 DD1
+		              INNER JOIN TBCMDY07 DD2
+		                 ON DD1.YHQGL0204 = DD2.CMDY0701
+		              INNER JOIN TBCMDY03 DD3
+		                 ON DD2.CMDY0706 = DD3.CMDY0301
+		              INNER JOIN TBCMDY04 DD4
+		                 ON DD2.CMDY0703 = DD4.CMDY0401
+		             
+		             ) D
+		    ON C.YHQGL0101 = D.YHQGL0202
+		
+		 WHERE A.YHQGL0709 = 0
+		   AND A.YHQGL0704 = 1
+		   AND A.YHQGL0705 = #{userId}
+		 ORDER BY A.YHQGL0710,C.YHQGL0112
+	</select>
+	
+	<select id="queryPackageCoupon" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT E.YHQGL0303 "cartNumber",
+	       C.YHQGL0109 "price",
+	       TO_CHAR(C.YHQGL0110, 'YYYY-MM-DD') || '～' ||
+	       TO_CHAR(C.YHQGL0111, 'YYYY-MM-DD') "useTime",
+	       DECODE(C.YHQGL0115,
+	              1,
+	              (G.CMDY0306 || F.CMDY0603 || '(套包)'),
+	              '全部商品') "commodityName",
+	       A.YHQGL0701 "couponId",
+	       C.YHQGL0115 "rangeType",
+	       #{commodityId} "commodityId",
+	       #{commodityType} "commodityType"
+	  FROM TBYHQGL07 A
+	 INNER JOIN TBYHQGL06 B
+	    ON A.YHQGL0702 = B.YHQGL0601
+	 INNER JOIN TBYHQGL01 C
+	    ON C.YHQGL0101 = B.YHQGL0603
+	 INNER JOIN tbYHQGL03 E
+	    ON E.YHQGL0301 = A.YHQGL0703
+	  LEFT JOIN TBYHQGL02 D
+	    ON C.YHQGL0101 = D.YHQGL0202
+	  LEFT JOIN tbCMDY06 F
+	    ON D.YHQGL0203 = F.CMDY0601
+	  LEFT JOIN tbCMDY03 G
+	    ON F.CMDY0602 = G.CMDY0301
+	 WHERE ((C.YHQGL0115 = 1 AND D.YHQGL0203 = #{commodityId}) OR
+	       C.YHQGL0115 = 0)
+	   AND A.YHQGL0705 = #{userId}
+	   AND A.YHQGL0709 = 0
+	   AND A.YHQGL0710 = 0
+	   AND A.YHQGL0704 = 1
+	</select>
+	
+	<select id="queryCommodityCoupon" parameterType="java.lang.String" resultType="java.util.Map">
+	SELECT E.YHQGL0303 "cartNumber",
+	       C.YHQGL0109 "price",
+	       TO_CHAR(C.YHQGL0110, 'YYYY-MM-DD') || '～' ||
+	       TO_CHAR(C.YHQGL0111, 'YYYY-MM-DD') "useTime",
+	       DECODE(C.YHQGL0115,
+	              1,
+	              (G.CMDY0306 || H.CMDY0404 ),
+	              '全部商品') "commodityName",
+	       A.YHQGL0701 "couponId",
+	       C.YHQGL0115 "rangeType",
+	       #{commodityId} "commodityId",
+	       #{commodityType} "commodityType"
+	  FROM TBYHQGL07 A
+	 INNER JOIN TBYHQGL06 B
+	    ON A.YHQGL0702 = B.YHQGL0601
+	 INNER JOIN TBYHQGL01 C
+	    ON C.YHQGL0101 = B.YHQGL0603
+	 INNER JOIN tbYHQGL03 E
+	    ON E.YHQGL0301 = A.YHQGL0703
+	  LEFT JOIN TBYHQGL02 D
+	    ON C.YHQGL0101 = D.YHQGL0202
+	  LEFT JOIN tbCMDY07 F
+	    ON D.YHQGL0204 = F.CMDY0701
+	  LEFT JOIN tbCMDY03 G
+	    ON F.CMDY0706 = G.CMDY0301
+	  LEFT JOIN tbCMDY04 H
+	  	ON F.CMDY0703 = H.CMDY0401
+	 WHERE ((C.YHQGL0115 = 1 AND D.YHQGL0204 = #{commodityId}) OR
+	       C.YHQGL0115 = 0)
+	   AND A.YHQGL0705 = #{userId}
+	   AND A.YHQGL0709 = 0
+	   AND A.YHQGL0710 = 0
+	   AND A.YHQGL0704 = 1
+	</select>
+	
+	
+	<select id="checkCouponCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(DISTINCT YHQGL0701) 
+		FROM 
+			TBYHQGL07  
+		WHERE 
+			YHQGL0705 = #{userId} 
+		AND 
+			YHQGL0710 = 0 
+		AND 
+			YHQGL0709 = 0
+		AND 
+			YHQGL0704 = 1
+		AND 
+			YHQGL0701 IN
+		<foreach collection="yhqgl0701" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="checkPackageCouponPrice" resultType="java.util.Map">
+		SELECT 
+			SUM(C.YHQGL0109) "totalPrice",
+			MAX((SELECT AA2.CMDY0306 || AA1.CMDY0603 || '(套包)' COMMODITYNAME
+       			FROM TBCMDY06 AA1 INNER JOIN TBCMDY03 AA2 ON AA1.CMDY0602 = AA2.CMDY0301 WHERE AA1.CMDY0601=#{params.commodityId}
+     		)) "commodityName"
+		FROM 
+			TBYHQGL07 A
+		INNER JOIN 
+			TBYHQGL06 B
+		ON
+			A.YHQGL0702 = B.YHQGL0601
+		INNER JOIN
+			TBYHQGL01 C
+		ON 
+			C.YHQGL0101 = B.YHQGL0603
+		LEFT JOIN 
+			TBYHQGL02 D
+		ON 
+			C.YHQGL0101 = D.YHQGL0202
+		WHERE 
+			((C.YHQGL0115 = 1 AND D.YHQGL0203 =  #{params.commodityId}) OR C.YHQGL0115 = 0)
+		AND 
+			A.YHQGL0705 = #{params.userId}
+		AND 
+			A.YHQGL0701 IN 
+		<foreach item="item" index="index" collection="couponList" open="(" separator="," close=")">'${item}'</foreach>
+	</select>
+	
+	<select id="checkCommodityCouponPrice" resultType="java.util.Map">
+		SELECT 
+			SUM(C.YHQGL0109) "totalPrice",
+			 MAX((SELECT AA2.CMDY0306 || AA3.CMDY0404 COMMODITYNAME
+             FROM tbCMDY07 AA1
+            INNER JOIN tbCMDY03 AA2
+               ON AA1.CMDY0706 = AA2.CMDY0301
+            INNER JOIN tbCMDY04 AA3
+               ON AA1.CMDY0703 = AA3.CMDY0401
+            WHERE AA1.CMDY0701 = #{params.commodityId})) "commodityName"
+		FROM 
+			TBYHQGL07 A
+		INNER JOIN 
+			TBYHQGL06 B
+		ON
+			A.YHQGL0702 = B.YHQGL0601
+		INNER JOIN
+			TBYHQGL01 C
+		ON 
+			C.YHQGL0101 = B.YHQGL0603
+		LEFT JOIN 
+			TBYHQGL02 D
+		ON 
+			C.YHQGL0101 = D.YHQGL0202
+		WHERE 
+			((C.YHQGL0115 = 1 AND D.YHQGL0204 = #{params.commodityId}) OR C.YHQGL0115 = 0)
+		AND 
+			A.YHQGL0701 IN 
+		<foreach item="item" index="index" collection="couponList" open="(" separator="," close=")">'${item}'</foreach>
+		AND A.YHQGL0705 = #{params.userId}
+	</select>
+	
+	<select id="queryCouponPrice" parameterType="java.util.List" resultType="java.lang.Double">
+		SELECT SUM(C.YHQGL0109) FROM tbYHQGL07 A INNER JOIN TBYHQGL03 B ON A.YHQGL0703 = B.YHQGL0301 INNER JOIN TBYHQGL01 C ON C.YHQGL0101 = B.YHQGL0302
+		WHERE A.YHQGL0710=0 AND A.YHQGL0709 = 0 AND A.YHQGL0704=1 AND A.YHQGL0701 IN
+		<foreach collection="couponIdList" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<update id="updateCoupon">
+		 BEGIN 
+         <foreach collection="couponALlList" item="item" separator=";">
+            UPDATE 
+            	TBYHQGL07
+            SET 
+            	YHQGL0705 = #{userId},
+            	YHQGL0710 = 1,
+            	YHQGL0706 = SYSDATE
+            WHERE 
+            	YHQGL0701 = #{item} 
+          </foreach>
+          ;END;
+	</update>
+	
+	<select id="findActivationRecordList" resultType="HashMap" parameterType="HashMap">
+		<![CDATA[ SELECT YHQGL0701,YHQGL0702,YHQGL0703,YHQGL0704,YHQGL0705,YHQGL0706,YHQGL0707,YHQGL0708,YHQGL0709,YHQGL0710,
+		B.YHQGL0303,C.YHQGL0109,
+		TO_CHAR(A.YHQGL0706,'YYYY-MM-DD') YHQGL0706N,
+		TO_CHAR(C.YHQGL0112,'YYYY-MM-DD') YHQGL0112N,
+		CASE WHEN YHQGL0710 = 0 THEN '未使用' WHEN YHQGL0710 = 1 THEN '已使用' END YHQGL0710N,
+		CASE WHEN C.YHQGL0115 = 0 THEN '全部商品' WHEN C.YHQGL0115 = 1 THEN G.BINDCOMMODITY END YHQGL0115N
+			 
+		FROM tbYHQGL07 A
+		LEFT JOIN tbYHQGL03 B ON B.YHQGL0301 = A.YHQGL0703
+		LEFT JOIN tbYHQGL01 C ON C.YHQGL0101 = B.YHQGL0302
+		LEFT JOIN (
+			SELECT A2.YHQGL0202,TRIM(',' FROM REPLACE(REPLACE(LISTAGG (B2.CMDY0603||','||D2.CMDY0404, ',') WITHIN GROUP (ORDER BY A2.YHQGL0202),',,,',','),',,',',')) BINDCOMMODITY
+			FROM tbYHQGL02 A2
+			LEFT JOIN tbCMDY06 B2 ON B2.CMDY0601 = A2.YHQGL0203
+			LEFT JOIN tbCMDY07 C2 ON C2.CMDY0701 = A2.YHQGL0204
+			LEFT JOIN tbCMDY04 D2 ON D2.CMDY0401 = C2.CMDY0703
+			GROUP BY A2.YHQGL0202
+		) G ON G.YHQGL0202 = C.YHQGL0101]]>
+		<where>
+			<![CDATA[ AND A.YHQGL0705 = #{user001} ]]> 
+		</where>
+		<choose>
+		    <when test="sortExpression != null">
+		      <![CDATA[ ORDER BY ${sortExpression} ]]>
+		    </when>
+		    <otherwise>
+		      <![CDATA[ ORDER BY A.YHQGL0706 DESC ]]>
+		    </otherwise>
+		</choose>
+	</select>
+	
+	<update id="updateActivation" parameterType="com.huarui.product2020.entity.Tbxxkgl07" flushCache="true">
+		<![CDATA[  UPDATE tbYHQGL07 ]]> 
+		<set>
+			<if test="yhqgl0704 != null">
+			      <![CDATA[ YHQGL0704 = #{yhqgl0704}, ]]>
+			</if>
+			<if test="yhqgl0705 != null">
+			      <![CDATA[ YHQGL0705 = #{yhqgl0705}, ]]>
+			</if>
+			<![CDATA[ YHQGL0706 = SYSDATE, ]]>
+			<if test="yhqgl0707 != null">
+			      <![CDATA[ YHQGL0707 = #{yhqgl0707}, ]]>
+			</if>
+			<if test="yhqgl0709 != null">
+			      <![CDATA[ YHQGL0709 = #{yhqgl0709}, ]]>
+			</if>
+			<if test="yhqgl0710 != null">
+			      <![CDATA[ YHQGL0710 = #{yhqgl0710} ]]>
+			</if>
+		</set>
+		<![CDATA[  WHERE YHQGL0703 = #{yhqgl0703} ]]> 
+	</update>
+</mapper>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ResearchMapper">
+
+	<select id="queryResearchList" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT QUES001,QUES002,QUES003,TO_CHAR(QUES004, 'YYYY-MM-DD HH24')QUES004,TO_CHAR(QUES005, 'YYYY-MM-DD HH24')QUES005,QUES006,QUES007,QUES008,QUES009,QUES010,
+		QUES011,QUES012,QUES013,QUES014,QUES015,QUES016,QUES017,QUES018,QUES019,QUES020,
+		B.ORGA006 AS ORGANNAME,D.USER005 AS MANAGER
+		FROM QUES_T_QUESTIONNAIRE A
+		INNER JOIN HRSW_T_ORGAN B ON A.QUES011 = B.ORGA001
+		LEFT JOIN EXAM_T_USERRESOURCERELATION C ON A.QUES001=C.URRE006 AND C.URRE011=1
+		LEFT JOIN HRSW_T_USER D ON D.USER001=C.URRE009
+		JOIN QUES_V_001QUESUSER V ON A.QUES001=V.QUSE002 AND V.USER001 = #{userid}
+		LEFT JOIN QUES_V_002QUESRUSULTFORJOIN E ON A.QUES001=E.QID AND E.USERID = #{userid}
+		<where>
+<!-- 			<if test="parameterMap.date != null">
+				<choose>
+					<when test="parameterMap.date == 1">
+						AND A.QUES004 BETWEEN SYSDATE-7 AND SYSDATE
+					</when>
+					<when test="parameterMap.date == 2">
+						AND A.QUES004 BETWEEN SYSDATE-15 AND SYSDATE
+					</when>
+					<when test="parameterMap.date == 3">
+						AND A.QUES004 BETWEEN ADD_MONTHS(SYSDATE,-1) AND SYSDATE
+					</when>
+					<when test="parameterMap.date == 4">
+						AND SYSDATE > ADD_MONTHS(A.QUES004,1)
+					</when>
+				</choose>
+			</if>
+			-->
+			<![CDATA[ (A.QUES007=0 OR NVL(E.JOINCOUNT,0)<A.QUES007) ]]>
+			 <![CDATA[ AND QUES018=2 AND SYSDATE BETWEEN QUES004 AND QUES005	 ]]> 
+			
+			<if test="keyword != null and keyword != ''">
+			      AND QUES003 LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+			</if>
+		</where>
+			<![CDATA[ ORDER BY C.URRE010 DESC]]>
+	</select>
+	
+	
+	<select id="queryResearchByID" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT QUES001,QUES002,QUES003,TO_CHAR(QUES004, 'YYYY-MM-DD HH24')QUES004,TO_CHAR(QUES005, 'YYYY-MM-DD HH24')QUES005,QUES006,QUES007,QUES008,QUES009,QUES010,
+		QUES011,QUES012,QUES013,QUES014,QUES015,QUES016,QUES017,QUES018,QUES019,QUES020
+		FROM QUES_T_QUESTIONNAIRE A
+		<where>
+			A.QUES001 =  #{QUES001}
+		</where>
+	</select>
+	
+	<select id="queryJoinTimes" parameterType="java.lang.String" resultType="java.util.HashMap">
+			 <![CDATA[ SELECT  COUNT(1)JOINTIMES   FROM QUES_T_QUESGRADE  ]]>
+		<where>
+			  QGTA003 =  #{arg0} AND QGTA002 =  #{arg1}
+		</where>
+	</select>
+	
+	<select id="findTopicByQId" parameterType="java.util.Map" resultType="java.util.HashMap">
+		 <![CDATA[ SELECT Q.QTOP001,Q.QTOP004,B.BTX003 AS QTOP008,Q.QTOP006,Q.QTOP009,Q.QTOP010,Q.QTOP012,Q.QTOP013,Q.QTOP014,Q.QTOP015 
+		 FROM QUES_T_QUESTOPIC Q 
+		 INNER JOIN EXAM_T_BASETX B ON Q.QTOP008=B.BTX001 
+		 WHERE Q.QTOP002 = #{QUES001} 
+		 ORDER BY Q.QTOP018 ASC ]]>
+	</select>
+	
+	<select id="findQuesTopic" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT QTOP001 QTID,QTOP002 QID,QTOP003,QTOP004,QTOP005,QTOP006,QTOP007,
+			QTOP008,QTOP009 BTXTITLE, QTOP010 TOPIC,QTOP011,QTOP012 TOPICCOUNT,QTOP013,
+			QTOP014 TOPICOPTION,QTOP015,QTOP016,QTOP017,QTOP018,BTX003 BASETYPE
+			FROM QUES_T_QUESTOPIC A
+			LEFT JOIN EXAM_T_BASETX B ON A.QTOP008 = B.BTX001
+		<where>
+			 QTOP002 = #{ques001}
+			 ORDER BY BTX003 ASC
+		</where>
+	</select>
+	
+	
+	<select id="queryQuestionInfoByQtid" parameterType="java.util.Map" resultType="java.util.HashMap">
+		    SELECT QTOP001,QTOP002,QTOP003,QTOP004,QTOP005,QTOP006,QTOP007,
+		    QTOP008,QTOP009,QTOP010,QTOP011,QTOP012,QTOP013,QTOP014
+		    FROM QUES_T_QUESTOPIC 
+		<where>
+			QTOP001 = #{qtid}
+		</where>
+	</select>
+	
+	<!-- 
+		问卷调查试题id存在问题
+	<select id="queryQuesResultList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT A.*, B.ALLNUM
+ 			FROM (SELECT A.URES004, A.URES003, A.URES006, B.BTX003, COUNT(*) QUESNUM
+          	FROM QUES_T_QUESRESULT A
+         	INNER JOIN (SELECT EB.BTX003, ET.TOPI001 
+                      FROM EXAM_T_BASETX EB
+                      LEFT JOIN EXAM_T_TOPIC ET ON EB.BTX001 = ET.TOPI004) B ON A.URES003 = B.TOPI001     
+        	 WHERE B.BTX003 IN (1, 2, 3, 6)
+          	AND A.URES004 = #{ques001}
+         GROUP BY A.URES004, A.URES003, B.BTX003, A.URES006
+         ORDER BY A.URES003) A
+ 				INNER JOIN (SELECT COUNT(*) ALLNUM, A.URES004, A.URES003, A.URES006, B.BTX003
+               FROM QUES_T_QUESRESULT A
+              INNER JOIN (SELECT EB.BTX003, ET.TOPI001
+                           FROM EXAM_T_BASETX EB
+                           LEFT JOIN EXAM_T_TOPIC ET ON EB.BTX001 = ET.TOPI004) B ON A.URES003 = B.TOPI001
+              WHERE B.BTX003 IN (1, 2, 3, 6)
+                AND A.URES004 = #{ques001}
+              GROUP BY A.URES004, A.URES003, A.URES006, B.BTX003) B ON A.URES003 =  B.URES003
+	</select> -->
+	
+	<select id="queryQuesResultList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT A.*, B.ALLNUM
+			  FROM (SELECT A.URES004, A.URES003, A.URES006, B.BTX003, COUNT(*) QUESNUM
+			          FROM QUES_T_QUESRESULT A
+			          INNER JOIN (SELECT EB.BTX003, ET.QTOP001
+			                      FROM EXAM_T_BASETX EB
+			                      LEFT JOIN QUES_T_QUESTOPIC ET ON EB.BTX001 = ET.QTOP008) B ON A.URES003 =
+			                                                                        B.QTOP001
+			         WHERE B.BTX003 IN (1, 2, 3, 6)
+			           AND A.URES004 = #{ques001}
+			         GROUP BY A.URES004, A.URES003, B.BTX003, A.URES006
+			         ORDER BY A.URES003) A
+			 INNER JOIN (SELECT COUNT(*) ALLNUM,
+			                    A.URES004,
+			                    A.URES003,
+			                    A.URES006,
+			                    B.BTX003
+			               FROM QUES_T_QUESRESULT A
+			              INNER JOIN (SELECT EB.BTX003, ET.QTOP001
+			                           FROM EXAM_T_BASETX EB
+			                           LEFT JOIN QUES_T_QUESTOPIC ET ON EB.BTX001 =
+			                                                            ET.QTOP008) B ON A.URES003 =
+			                                                                             B.QTOP001
+			              WHERE B.BTX003 IN (1, 2, 3, 6)
+			                AND A.URES004 = #{ques001}
+			              GROUP BY A.URES004, A.URES003, A.URES006, B.BTX003) B ON A.URES003 =
+			                                                                       B.URES003
+	</select>
+	
+	<insert id="insertQuesGrade" parameterType="java.util.Map">
+		 <![CDATA[ INSERT INTO QUES_T_QUESGRADE(
+	   		QGTA001,
+	   		QGTA002,
+	   		QGTA003,
+	  	 	QGTA005,
+	  	 	QGTA006,
+	  	 	QGTA007
+			)
+			VALUES
+		(
+	   	 	#{qgta001,jdbcType=VARCHAR},
+	   	 	#{qgta002,jdbcType=VARCHAR},
+	   	 	#{qgta003,jdbcType=VARCHAR},
+			 SYSDATE,
+			#{qgta006,jdbcType=VARCHAR},
+			#{qgta007,jdbcType=INTEGER}	   	 	
+		) 
+		]]> 
+	</insert>
+	
+	<insert id="insertQuesResult" parameterType="java.util.Map">
+		 <![CDATA[ INSERT INTO QUES_T_QUESRESULT(
+	   		URES001,
+	   		URES002,
+	   		URES003,
+	  	 	URES004,
+	  	 	URES005,
+	  	 	URES006,
+	  	 	URES007,
+	  	 	URES008,
+	  	 	URES011
+			)
+			VALUES
+			(
+	   	 	#{ures001,jdbcType=VARCHAR},
+	   	 	#{ures002,jdbcType=VARCHAR},
+	   	 	#{ures003,jdbcType=VARCHAR},
+	   	 	#{ures004,jdbcType=VARCHAR},
+	   	 	#{ures005,jdbcType=VARCHAR},
+	   	 	#{ures006,jdbcType=VARCHAR},
+	   	 	#{ures007,jdbcType=VARCHAR},
+			#{ures008,jdbcType=VARCHAR},
+			#{ures011,jdbcType=FLOAT}	   	 	
+			) 
+		]]> 
+	</insert>
+	
+<!-- 	<select id="queryProficientNameByQid" parameterType="java.lang.String" resultType="java.util.HashMap">
+			 <![CDATA[ SELECT  COUNT(1)JOINTIMES   FROM QUES_T_QUESGRADE  ]]>
+		<where>
+			  QGTA003 =  #{arg0} AND QGTA002 =  #{arg1}
+		</where>
+	</select> -->
+	
+	<select id="queryOneQuestionResult" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT A.QGTA002, B.URES003,nvl(b.URES006， '--') URES006,A.QGTA003,
+       		D.User005,to_char(A.QGTA004, 'YYYY-MM-DD HH24:MI') QGTIME,E.QUES010
+ 			from ques_t_QuesGrade A
+  			INNER JOIN ques_t_QuesResult B On A.QGTA001 = B.URES002 AND A.QGTA003 = B.URES005
+  			INNER JOIN Hrsw_t_User D ON B.URES005 = D.USER001
+  			<!-- INNER JOIN ques_t_QuesTopic C ON B.URES004 = C.QTOP002 AND B.URES003 = C.QTOP001 -->
+  			 INNER JOIN (
+            	SELECT  EB.BTX003, ET.TOPI001  FROM EXAM_T_BASETX EB 
+            	LEFT JOIN EXAM_T_TOPIC ET ON ET.TOPI004 = EB.BTX001
+       		)C ON C.TOPI001 = B.URES003
+  			INNER JOIN ques_t_questionnaire E ON E.QUES001 = A.QGTA002
+  		<where>
+  			  C.BTX003 IN (0, 4)
+  			  AND A.QGTA002 = #{QID}  and B.URES003 = #{QTID}
+  			  
+  			  <!-- <if test="PID != null">
+  			  		 <![CDATA[  AND B.URES007 = #{PID} ]]> 
+  			  </if>
+  			  <if test="CID != null">
+  			  		 <![CDATA[  AND B.URES008 = #{CID}  ]]> 
+  			  </if> -->
+  		</where>
+	</select>
+	
+	
+</mapper>

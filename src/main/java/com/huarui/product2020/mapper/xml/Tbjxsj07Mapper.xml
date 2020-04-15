@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj07Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj07">
+		<id column="JXSJ0701" property="jxsj0701" />
+		<result column="JXSJ0702" property="jxsj0702" />
+		<result column="JXSJ0703" property="jxsj0703" />
+		<result column="JXSJ0704" property="jxsj0704" />
+		<result column="JXSJ0705" property="jxsj0705" />
+	</resultMap>
+	<select id="findByPage" parameterType="com.huarui.common.Req" resultType="HashMap">
+		select jxsj0701,jxsj0702,jxsj0703,jxsj0704,jxsj0705,
+			   to_char(jxsj0705,'YYYY-MM-DD HH24:MI') as jxsj0705n,
+			   pxb0605,
+			   cata002
+		from tbJXSJ07
+		left join tbPXB06
+			on PXB0601=JXSJ0703
+		left join hrsw_t_catalog
+		 	on CATA001=JXSJ0704
+		<where>
+			jxsj0702=#{parameterMap.jxsj0702}
+			<if test="parameterMap.pxb0605!=null and parameterMap.pxb0605!=''">
+				and pxb0605 like concat('%',concat(#{parameterMap.pxb0605},'%'))
+			</if>
+			<if test="parameterMap.cata002!=null and parameterMap.cata002!=''">
+				and cata002 like concat('%',concat(#{parameterMap.cata002},'%'))
+			</if>
+		</where>
+	</select>
+	<select id="findById" parameterType="String" resultType="HashMap">
+		select jxsj0701,jxsj0702,jxsj0703,jxsj0704,jxsj0705,
+			   to_char(jxsj0705,'YYYY-MM-DD HH24:MI') as jxsj0705n,
+			   pxb0605,
+			   cata002
+		from tbJXSJ07
+		left join tbPXB06
+			on PXB0601=JXSJ0703
+		left join hrsw_t_catalog
+		 	on CATA001=JXSJ0704
+		where jxsj0701=#{id}
+	</select>
+</mapper>

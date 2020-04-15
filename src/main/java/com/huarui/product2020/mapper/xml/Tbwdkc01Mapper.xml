@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbwdkc01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbwdkc01">
+		<id column="WDKC0101" property="wdkc0101" />
+		<result column="WDKC0102" property="wdkc0102" />
+		<result column="WDKC0103" property="wdkc0103" />
+		<result column="WDKC0104" property="wdkc0104" />
+		<result column="WDKC0105" property="wdkc0105" />
+		<result column="WDKC0106" property="wdkc0106" />
+	</resultMap>
+
+
+	<resultMap type="com.huarui.product2020.entity.Tbwdkc01" id="findbyCoursePackageListResultMap">
+		<result column="wdkc0101" property="wdkc0101" />
+		<result column="wdkc0102" property="wdkc0102" />
+		<result column="wdkc0103" property="wdkc0103" />
+		<result column="wdkc0104" property="wdkc0104" />
+		<result column="wdkc0105" property="wdkc0105" />
+		<result column="wdkc0106" property="wdkc0106" />
+		<result column="cmdy0302" property="cmdy0302" />
+		<result column="cmdy0306" property="cmdy0306" />
+		<result column="cmdy0603" property="cmdy0603" />
+		<collection property="wdkc02List" ofType="com.huarui.product2020.entity.Tbwdkc02">
+			<result column="wdkc0201" property="wdkc0201" />
+			<result column="wdkc0203" property="wdkc0203" />
+			<result column="wdkc0206" property="wdkc0206" />
+			<result column="cmdy0401" property="cmdy0401" />
+			<result column="cmdy0301" property="cmdy0301" />
+			<result column="cmdy0601" property="cmdy0601" />
+			<result column="cmdy0406" property="cmdy0406" />
+			<result column="cmdy0404" property="cmdy0404" />
+			<result column="cmdy0312" property="cmdy0312" />
+			<result column="cmdy0313" property="cmdy0313" />
+			<result column="cmdy0313n" property="cmdy0313n" />
+			<result column="cmdy0314n" property="cmdy0314n" />
+			<result column="lere0110" property="lere0110" />
+			<result column="lere0105" property="lere0105" />
+			<result column="cour004" property="cour004" />
+			<result column="cour010" property="cour010" />
+			<result column="cmdy0503" property="cmdy0503" />
+			<result column="classHour" property="classHour" />
+
+			<result column="cmdy0409n" property="cmdy0409n" />
+			<result column="user001" property="user001" />
+			<result column="user004" property="user004" />
+			<result column="leex003" property="leex003" />
+
+		</collection>
+	</resultMap>
+
+    <!-- 我的课程——套包list -->
+	<select id="findbyCoursePackageList" resultMap="findbyCoursePackageListResultMap" parameterType="com.huarui.product2020.entity.Tbwdkc01">
+		<![CDATA[ select nvl(t.WDKC0101, -1) WDKC0101,
+			       t4.CMDY0302,
+			       t4.CMDY0306,
+			       t5.CMDY0603,
+			       t.WDKC0102,
+			       t.WDKC0103,
+			       t.WDKC0104,
+			       case
+			         when t.WDKC0105 is not null then
+			          /* t4.CMDY0302 || t.WDKC0105 */
+						t4.CMDY0306
+			         else
+			          '其他'
+			       end WDKC0105,
+			       t.WDKC0106,
+			       t2.WDKC0201,
+			       t2.WDKC0203,
+			       t6.CMDY0401,
+			       t4.cmdy0301,
+			       t5.cmdy0601,
+			       t7.Cmdy0503,
+			       to_char(t6.CMDY0409, 'yyyy-mm-dd') CMDY0409n,
+			       t6.CMDY0406,
+			       t6.CMDY0404,
+			       t4.CMDY0312,
+			       case when t4.CMDY0313 is null then t6.CMDY0409 else t4.CMDY0313 end CMDY0313,
+			       to_char(case when t4.CMDY0313 is null then t6.CMDY0409 else t4.CMDY0313 end, 'yyyy-mm-dd') CMDY0313n,
+			      /* to_char(t4.CMDY0308 + t4.CMDY0314, 'yyyy-mm-dd') CMDY0314N, */
+
+			      /* t8.LERE0110,
+			       t8.LERE0105,*/
+
+			       t2.Wdkc0206,
+			       t71.cour004,
+			       t71.cour010,
+			       t9.USER001,
+			       t9.USER004,
+			       t10.leex003,
+			       (select count(1)
+			          from course_t_courseware y
+			         where y.ccwe002 = t7.Cmdy0503
+			           and y.ccwe004 = 1) classHour
+			  from tbWDKC02 t2
+			  left join tbWDKC01 t
+			    on t.WDKC0101 = t2.WDKC0202
+			  left join tbCMDY03 t4
+			    on t.WDKC0102 = t4.Cmdy0301
+			  left join tbCMDY06 t5
+			    on t5.CMDY0601 = t.WDKC0103
+			   and t5.cmdy0602 = t4.cmdy0301
+			  left join tbCMDY04 t6
+			    on t2.WDKC0203 = t6.cmdy0401
+			  left join tbCMDY05 t7
+			    on t2.WDKC0203 = t7.CMDY0502
+			 inner join xzxy_t_course t71
+			    on t7.Cmdy0503 = t71.cour001
+			 /* left join tbLERE01 t8
+			    on t8.LERE0109 = t2.wdkc0201
+			   and t8.lere0102 = t7.Cmdy0503 */
+			 inner join HRSW_T_USER t9
+			    on t9.USER001 = t2.WDKC0204
+			  left join Study_t_learnExam t10
+			    on t10.LEEX002 = t71.COUR001
+		 ]]>
+		<where>
+			<if test="wdkc0104 != null">
+				<![CDATA[ AND t2.WDKC0204 = #{wdkc0104} ]]>
+			</if>
+<!--			<if test="cmdy0303 != null">&lt;!&ndash; 专业id &ndash;&gt;-->
+<!--				<![CDATA[ AND t4.CMDY0303 = #{cmdy0303} ]]>-->
+<!--			</if>-->
+
+			<if test="cmdy0303 != null"><!-- 专业id -->
+				<![CDATA[ AND t6.CMDY0402 = #{cmdy0303} ]]>
+			</if>
+			 <!-- 商品过期时间 -->
+			and case when t6.CMDY0409 is not null then <!-- and t3.CMDY0408 = 0 -->
+				t6.CMDY0409
+			else
+				<!-- 商品包过期时间 -->
+				case when t4.CMDY0313 is not null then  <!-- and t4.CMDY0312 = 0 -->
+					t4.CMDY0313
+				else
+					sysdate
+				end
+			end >= sysdate
+
+		</where>
+
+
+	</select>
+
+	<select id="addCoursePackage" statementType="CALLABLE" parameterType="Map" >
+    	<![CDATA[ CALL pro_InsertMyCourse(#{cmdy0301}, #{cmdy0601}, #{cmdy0401}, #{userId}, #{param01}, #{dd0101}, #{param07}, #{param08})  ]]>
+    </select>
+
+    <select id="findbyCourseInformation" resultType="java.util.Map" parameterType="Map">
+		<![CDATA[
+		select
+			t.cour001, /* 课程id*/
+			t.cour010, /* 课程名称*/
+			t.cour007,  /* 课程简介*/
+			t2.lere0101, /*-- 课程结果表id*/
+			t2.Lere0103, /*-- 用户id*/
+			t2.LERE0105, /*--课程进度*/
+			nvl(a1.LCWR0105, '-1') LCWR0105, /*-- 章节id*/
+			nvl(a1.LCWR0107, 0) LCWR0107,  /*-- 课件学习位置 单位：秒*/
+			nvl(a1.LCWR0110, 0) LCWR0110,  /*-- 是否学完*/
+			t3.ccwe001,
+			nvl(t3.ccwe008, 0) ccwe008, /*-- 非当前课件学习页面自动停止播放和计时：0、否 1、是*/
+			nvl(t3.ccwe009, 0) ccwe009, /*-- 首次学习时允许拖拽：1、不允许 0、允许*/
+			t3.ccwe003,
+			t2.LERE0108, /*-- 课程是否完成 0：在学 1：已完成*/
+			t4.cour002,  /*当前播放章节名称*/
+			t4.cour005,  /*当前播放章节总时长（秒）*/
+			t4.COUR006,  /*-- 播放路径*/
+			t.COUR004,  /* 课程封面 */
+			t7.CMDY0316, /*-- 课程定位*/
+			t7.CMDY0317, /*-- 课程特点*/
+			t7.CMDY0318, /*-- 涵盖内容*/
+			t7.CMDY0319 /*-- 	课程介绍/适宜人群*/
+
+			from xzxy_t_course t
+			left join tbLERE01 t2 on t.cour001 = t2.Lere0102
+			left join tbLCWR01 a1 on t.cour001 = a1.LCWR0102 and t2.lere0101 = a1.Lcwr0104  and t2.LERE0103 = a1.LCWR0103 and a1.LCWR0112 = 1
+
+			left join
+			( /*-- 查询出章节信息*/
+			select x.ccwe002, y.ccwe001,y.ccwe003,y.ccwe006,y.ccwe008,y.ccwe009 from course_t_courseware x
+			inner join course_t_courseware y on x.ccwe001 = y.ccwe010 and y.ccwe004 = 1  /*-- 二级章节*/
+			where x.ccwe004 = 0  /*-- 一级章节*/
+			) t3 on t.cour001 = t3.ccwe002 and t3.ccwe001 = a1.LCWR0105
+			left join hrsw_t_courseware t4 on t4.cour001 = t3.ccwe006
+			left join tbWDKC02 t5 on t5.WDKC0201 = t2.LERE0109
+			left join tbCMDY06 t6 on t6.CMDY0601 = t5.WDKC0202
+			left join tbCMDY03 t7 on t7.CMDY0301 = t6.CMDY0602
+
+			]]>
+		<where>
+			and t.cour001 = #{cmdy0503}
+			and t2.lere0109 = #{wdkc0201}
+		</where>
+	</select>
+
+	<select id="findbyCourseNumber" resultType="java.util.Map" parameterType="Map">
+		<![CDATA[
+		select (
+			select count(1) from STUDY_T_USERMESSAGE t
+			where t.umes002 = #{cmdy0503}
+			) as courseEvaluation, /* 评论数*/
+			(
+			select count(1) from tbClassAskQuestions01 t
+			where t.CLAQ0102 = #{cmdy0503}
+				]]>
+				<if test="ccwe001 != null and ccwe001 != ''">
+					and t.CLAQ0110 = #{ccwe001}
+				</if>
+				<![CDATA[
+			) as questionsNum , /*问题数*/
+			(
+			select count(1) from Study_t_userNote t
+			where t.UNOT002 = #{cmdy0503}
+			]]>
+				<if test="ccwe001">
+					and t.UNOT005 = #{ccwe001}
+				</if>
+			<![CDATA[
+			) as notesNum
+			from dual
+		]]>
+	</select>
+
+	<resultMap type="com.huarui.product2020.entity.vo.SectionVO" id="findbyCourseSectionListResultMap">
+		<result column="first_ccwe003" property="ccwe003" />
+		<result column="first_ccwe001" property="ccwe001" />
+		<result column="first_courseid" property="courseid" />
+		<collection property="sectionList" ofType="com.huarui.product2020.entity.vo.SectionVO">
+			<result column="second_ccwe003" property="ccwe003" />
+			<result column="second_ccwe001" property="ccwe001" />
+			<result column="lcwr0111" property="lcwr0111" />
+			<result column="lcwr0110" property="lcwr0110" />
+			<result column="lcwr0107" property="lcwr0107" />
+			<result column="lere0101" property="lcwr0104" />
+			<result column="lere0103" property="lcwr0103" />
+			<result column="cour005" property="cour005" />
+			<result column="second_courseid" property="courseid" />
+		</collection>
+	</resultMap>
+
+	<select id="findbyCourseSectionList" resultMap="findbyCourseSectionListResultMap" parameterType="Map">
+		<![CDATA[
+		select t2.ccwe003 first_ccwe003, /*-- 一级章节名称*/
+	       t2.ccwe001 first_ccwe001, /*-- 一级章节ID*/
+	       a1.LERE0102 first_courseid, /*-- 课程ID*/
+	       nvl(t5.COUR002, '-1') second_ccwe003, /*-- 二级章节名称*/
+	       t3.ccwe001 second_ccwe001, /*-- 二级章节ID*/
+	       t.cour001 second_courseid, /*-- 课程ID*/
+	       a1.LERE0103, /*-- 用户ID */
+	       a1.lere0101, /*-- 学习总结果表ID*/
+	       t4.LCWR0111, /*-- 是否更新完成 （0未更新 1已更新）*/
+	       t4.LCWR0110, /*-- 章节是否学完 0未完成 1已完成*/
+	       t4.LCWR0107, /*-- 学习位置 单位：秒*/
+	       t5.COUR005 /*-- 总时长：单位（秒）*/
+		 from xzxy_t_course t
+		left join tbLERE01 a1 on t.cour001 = a1.Lere0102
+		left join course_t_courseware t2 on t.cour001 = t2.ccwe002 and t2.ccwe004 = 0 /*-- 一级章节*/
+		left join course_t_courseware t3 on t2.ccwe001 = t3.ccwe010 and t3.ccwe004 = 1 /*--  二级章节*/
+		left join tbLCWR01 t4 on t4.LCWR0105 = t3.ccwe001 and t4.LCWR0102 = t.cour001 and t4.LCWR0104 = a1.lere0101
+		left join hrsw_t_courseware t5 on t3.ccwe006 = t5.cour001
+		]]>
+
+		<where>
+			and t.cour001 = #{cmdy0503}
+			and a1.lere0109 = #{wdkc0201}
+		</where>
+		order by t2.ccwe005 asc, t3.ccwe005 asc
+	</select>
+
+    <select id="findbyCourseSwitchSection" resultType="java.util.Map">
+        <![CDATA[
+        select t.cour001, /*-- 课程id*/
+			   t.cour010, /*-- 课程名称*/
+			   t.cour007, /*-- 课程简介*/
+			   nvl(t3.ccwe001, '-1') ccwe001, /*-- 章节id*/
+			   nvl(t3.ccwe009, 0) ccwe009, /*-- 首次学习时允许拖拽：1、不允许 0、允许*/
+			   nvl(t3.ccwe008, 0) ccwe008, /*-- 非当前课件学习页面自动停止播放和计时：0、否 1、是*/
+			   t3.ccwe003,
+			   t4.cour002, /*-- 当前播放章节名称*/
+			   t4.COUR006, /*-- 播放路径*/
+			   t4.COUR005 /*-- 总时长：单位（秒）*/
+		  FROM xzxy_t_course t
+		  LEFT JOIN ( /*-- 查询出章节信息*/
+					 SELECT x.ccwe002,
+							 y.ccwe001,
+							 y.ccwe003,
+							 y.ccwe006,
+							 y.ccwe008,
+							 y.ccwe009,
+							 y.ccwe005
+					   FROM course_t_courseware x
+					  INNER JOIN course_t_courseware y
+						 ON x.ccwe001 = y.ccwe010
+						and y.ccwe004 = 1 /*-- 二级章节*/
+					  WHERE x.ccwe004 = 0 /*-- 一级章节*/
+					 ) t3
+			ON t.cour001 = t3.ccwe002
+		  LEFT JOIN hrsw_t_courseware t4
+			ON t4.cour001 = t3.ccwe006
+        ]]>
+
+        <where>
+            and t.cour001 = #{cmdy0503}
+
+
+            and t3.ccwe001 = #{ccwe001}  /*-- 章节id*/
+        </where>
+		order by t3.ccwe005 asc,t3.ccwe001
+    </select>
+
+
+	<resultMap type="com.huarui.product2020.entity.Tbclassaskquestions01" id="findbyCourseQuestionsAndAnswersListResultMap">
+		<result column="claq0101" property="claq0101" />
+		<result column="claq0103" property="claq0103" />
+		<result column="user005" property="user005" />
+		<result column="user006" property="user006" />
+		<result column="user028" property="user028" />
+		<result column="claq0104" property="claq0104" />
+		<result column="claq0112" property="claq0112" />
+		<result column="claq0113" property="claq0113" />
+		<result column="ccwe003" property="ccwe003" />
+		<result column="cour002" property="cour002" />
+		<result column="claq0111" property="claq0111" />
+		<result column="claq0107" property="claq0107" />
+		<result column="claq0105" property="claq0105" />
+		<result column="sum01" property="answerNum" />
+		<collection property="theLatestAnswer" ofType="com.huarui.product2020.entity.Tbclassaskquestions02">
+			<result column="user001_01" property="user001" />
+			<result column="user005_01" property="user005" />
+			<result column="claq0205_01" property="claq0205" />
+			<result column="claq0208_01" property="claq0208" />
+			<result column="claq0209_01" property="claq0209" />
+		</collection>
+		<collection property="interviewee" ofType="com.huarui.product2020.entity.Tbclassaskquestions02">
+			<result column="user001_02" property="user001" />
+			<result column="user005_02" property="user005" />
+			<result column="claq0205_02" property="claq0205" />
+			<result column="claq0208_02" property="claq0208" />
+			<result column="claq0209_02" property="claq0209" />
+		</collection>
+	</resultMap>
+
+
+    <select id="findbyCourseQuestionsAndAnswersList" resultMap="findbyCourseQuestionsAndAnswersListResultMap">
+	<![CDATA[
+		select t.claq0101,t.claq0103,t.claq0105,t3.UINF0103 user005,t3.UINF0104 user006,t3.UINF0114 user028,t.claq0104,t.claq0112,t4.ccwe003,nvl(t7.sum01, 0) sum01,
+			   t6.cour002,t.claq0111,t.claq0113,t.claq0107,t7.user001 user001_01,t7.user005 user005_01,t7.CLAQ0205 CLAQ0205_01,t7.CLAQ0208 CLAQ0208_01, t7.claq0209 CLAQ0209_01,
+			   t9.user001 user001_02,t9.UINF0103 user005_02,t8.CLAQ0205 CLAQ0205_02,t8.CLAQ0208 CLAQ0208_02, t8.claq0209 CLAQ0209_02
+
+		  from tbClassAskQuestions01 t
+		/*  left join tbClassAskQuestions02 t2
+			on t.CLAQ0101 = t2.CLAQ0202*/
+		  left join hrsw_v_user t3 on t3.user001 = t.Claq0103
+		  left join course_t_courseware t5 on t5.ccwe001 = t.CLAQ0110 /*-- 二级章节*/
+		  left join course_t_courseware t4
+                    on t4.ccwe001 = t5.ccwe010 /*-- 一级章节*/
+		  left join hrsw_t_courseware t6 on t6.cour001 = t5.ccwe006
+		  left join ( /*-- 查出最新一条回复*/
+			   select tt2.user001,tt2.UINF0103 user005,tt.CLAQ0202,tt.CLAQ0205,tt.CLAQ0208,tt.CLAQ0209,
+			   sum(1) over(partition by tt.CLAQ0202, tt.CLAQ0203) sum01,
+			   row_number() over (partition by tt.CLAQ0202,tt.CLAQ0203 order by tt.CLAQ0208 desc) row_number
+			   from tbClassAskQuestions02 tt
+			   left join hrsw_v_user tt2 on tt2.user001 = tt.CLAQ0204
+			   where tt.CLAQ0203 = #{claq0102}
+			   and tt.CLAQ0206 = 0  /*-- 内容类型：0、回答问题 1、回复答案*/
+		  ) t7 on t7.CLAQ0202 = t.claq0101 and t7.row_number = 1
+		  left join tbClassAskQuestions02 t8 on t8.CLAQ0201 = t.CLAQ0106
+		  left join hrsw_v_user t9 on t9.user001 = t8.CLAQ0204
+		]]>
+		  <where>
+			  and t.CLAQ0102 = #{claq0102}
+			  <!-- claq0109 类型 0全部 1我回答的 2我提问的 -->
+			  <if test="claq0109 != null and claq0109 == 1">
+				  <if test="claq0103 != null">
+					<![CDATA[
+				   		AND exists(
+				   			select 1 from tbClassAskQuestions02 a
+				   			where a.CLAQ0202 = t.claq0101
+				   			and a.CLAQ0204 =  #{claq0103}
+				   		)
+				   ]]>
+				  </if>
+			  </if>
+			  <if test="claq0109 != null and claq0109 == 2">
+				  <if test="claq0103 != null">
+					  <![CDATA[ AND t.claq0103 = #{claq0103} ]]>
+				  </if>
+			  </if>
+			  <if test="claq0110 != null ">
+				  <![CDATA[ AND t.claq0110 = #{claq0110} ]]>
+			  </if>
+		  </where>
+		order by t.claq0107 desc, t.claq0101
+	</select>
+
+	<resultMap type="com.huarui.product2020.entity.Tbclassaskquestions01" id="browseTheQuestionsResultMap">
+		<result column="claq0101" property="claq0101" />
+		<result column="claq0103" property="claq0103" />
+		<result column="user005" property="user005" />
+		<result column="user006" property="user006" />
+		<result column="user028" property="user028" />
+		<result column="claq0104" property="claq0104" />
+		<result column="claq0112" property="claq0112" />
+		<result column="ccwe003" property="ccwe003" />
+		<result column="cour002" property="cour002" />
+		<result column="claq0111" property="claq0111" />
+		<result column="claq0107" property="claq0107" />
+		<result column="answerNum" property="answerNum" />
+		<result column="claq0105" property="claq0105" />
+		<collection property="interviewee" ofType="com.huarui.product2020.entity.Tbclassaskquestions02">
+			<result column="user001_01" property="user001" />
+			<result column="user005_01" property="user005" />
+			<result column="user028_01" property="user028" />
+			<result column="claq0201" property="claq0201" />
+			<result column="claq0205" property="claq0205" />
+			<result column="claq0208" property="claq0208" />
+			<result column="claq0206" property="claq0206" />
+			<result column="user005_02" property="user005_02" />
+			<result column="isAdopted" property="isAdopted" />
+		</collection>
+	</resultMap>
+
+
+    <select id="browseTheQuestions" resultMap="browseTheQuestionsResultMap">
+		<![CDATA[
+		select t.claq0101, /*-- 提问id*/
+       	t.claq0103, /*-- 	用户ID*/
+       	t.claq0105, /* 是否已采纳答案：0、否 1、是 */
+        t3.UINF0103 user005, /*-- 提问人名称*/
+        t3.UINF0104 user006, /*-- 提问人性别*/
+        t3.UINF0114 user028, /*-- 提问人头像*/
+        t.claq0104, /*-- 提问内容*/
+        t.claq0112, /*-- 	问题被浏览次数*/
+        t4.ccwe003, /*-- 	一级章节名称*/
+         t6.cour002, /*-- 二级章节名称*/
+         t.claq0111,  /*-- 课程播放位置（秒）*/
+         t.claq0107, /*-- 提问时间*/
+         0 answerNum, /*-- 回答数*/
+
+         case when t.CLAQ0106 = t7.claq0201 then 1 end isAdopted , /*-- 是否已采纳答案：0、否 1、是*/
+         t8.user001 user001_01,/*-- 回答人id*/
+         t8.UINF0103 user005_01,/*-- 回答人姓名*/
+         t8.UINF0114 user028_01,/*-- 回答人头像*/
+         t7.CLAQ0201, /*-- 回答id*/
+         t7.CLAQ0205, /*-- 回答内容*/
+         t7.CLAQ0208, /*-- 回复时间*/
+         t7.CLAQ0206,  /*-- 内容类型：0、回答问题 1、回复答案*/
+         t10.UINF0103 user005_02 /*-- 回复对象用户名*/
+
+      from tbClassAskQuestions01 t
+      left join hrsw_v_user t3 on t3.user001 = t.Claq0103
+      left join course_t_courseware t5 on t5.ccwe001 = t.CLAQ0110 /*-- 二级章节*/
+      left join course_t_courseware t4 on t4.ccwe001 = t5.ccwe010  /*-- 一级章节*/
+      left join hrsw_t_courseware t6 on t6.cour001 = t5.ccwe006
+      left join tbClassAskQuestions02 t7 on t7.CLAQ0202 = t.claq0101 and t.CLAQ0102 = t7.claq0203
+      left join hrsw_v_user t8 on t8.user001 = t7.CLAQ0204
+      left join tbClassAskQuestions02 t9 on t9.claq0201 = t7.Claq0207
+      left join hrsw_v_user t10 on t10.user001 = t9.CLAQ0204
+		]]>
+		<where>
+			and t.claq0101 = #{claq0101}
+		</where>
+		order by  t7.CLAQ0208 asc,t7.CLAQ0201
+
+	</select>
+
+
+	<select id="courseRecord" resultType="java.util.Map">
+	<![CDATA[
+		select t2.WDKC0201,   /*我的商品id*/
+			t6.cour001,   /*课程id*/
+			t4.CMDY0424,   	/*年度*/
+			t6.cour010,   /*课程名称*/
+			t7.CMDY0603,   /*套包名称*/
+			t8.CMDY0312,  /*有效期类型 0：时间段；1：时长*/
+			t8.CMDY0313,  /*有效截止时间 针对时间段；*/
+			t8.CMDY0314,   /*时长（天） 针对“时长”*/
+			case when t8.CMDY0312 = 0 then t8.CMDY0313 else (t8.CMDY0308 + t8.CMDY0314) end canusetime,
+			t3.LERE0105,    /*学习进度*/
+			t3.LERE0110,    /*上次学习时间*/
+			t3.LERE0108     /*状态 0：在学 1：已完成*/
+			  from tbWDKC01 t
+			 inner join tbWDKC02 t2
+				on t.wdkc0101 = t2.Wdkc0202
+			 inner join tbLERE01 t3
+				on t2.wdkc0201 = t3.Lere0109
+			 inner join tbCMDY04 t4
+				on t2.WDKC0203 = t4.CMDY0401
+			 inner join tbCMDY05 t5
+				on t4.CMDY0401 = t5.CMDY0502
+			 inner join xzxy_t_course t6
+				on t5.CMDY0503 = t6.cour001
+				and t6.cour001 = t3.Lere0102
+			 inner join tbCMDY06 t7
+				on t7.CMDY0601 = t.WDKC0103
+			 inner join tbCMDY03 t8
+				on t8.cmdy0301 = t.Wdkc0102
+		]]>
+		<where>
+		 	and t.wdkc0104 = #{wdkc0104}
+		 	and t3.LERE0110 is not null /* 有上次学习时间的数据 */
+		</where>
+
+			order by t3.LERE0110 desc,t3.LERE0101
+
+	</select>
+
+
+	<select id="findbyCommentInformatica" resultType="java.util.Map">
+		<![CDATA[
+		select count(1) totalStar,
+		count(case when t.UMES005 = 0 then 1 end) goodStar,
+		count(case when t.UMES005 = 1 then 1 end) mediumStar,
+		count(case when t.UMES005 = 2 then 1 end) negativeStar
+
+		 from Study_t_userMessage t
+		]]>
+
+
+		<where>
+		and t.UMES002 = #{cour001}
+		</where>
+
+	</select>
+
+
+	<update id="updateProgress" statementType="CALLABLE" parameterType="Map" >
+    	<![CDATA[ CALL pro_UpdateProgress(#{lere0101})  ]]>
+    </update>
+
+
+    <update id="toAdoptToAnswer">
+		<![CDATA[
+
+			update tbClassAskQuestions01
+			   set CLAQ0105 = 1,
+				   CLAQ0106 = #{arg0},
+				   CLAQ0108 = sysdate
+			 where claq0101 =
+				   (select t2.CLAQ0202
+					  from tbClassAskQuestions02 t2
+					 where t2.claq0201 = #{arg0})
+
+ 		 ]]>
+
+	</update>
+
+
+	<update id="increaseTheNumberOfViews">
+		<![CDATA[
+		update TBCLASSASKQUESTIONS01 set CLAQ0112 = CLAQ0112 + 1
+			where CLAQ0101 = #{arg0}
+		]]>
+	</update>
+
+
+</mapper>

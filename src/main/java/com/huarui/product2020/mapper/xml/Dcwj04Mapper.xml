@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Dcwj04Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Dcwj04">
+		<id column="DCWJ0401" property="dcwj0401" />
+		<result column="DCWJ0402" property="dcwj0402" />
+		<result column="DCWJ0403" property="dcwj0403" />
+		<result column="DCWJ0404" property="dcwj0404" />
+		<result column="DCWJ0405" property="dcwj0405" />
+		<result column="DCWJ0406" property="dcwj0406" />
+		<result column="DCWJ0407" property="dcwj0407" />
+		<result column="DCWJ0408" property="dcwj0408" />
+		<result column="DCWJ0409" property="dcwj0409" />
+		<result column="DCWJ0410" property="dcwj0410" />
+		<result column="DCWJ0411" property="dcwj0411" />
+		<result column="DCWJ0412" property="dcwj0412" />
+		<result column="DCWJ0413" property="dcwj0413" />
+		<result column="DCWJ0414" property="dcwj0414" />
+		<collection property="dcwj05" ofType="com.huarui.product2020.entity.Dcwj05">
+			<id column="DCWJ0501" property="dcwj0501" />
+			<result column="DCWJ0502" property="dcwj0502" />
+			<result column="DCWJ0503" property="dcwj0503" />
+			<result column="DCWJ0504" property="dcwj0504" />
+			<result column="DCWJ0505" property="dcwj0505" />
+			<result column="DCWJ0506" property="dcwj0506" />
+			<result column="DCWJ0507" property="dcwj0507" />
+			<result column="DCWJ0508" property="dcwj0508" />
+			<result column="DCWJ0509" property="dcwj0509" />
+			<result column="DCWJ0510" property="dcwj0510" />
+			<result column="DCWJ0511" property="dcwj0511" />
+		</collection>
+		
+		<collection property="dcwj06" ofType="com.huarui.product2020.entity.Dcwj06">
+			<id column="DCWJ0601" property="dcwj0601" />
+			<result column="DCWJ0602" property="dcwj0602" />
+			<result column="DCWJ0603" property="dcwj0603" />
+			<result column="DCWJ0604" property="dcwj0604" />
+			<result column="DCWJ0605" property="dcwj0605" />
+			<result column="DCWJ0606" property="dcwj0606" />
+			<result column="DCWJ0607" property="dcwj0607" />
+			<result column="DCWJ0608" property="dcwj0608" />
+		</collection>
+	</resultMap>
+	
+	<select id="queryTopicById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT *
+	  FROM DCWJ04 A
+	  INNER JOIN DCWJ07 B
+	  ON A.DCWJ0401 = B.DCWJ0702
+	  LEFT JOIN DCWJ05 C
+	    ON A.DCWJ0401 = C.DCWJ0502
+	  LEFT JOIN DCWJ06 D
+	    ON A.DCWJ0401 = D.DCWJ0602
+	 WHERE B.DCWJ0703 = #{dcwj0201}
+	 ORDER BY A.DCWJ0411,C.DCWJ0510
+	</select>
+</mapper>

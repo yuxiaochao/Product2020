@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbgwc02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbgwc02">
+		<id column="GWC0201" property="gwc0201" />
+		<result column="GWC0202" property="gwc0202" />
+		<result column="GWC0203" property="gwc0203" />
+		<result column="GWC0204" property="gwc0204" />
+		<result column="GWC0205" property="gwc0205" />
+		<result column="GWC0206" property="gwc0206" />
+		<result column="GWC0207" property="gwc0207" />
+		<result column="GWC0208" property="gwc0208" />
+		<result column="GWC0209" property="gwc0209" />
+		<result column="GWC0210" property="gwc0210" />
+		<result column="GWC0211" property="gwc0211" />
+		<result column="GWC0212" property="gwc0212" />
+	</resultMap>
+
+	<select id="queryCartCommodity" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+			B.GWC0203,
+			B.GWC0204
+		FROM 
+			TBGWC01 A 
+		INNER JOIN 
+			TBGWC02 B ON A.GWC0101 = B.GWC0208
+		WHERE  
+			A.GWC0101= #{gwc0101}
+		AND 
+			B.GWC0202 = #{gwc0202}
+		AND
+			A.GWC0107 = 0
+		<if test="gwc0203 != null">
+			AND B.GWC0203 = #{gwc0203}
+			AND B.GWC0204 IS NULL
+		</if>
+		
+		<if test="gwc0204 != null">
+			AND B.GWC0204 IN
+			<foreach item="item" index="index" collection="gwc0204.split(',')" open="(" separator="," close=")">'${item}'</foreach>
+			AND B.GWC0203 IS NULL  
+		</if>
+	</select>
+	
+	<select id="queryCartId" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			A.GWC0101 
+		FROM
+			TBGWC01 A 
+		WHERE
+			A.GWC0102 = #{userId}
+		AND
+			A.GWC0105 = 1
+		AND
+			A.GWC0107 = 0
+	</select>
+	
+	
+	<sql id="gwc02sql">
+		(SELECT
+			B2.CMDY0306 CMDY0306,
+			B3.CMDY0603,
+			B3.CMDY0601 COMMODITYID,
+			'套包' CMDY0404,
+			B1.GWC0208,
+			(B3.CMDY0605 * B1.GWC0206) TOTALPRICE,
+			B2.CMDY0311,
+			B2.CMDY0301,
+			B1.GWC0201, 
+			B1.GWC0206,
+			B1.GWC0207,
+			B6.XXKGL0805,
+			0 COMMODITYTYPE,
+			B3.CMDY0605 PRICE,
+			B6.XXKGL0801,
+			B2.CMDY0306 || B3.CMDY0603 || '(套包)' COMMODITYNAME
+		FROM
+			TBGWC02 B1
+			INNER JOIN TBCMDY03 B2 ON B1.GWC0202 = B2.CMDY0301
+			INNER JOIN TBCMDY06 B3 ON B1.GWC0203 = B3.CMDY0601
+			LEFT JOIN 
+			(
+			 SELECT
+			  B4.XXKGL0903,B5.XXKGL0805,B5.XXKGL0801
+			 FROM
+			 	TBXXKGL09 B4
+            	INNER JOIN TBXXKGL08 B5
+            	ON B5.XXKGL0801 = B4.XXKGL0902
+            	AND <![CDATA[ TO_CHAR(SYSDATE, 'YYYY-MM-DD') >= ]]>
+                <![CDATA[ TO_CHAR(B5.XXKGL0803, 'YYYY-MM-DD') ]]>
+            	AND <![CDATA[ TO_CHAR(SYSDATE, 'YYYY-MM-DD') <= ]]>
+                <![CDATA[ TO_CHAR(B5.XXKGL0804, 'YYYY-MM-DD') ]]>
+            ) B6
+            ON B3.CMDY0601 = B6.XXKGL0903
+		WHERE
+			B1.GWC0204 IS NULL 
+			UNION ALL
+		SELECT
+			B2.CMDY0306 CMDY0306,
+			B3.CMDY0603,
+			B5.CMDY0701 COMMODITYID,
+			B4.CMDY0404,
+			B1.GWC0208,
+			(B3.CMDY0609 * B1.GWC0206) TOTALPRICE,
+			B4.CMDY0406,
+			B2.CMDY0301,
+			B1.GWC0201,
+			B1.GWC0206,
+			B1.GWC0207,
+			B8.XXKGL0805,
+			1 COMMODITYTYPE,
+			B3.CMDY0609 PRICE,
+			B8.XXKGL0801,
+			B2.CMDY0306 || B4.CMDY0404 COMMODITYNAME 
+		FROM
+			TBGWC02 B1
+		INNER JOIN TBCMDY03 B2 ON B1.GWC0202 = B2.CMDY0301
+		INNER JOIN TBCMDY07 B5 ON B1.GWC0202 = B5.CMDY0706 
+		INNER JOIN TBCMDY06 B3 ON B5.CMDY0702 = B3.CMDY0601
+		AND B1.GWC0204 = B5.CMDY0701
+		INNER JOIN TBCMDY04 B4 ON B4.CMDY0401 = B5.CMDY0703 
+		LEFT JOIN 
+		(	
+			SELECT
+			B6.XXKGL0904,B7.XXKGL0805,B7.XXKGL0801
+			FROM
+			TBXXKGL09 B6
+	        INNER JOIN TBXXKGL08 B7
+	        ON B7.XXKGL0801 = B6.XXKGL0902
+	        AND <![CDATA[ TO_CHAR(SYSDATE, 'YYYY-MM-DD') >= ]]>
+	            <![CDATA[ TO_CHAR(B7.XXKGL0803, 'YYYY-MM-DD') ]]>
+	        AND <![CDATA[ TO_CHAR(SYSDATE, 'YYYY-MM-DD') <= ]]>
+	            <![CDATA[ TO_CHAR(B7.XXKGL0804, 'YYYY-MM-DD') ]]>
+        ) B8
+        ON B5.CMDY0701 = B8.XXKGL0904
+		WHERE B1.GWC0203 IS NULL
+		) B
+	</sql>
+	
+	<select id="queryCartListByUserId" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			B.COMMODITYNAME "cmdy0306",
+			B.GWC0208 "gwc0208",
+			TO_CHAR(B.TOTALPRICE,'fm9999990.00') "totalprice",
+			DECODE(
+				C.CMDY0312,
+				0,
+				'至' || TO_CHAR( C.CMDY0313,  'YYYY"年"MM"月"DD"日"' ),
+				1,
+				C.CMDY0314 || '天',
+				'--' 
+			) "cmdy0312t",
+			B.CMDY0311 "cmdy0311",
+			B.GWC0201 "gwc0201",
+			A.GWC0101 "gwc0101",
+			DECODE(NVL(B.XXKGL0805, -1),-1,0,1) "isPromotions",
+	       	NVL(B.XXKGL0805, 10) "eventDiscount",
+	       	TO_CHAR((B.TOTALPRICE * (NVL(B.XXKGL0805, 10) / 10)),'fm9999990.00') "activityTotalPrice",
+	       	TO_CHAR((B.TOTALPRICE - (B.TOTALPRICE * (NVL(B.XXKGL0805, 10) / 10))),'fm9999990.00') "discountPrice",
+	       	B.COMMODITYTYPE "commodityType",
+	       	B.COMMODITYID "commodityId",
+	       	B.PRICE "price",
+	       	B.XXKGL0801 "xxkgl0801",
+	       	B.GWC0206 "amount"
+		FROM
+			TBGWC01 A
+			INNER JOIN 
+			<include refid="gwc02sql"/>
+			 ON A.GWC0101 = B.GWC0208
+			 LEFT JOIN TBCMDY03 C ON C.CMDY0301 = B.CMDY0301 
+		WHERE
+			A.GWC0105 = 1
+			AND A.GWC0102 = #{userId}
+			AND
+				A.GWC0107 = 0
+		ORDER BY B.GWC0207
+	</select>
+	
+	<select id="queryCartAndPriceByUserId" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT 
+			A.GWC0101 "gwc0101",
+			NVL(C.TOTALPRICE,0) "totalprice",
+			C.CMDY0404 "cmdy0404"
+		FROM 
+			TBGWC01 A
+		INNER JOIN 
+		(
+			SELECT 
+				B.GWC0208,SUM(B.TOTALPRICE) TOTALPRICE,
+				WMSYS.WM_CONCAT	(B.COMMODITYNAME) CMDY0404
+			FROM
+				<include refid="gwc02sql"/>
+			GROUP BY B.GWC0208
+		) C
+		ON 
+			A.GWC0101 = C.GWC0208
+		WHERE 
+			A.GWC0102 = #{userId}
+		AND
+			A.GWC0105 = 1
+		AND
+			A.GWC0107 = 0
+	</select>
+	
+	<select id="queryOrderInfoById" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			A.DD0101 "dd0101",
+			A.DD0104 "dd0104",
+			C.CMDY0404 "cmdy0404",
+			A.DD0111 "dd0111",
+			A.DD0108 "dd0108"
+		FROM
+			TBDD01 A
+		INNER JOIN
+		(
+			SELECT 
+				B.GWC0208,
+				LISTAGG(B.COMMODITYNAME,',') WITHIN GROUP (ORDER BY B.CMDY0404) CMDY0404 
+			FROM
+				<include refid="gwc02sql"/>
+			GROUP BY B.GWC0208
+		) C
+		ON
+			A.DD0103 = C.GWC0208
+		WHERE
+			A.DD0101 = #{dd0101}
+		AND A.DD0102 = #{userId}
+		AND
+			DD0106 = 0
+	</select>
+	
+	<select id="commoditylist" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			B.CMDY0306 "cmdy0306",
+			B.CMDY0603 "cmdy0603",
+			B.CMDY0404 "cmdy0404",
+			B.GWC0208 "gwc0208",
+			B.TOTALPRICE "totalprice",
+			DECODE(
+				C.CMDY0312,
+				0,
+				'至' || TO_CHAR( C.CMDY0313,  'YYYY"年"MM"月"DD"日"' ),
+				1,
+				C.CMDY0314 || '天',
+				'--' 
+			) "cmdy0312t",
+			B.CMDY0311 "cmdy0311",
+			B.GWC0201 "gwc0201",
+			A.GWC0101 "gwc0101",
+			B.COMMODITYNAME "commodityName"
+		FROM
+			TBGWC01 A
+			INNER JOIN 
+			<include refid="gwc02sql"/>
+			 ON A.GWC0101 = B.GWC0208
+			INNER JOIN TBCMDY03 C ON C.CMDY0301 = B.CMDY0301 
+			INNER JOIN TBDD01 D ON A.GWC0101 = D.DD0103 AND A.GWC0102 = D.DD0102
+		WHERE
+			A.GWC0105 = 0
+			AND 
+				D.DD0101 = #{dd0101}
+			AND
+				A.GWC0107 = 0
+		ORDER BY B.GWC0207
+	</select>
+	
+	<select id="queryCommodityPrice" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT
+			B.CMDY0609 "price",
+			A.CMDY0701 "cmdy0701"
+		FROM 
+			tbCMDY07 A 
+		INNER JOIN 
+			tbCMDY06 B
+		ON 
+			A.CMDY0702 = B.CMDY0601
+		WHERE 
+			A.CMDY0701 IN
+			<foreach item="item" index="index" collection="gwc0204s.split(',')" open="(" separator="," close=")">
+				'${item}'
+			</foreach>
+	</select>
+	
+	<update id="updateGwc02" parameterType="java.util.List">
+        BEGIN 
+        <foreach collection="tbgwc02List" item="item" separator=";">
+           UPDATE 
+           	TBGWC02
+           SET 
+           	GWC0209 = #{item.gwc0209},
+           	GWC0210 = #{item.gwc0210},
+           	<if test="item.gwc0211 != null">
+           		GWC0211 = #{item.gwc0211},
+           	</if>
+           	GWC0212 = #{item.gwc0212}
+           WHERE 
+           	GWC0201 = #{item.gwc0201} 
+         </foreach>
+         ;END;
+   </update>
+	
+	
+	<!-- 根据订单ID获取优惠券信息 -->
+	<select id="couponList" parameterType="java.lang.String" resultType="java.util.Map">
+	    SELECT
+		    C.YHQGL0303,
+		    D.YHQGL0101,
+		    D.YHQGL0109
+		FROM
+		    tbYHQGL08 A
+		LEFT JOIN tbYHQGL07 B ON
+		    A.YHQGL0802 = B.YHQGL0701
+		LEFT JOIN tbYHQGL03 C ON
+		    B.YHQGL0703 = C.YHQGL0301
+		LEFT JOIN tbYHQGL01 D ON
+		    C.YHQGL0302 = D.YHQGL0101
+		WHERE
+		    A.YHQGL0803 = #{dd0101}
+	</select>
+	
+</mapper>

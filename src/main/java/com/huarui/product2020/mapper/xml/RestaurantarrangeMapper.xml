@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.RestaurantarrangeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Restaurantarrange">
+		<id column="REAR001" property="rear001" />
+		<result column="REAR002" property="rear002" />
+		<result column="REAR003" property="rear003" />
+		<result column="REAR004" property="rear004" />
+		<result column="REAR005" property="rear005" />
+	</resultMap>
+	
+	<select id="findByTrainId" resultType="com.huarui.product2020.entity.Restaurantarrange">
+		 SELECT
+			A.REAR001,
+			A.REAR002,
+			A.REAR003,
+			A.REAR004,
+			B.CANT003 AS REAR004N,
+			A.REAR005,
+			A.REAR006
+		FROM
+			HR_T_RESTAURANTARRANGE A
+		LEFT JOIN HR_T_CANTEEN B ON
+			A.REAR004 = B.CANT001
+		<where>
+			<![CDATA[ AND A.REAR002 = #{rear002} ]]> 
+		</where>
+	</select>
+
+</mapper>

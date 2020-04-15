@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbusif02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbusif02">
+		<id column="USIF0201" property="usif0201" />
+		<result column="USIF0202" property="usif0202" />
+		<result column="USIF0203" property="usif0203" />
+		<result column="USIF0204" property="usif0204" />
+		<result column="USIF0205" property="usif0205" />
+		<result column="USIF0206" property="usif0206" />
+		<result column="USIF0207" property="usif0207" />
+		<result column="USIF0208" property="usif0208" />
+		<result column="USIF0209" property="usif0209" />
+		<result column="USIF0210" property="usif0210" />
+		<result column="USIF0211" property="usif0211" />
+		<result column="USIF0212" property="usif0212" />
+	</resultMap>
+
+
+	<select id="getMailingAddress" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+			select a.* from tbUSIF02 a left join HRSW_T_USER b on a.USIF0202 = b.USER001
+		]]>
+        WHERE A.USIF0202 = #{arg0}
+    </select>
+</mapper>

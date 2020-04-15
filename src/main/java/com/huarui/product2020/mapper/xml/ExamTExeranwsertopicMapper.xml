@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTExeranwsertopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTExeranwsertopic">
+		<id column="EATO001" property="eato001" />
+		<result column="EATO002" property="eato002" />
+		<result column="EATO003" property="eato003" />
+		<result column="EATO004" property="eato004" />
+		<result column="EATO005" property="eato005" />
+		<result column="EATO006" property="eato006" />
+		<result column="EATO007" property="eato007" />
+		<result column="EATO008" property="eato008" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMeetingtaskmodifyMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMeetingtaskmodify">
+		<id column="MTMO001" property="mtmo001" />
+		<result column="MTMO002" property="mtmo002" />
+		<result column="MTMO003" property="mtmo003" />
+		<result column="MTMO004" property="mtmo004" />
+		<result column="MTMO005" property="mtmo005" />
+		<result column="MTMO006" property="mtmo006" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTUsermessageMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTUsermessage">
+		<id column="UMES001" property="umes001" />
+		<result column="UMES002" property="umes002" />
+		<result column="UMES003" property="umes003" />
+		<result column="UMES004" property="umes004" />
+		<result column="UMES005" property="umes005" />
+		<result column="UMES006" property="umes006" />
+		<result column="UMES007" property="umes007" />
+	</resultMap>
+
+</mapper>

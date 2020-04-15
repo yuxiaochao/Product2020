@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.huarui.product2020.mapper.HrswTDocumentaryfactstaskMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTDocumentaryfactstask">
+		<id column="DOFA001" property="dofa001" />
+		<result column="DOFA002" property="dofa002" />
+		<result column="DOFA003" property="dofa003" />
+		<result column="DOFA004" property="dofa004" />
+		<result column="DOFA005" property="dofa005" />
+		<result column="DOFA006" property="dofa006" />
+		<result column="DOFA007" property="dofa007" />
+	</resultMap>
+
+	<select id="selectFactsTask" resultMap="BaseResultMap">
+
+		<!-- SELECT ROWNUM, WWE.* FROM( SELECT dofa001, dofa002, dofa003, dofa004, 
+			dofa007 FROM hrsw_t_DocumentaryFactsTask WHERE <![CDATA[to_char(sysdate,'yyyy-mm-dd') 
+			>=to_char(dofa003,'yyyy-mm-dd') AND to_char(sysdate,'yyyy-mm-dd')<=to_char(DOFA004,'yyyy-mm-dd')]]> 
+			ORDER BY dofa007 desc) wwe WHERE ROWNUM=1 -->
+		SELECT
+		dofa001,
+		dofa002,
+		dofa003,
+		dofa004
+		FROM hrsw_t_DocumentaryFactsTask
+		WHERE  
+    <![CDATA[to_char(sysdate,'yyyy-mm-dd') >=to_char(dofa003,'yyyy-mm-dd') AND to_char(sysdate,'yyyy-mm-dd')<=to_char(DOFA004,'yyyy-mm-dd')]]>
+	</select>
+
+	<select id="selectFactsReport" parameterType="java.util.Map"
+		resultType='com.huarui.product2020.entity.HrswTDocumentaryfactsreport'>
+		SELECT
+		*
+		FROM hrsw_t_DocumentaryFactsReport
+		WHERE dofr002=#{dofr002} AND
+		dofr003=#{user001}
+		<!-- and to_char(sysdate,'yyyy-mm-dd') =to_char(dofr004,'yyyy-mm-dd') -->
+	</select>
+
+	<select id="selectTaskSucc" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		<!-- SELECT we.CALT001,we.CALT002 FROM( SELECT BB.CALT001, BB.CALT002, 
+			case when ee.dofa001 is NULL then 0 else 1 end style FROM hrsw_t_MeetingTaskPeople 
+			aa INNER JOIN hrsw_t_calendarTask bb ON BB.CALT001=AA.METP002 LEFT JOIN hrsw_t_DocumentaryFacts 
+			ee ON ee.dofa009=aa.metp002 AND ee.dofa006=aa.metp005 INNER JOIN hrsw_t_TaskResult 
+			cc ON cc.tare002=aa.metp002 AND cc.tare003=aa.metp005 AND cc.tare004=2 WHERE 
+			AA.METP005=#{user001} AND aa.metp003=2 ORDER BY cc.TARE005) we WHERE we.style=0 -->
+		SELECT
+		we.CALT001,
+		we.CALT002
+		FROM(
+		SELECT
+		BB.CALT001,
+		BB.CALT002,
+		case when
+		ee.dofa001 is NULL then 0 else 1 end style
+		FROM
+		hrsw_t_MeetingTaskPeople AA
+		INNER JOIN hrsw_t_calendarTask bb ON
+		BB.CALT001=aa.METP002
+		AND bb.calt011=1 AND <![CDATA[BB.CALT006>=#{starttime} AND BB.calt006<=#{endtime} 
+				AND SYSDATE>=BB.calt006]]>
+		LEFT JOIN hrsw_t_DocumentaryFacts ee on ee.dofa009=aa.metp002 AND
+		ee.dofa006=aa.metp005
+		WHERE AA.metp005=#{user001} AND AA.metp003=2
+		) we
+		WHERE we.style=0
+
+	</select>
+
+	<select id="selectTaskHistory" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select
+		ROWNUM Serialnumber,
+		wwr.*
+		from
+		(
+		SELECT
+		cc.dofa001,
+		cc.dofa002,
+		cc.dofa003,
+		cc.dofa004,
+		cc.dofa005,
+		cc.dofa006,
+		cc.dofa009,
+		CASE when
+		cc.dofa004=1 then '系统生成' else '手工填写' end style,
+		to_char(cc.dofa007,'yyyy-mm-dd hh24:mi') dofa0071,
+		dd.urlALLS
+		FROM
+		hrsw_t_DocumentaryFacts cc
+		INNER JOIN(
+		SELECT
+		aa.dofa001,
+		LISTAGG
+		(dd.DOFP001||'+'||dd.DOFP004, ',') WITHIN GROUP (ORDER BY aa.dofa007)
+		urlALLS
+		FROM hrsw_t_DocumentaryFacts aa
+		LEFT JOIN
+		hrsw_t_DocumentaryFactsPicture dd ON dd.DOFP003=aa.dofa001 AND
+		dd.dofp002=#{dofa005}
+		GROUP BY aa.dofa001 ) dd ON dd.dofa001=cc.
+		dofa001
+		WHERE cc.dofa006=#{user001} AND cc.dofa002=#{dofa002} and
+		cc.dofa005=#{dofa005} ORDER BY cc.dofa007 ) wwr
+		<!-- select ww.dofa001, ww.dofa002, ww.dofa003, ww.dofa004, ww.dofa005, 
+			ww.dofa006, ww.dofa009, ww.dofa0071, ww.style, ROWNUM Serialnumber from( 
+			SELECT aa.*, CASE when aa.dofa004=1 then '系统生成' else '手工填写' end style, ROWNUM 
+			Serialnumber, to_char(aa.dofa007,'yyyy-mm-dd hh24:mi') dofa0071 FROM hrsw_t_DocumentaryFacts 
+			aa WHERE aa.dofa006=#{user001} AND aa.dofa005=#{dofa005} AND aa.dofa002=#{dofa002} 
+			ORDER BY aa.dofa007) ww -->
+
+	</select>
+
+
+	<select id="initSystemQueue" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT A.THISID CALT001,A.THISCONTENT CALT002
+		FROM
+		GBJXKH_V_ALLTASKINFO A
+		LEFT JOIN HRSW_T_DOCUMENTARYFACTS B
+		ON A.THISID =
+		B.DOFA009
+		WHERE A.ISTYPE = 3
+		AND A.USERID = #{user001}
+		AND SYSDATE >
+		ENDDATE
+		AND B.DOFA001 IS NULL
+		ORDER BY A.ENDDATE
+	</select>
+
+	<select id="initDocumentaryHistory"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.*,C.urlALLS
+		FROM HRSW_T_DOCUMENTARYFACTS A
+		LEFT JOIN
+		HRSW_T_DOCUMENTARYREPORTCHILD B
+		ON A.DOFA001 = B.DORC004
+		INNER JOIN(
+		SELECT
+		AA.DOFA001,
+		LISTAGG (DD.DOFP001||'+'||DD.DOFP004, ',') WITHIN
+		GROUP (ORDER BY AA.DOFA007)
+		URLALLS
+		FROM HRSW_T_DOCUMENTARYFACTS AA
+		LEFT
+		JOIN HRSW_T_DOCUMENTARYFACTSPICTURE DD ON DD.DOFP003=AA.DOFA001
+		<if test="dofa005!=null and dofa005!='undefinde' and dofa005!=''">
+			AND DD.DOFP002=#{dofa005}
+		</if>
+		GROUP BY AA.DOFA001 ) C ON C.DOFA001=A. DOFA001
+		WHERE A.DOFA006 = #{user001}
+		<if test="dofa005!=null and dofa005!='undefined' and dofa005!=''">
+			AND A.DOFA005 = #{dofa005}
+		</if>
+		<if test="dofa010!=null and dofa010!='undefined' and dofa010!=''">
+			<if test="dofa010=='-10'">
+				AND A.DOFA010 IS NULL AND A.DOFA005 = 2
+			</if>
+			<if test="dofa010=='-20'">
+				AND A.DOFA010 IS NULL AND A.DOFA005 = 3
+			</if>
+			<if test="dofa010!='-10' and dofa010!='-20'">
+				AND A.DOFA010 = #{dofa010}
+			</if>
+		</if>
+		AND B.DORC001 IS NULL
+		ORDER BY A.DOFA007 DESC
+	</select>
+	<select id="initDocumentaryHistory01"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT A.*,C.urlALLS
+		from hrsw_t_documentaryfacts A
+		LEFT JOIN
+		hrsw_t_documentaryreportchild B
+		ON A.DOFA001 = B.DORC004
+		INNER JOIN(
+		SELECT
+		AA.DOFA001,
+		LISTAGG (DD.DOFP001||'+'||DD.DOFP004, ',') WITHIN
+		GROUP (ORDER BY AA.DOFA007)
+		URLALLS
+		FROM HRSW_T_DOCUMENTARYFACTS AA
+		LEFT
+		JOIN HRSW_T_DOCUMENTARYFACTSPICTURE DD ON DD.DOFP003=AA.DOFA001
+		<if test="dofa005!=null and dofa005!='undefinde' and dofa005!=''">
+			AND DD.DOFP002=#{dofa005}
+		</if>
+		GROUP BY AA.DOFA001 ) C ON C.DOFA001=A. DOFA001
+		WHERE B.dorc002 = #{dore001}
+		<if test="dofa005!=null and dofa005!='undefined' and dofa005!=''">
+			AND A.DOFA005 = #{dofa005}
+		</if>
+		<if test="dofa010!=null and dofa010!='undefined' and dofa010!=''">
+			AND A.DOFA010 = #{dofa010}
+		</if>
+		ORDER BY A.DOFA007 DESC
+	</select>
+
+	<select id="findByDofa010Count" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT C.DOFA010, COUNT(1) AS DOFA010COUNT FROM
+		(SELECT 
+		CASE WHEN 
+		  DOFA005 = 2 AND DOFA010 IS NULL 
+		THEN -10 
+		  WHEN DOFA005 = 3 AND DOFA010 IS NULL THEN -20
+		  ELSE DOFA010 END DOFA010
+		  FROM HRSW_T_DOCUMENTARYFACTS A
+		  LEFT JOIN HRSW_T_DOCUMENTARYREPORTCHILD B
+		    ON A.DOFA001 = B.DORC004
+		    
+		    
+		 WHERE A.DOFA006 = #{user001}
+		   AND B.DORC001 IS NULL
+		   AND A.DOFA005 IN (2, 3)
+		   )C
+		 GROUP BY C.DOFA010
+		 ORDER BY C.DOFA010 DESC
+	</select>
+
+	<select id="findByDofa010Count01" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT dofa010,count(dofa010) as dofa010Count
+		FROM
+		HRSW_T_DOCUMENTARYFACTS A
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORTCHILD B
+		ON
+		A.DOFA001 = B.DORC004
+		WHERE B.DORC002 = #{dore001}
+		and a.dofa005 in
+		(2,3)
+		group by dofa010
+		ORDER BY A.dofa010 DESC
+	</select>
+
+	<select id="selectDocumentaryBydofa001" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+		SELECT * FROM HRSW_T_DOCUMENTARYFACTS A 
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORTCHILD B ON A.DOFA001 =  B.DORC004
+		WHERE B.DORC001 IS NULL 
+		AND A.DOFA007>(
+		       SELECT DOFA003 FROM HRSW_T_DOCUMENTARYFACTSTASK WHERE DOFA001 = #{dore014}
+		) AND a.DOFA007<trunc((
+		       SELECT DOFA004 FROM HRSW_T_DOCUMENTARYFACTSTASK WHERE DOFA001 = #{dore014}
+		)+ 1) AND a.DOFA006 = #{user001}
+		]]>
+	</select>
+	
+	<select id="selectDocumentaryFactsTask" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+		SELECT A.*
+		  FROM HRSW_T_DOCUMENTARYFACTSTASK A
+		  LEFT JOIN HRSW_T_DOCUMENTARYREPORT B
+		    ON A.DOFA001 = B.DORE014 AND B.DORE003 = #{user001}
+		    WHERE B.DORE001 IS NULL
+		    AND to_char(A.DOFA016,'yyyy-mm-dd')<=to_char(SYSDATE,'yyyy-mm-dd') AND to_char(A.DOFA017,'yyyy-mm-dd')>=to_char(SYSDATE,'yyyy-mm-dd')
+		]]>
+	</select>
+	
+	<select id="selectMyFactsTask" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+		SELECT * FROM (
+			SELECT * FROM 
+				(SELECT ROW_NUMBER() OVER(PARTITION BY T.DORE014 ORDER BY T.DORE004 DESC) LEV,t.*
+		          FROM hrsw_t_DocumentaryReport t
+		          WHERE T.DORE015 = 0 AND T.DORE013 = 2
+		          AND T.DORE003 = #{user001}
+		        )t1
+			 WHERE LEV = 1
+			 ORDER BY T1.DORE004 DESC
+		 ) A 
+	    LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK B
+	    ON A.DORE014 = B.DOFA001 
+		]]>
+	</select>
+	
+	<select id="initDocumentaryHistory02"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+		select b.*,C.URLALLS from hrsw_t_DocumentaryFactsTask a 
+		LEFT JOIN HRSW_T_DOCUMENTARYFACTS B ON B.DOFA007>A.DOFA003 AND B.DOFA007<A.DOFA004
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORTCHILD C ON B.DOFA001 = C.DORC004
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORT D ON C.DORC002 = D.DORE001
+		]]>
+		INNER JOIN(
+		SELECT
+		AA.DOFA001,
+		LISTAGG (DD.DOFP001||'+'||DD.DOFP004, ',') WITHIN
+		GROUP (ORDER BY AA.DOFA007)
+		URLALLS
+		FROM HRSW_T_DOCUMENTARYFACTS AA
+		LEFT
+		JOIN HRSW_T_DOCUMENTARYFACTSPICTURE DD ON DD.DOFP003=AA.DOFA001
+		<if test="dofa005!=null and dofa005!='undefinde' and dofa005!=''">
+			AND DD.DOFP002=#{dofa005}
+		</if>
+		GROUP BY AA.DOFA001 ) C ON C.DOFA001=b. DOFA001
+		where d.dore003 = #{user001} AND D.DORE013 = 2 AND D.DORE015 = 0 and a.dofa001 = #{dofa001}
+		<if test="dofa005!=null and dofa005!='undefined' and dofa005!=''">
+			AND b.DOFA005 = #{dofa005}
+		</if>
+		<if test="dofa010!=null and dofa010!='undefined' and dofa010!=''">
+			AND b.DOFA010 = #{dofa010}
+		</if>
+		ORDER BY B.DOFA007 DESC
+		
+	</select>
+
+	<select id="findByDofa010Count02" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT b.DOFA010,COUNT(b.DOFA010) AS DOFA010COUNT FROM HRSW_T_DOCUMENTARYFACTSTASK A 
+		<![CDATA[
+		LEFT JOIN HRSW_T_DOCUMENTARYFACTS B ON B.DOFA007>A.DOFA003 AND B.DOFA007<A.DOFA004
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORTCHILD C ON B.DOFA001 = C.DORC004
+		LEFT JOIN HRSW_T_DOCUMENTARYREPORT D ON C.DORC002 = D.DORE001
+		]]>
+		  WHERE d.dore003 = #{user001} AND D.DORE013 = 2 
+		  AND D.DORE015 = 0 and a.dofa001 = #{dofa001} and b.DOFA005 IN (2,3)
+		  GROUP BY b.DOFA010
+		  ORDER BY b.DOFA010 DESC
+	</select>
+
+</mapper>

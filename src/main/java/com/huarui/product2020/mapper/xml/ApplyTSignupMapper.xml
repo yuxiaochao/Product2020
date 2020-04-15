@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ApplyTSignupMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ApplyTSignup">
+		<id column="SIGN001" property="sign001" />
+		<result column="SIGN002" property="sign002" />
+		<result column="SIGN003" property="sign003" />
+		<result column="SIGN004" property="sign004" />
+		<result column="SIGN005" property="sign005" />
+		<result column="SIGN006" property="sign006" />
+		<result column="SIGN007" property="sign007" />
+		<result column="SIGN008" property="sign008" />
+		<result column="SIGN009" property="sign009" />
+		<result column="SIGN010" property="sign010" />
+		<result column="SIGN011" property="sign011" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbtssq01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbtssq01">
+		<id column="TSSQ0101" property="tssq0101" />
+		<result column="TSSQ0102" property="tssq0102" />
+		<result column="TSSQ0103" property="tssq0103" />
+		<result column="TSSQ0104" property="tssq0104" />
+		<result column="TSSQ0105" property="tssq0105" />
+		<result column="TSSQ0106" property="tssq0106" />
+		<result column="TSSQ0107" property="tssq0107" />
+	</resultMap>
+	
+	
+	<select id="findListByUserId" resultType="com.huarui.product2020.entity.Tbtssq01" parameterType="HashMap">
+	    SELECT
+	        A.TSSQ0101,
+		    B.DD0104 AS ORDERNUMBER, 
+		    A.TSSQ0105,
+		    NVL2(A.TSSQ0103, D.CMDY0306 || C.CMDY0603 || '（套包）', F.CMDY0306 || G.CMDY0404) AS PRODUCTNAME
+		FROM
+		    Tbtssq01 A
+		LEFT JOIN tbDD01 B ON
+		    A.TSSQ0102 = B.DD0101
+		
+		LEFT JOIN tbCMDY06 C ON 
+		    A.TSSQ0103 = C.CMDY0601
+		LEFT JOIN tbCMDY03 D ON 
+		    C.CMDY0602 = D.CMDY0301
+		    
+		LEFT JOIN tbCMDY07 E ON 
+		    A.TSSQ0104 = E.CMDY0701
+		LEFT JOIN tbCMDY03 F ON 
+		    E.CMDY0706 = F.CMDY0301
+		LEFT JOIN tbCMDY04 G ON 
+		    E.CMDY0703 = G.CMDY0401  
+		LEFT JOIN TBTSSQ02 H ON 
+            A.TSSQ0101=H.TSSQ0202
+		WHERE A.TSSQ0106= #{userId} AND H.TSSQ0201 IS NULL
+	</select>
+
+</mapper>

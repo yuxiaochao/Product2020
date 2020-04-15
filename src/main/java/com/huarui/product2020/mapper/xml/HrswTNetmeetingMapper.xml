@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNetmeetingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNetmeeting">
+		<id column="NETM001" property="netm001" />
+		<result column="NETM002" property="netm002" />
+		<result column="NETM003" property="netm003" />
+		<result column="NETM004" property="netm004" />
+		<result column="NETM005" property="netm005" />
+		<result column="NETM006" property="netm006" />
+		<result column="NETM007" property="netm007" />
+		<result column="NETM008" property="netm008" />
+		<result column="NETM009" property="netm009" />
+		<result column="NETM010" property="netm010" />
+		<result column="NETM011" property="netm011" />
+		<result column="NETM012" property="netm012" />
+		<result column="NETM013" property="netm013" />
+		<result column="NETM014" property="netm014" />
+		<result column="NETM015" property="netm015" />
+		<result column="NETM016" property="netm016" />
+		<result column="NETM017" property="netm017" />
+		<result column="NETM018" property="netm018" />
+	</resultMap>
+	<select id="findnetmeetingByMeetingID" resultType="HashMap"
+		parameterType="java.util.Map">
+ <![CDATA[
+SELECT
+o.ORGA005,
+	NETM001,NETM002,TO_CHAR(NETM003,'yyyy-MM-dd hh24:mm') NETM003,TO_CHAR(NETM004,'yyyy-MM-dd hh24:mm')NETM004,NETM005,NETM006,NETM007,NETM008,NETM009,NETM010,NETM011,TO_CHAR(NETM012,'yyyy-MM-dd hh24:mm')NETM012,TO_CHAR(NETM013,'yyyy-MM-dd hh24:mm')NETM013,NETM014,NETM015,NETM016,NETM017,NETM018
+FROM
+hrsw_t_netmeeting A
+LEFT JOIN  hrsw_t_organ o on o.ORGA001=A.NETM010
+WHERE
+netm001=#{netm001}
+      ]]>
+
+	</select>
+</mapper>

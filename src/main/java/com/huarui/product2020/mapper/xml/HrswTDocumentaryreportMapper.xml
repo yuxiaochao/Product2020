@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.huarui.product2020.mapper.HrswTDocumentaryreportMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTDocumentaryreport">
+		<result column="DORE001" property="dore001" />
+		<result column="DORE002" property="dore002" />
+		<result column="DORE003" property="dore003" />
+		<result column="DORE004" property="dore004" />
+		<result column="DORE005" property="dore005" />
+		<result column="DORE006" property="dore006" />
+		<result column="DORE007" property="dore007" />
+		<result column="DORE008" property="dore008" />
+		<result column="DORE009" property="dore009" />
+		<result column="DORE010" property="dore010" />
+		<result column="DORE011" property="dore011" />
+		<result column="DORE012" property="dore012" />
+		<result column="DORE013" property="dore013" />
+	</resultMap>
+
+	<select id="selectReportSequence" parameterType="java.util.Map" resultType="java.util.Map">
+    <![CDATA[
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') ||
+       	TO_CHAR(SEQ_DOCUMENTARYREPORT.NEXTVAL, 'FM00009') AS FLOWNUMBER
+  		FROM DUAL    
+  	]]>
+	</select>
+	
+	<select id="selectReviewRecordList" parameterType="java.util.Map" resultType="java.util.Map">
+    <![CDATA[
+    select * from (
+    SELECT ROW_NUMBER() OVER(PARTITION BY aa.dofa001 ORDER BY aa.DORE004 DESC) rn,       
+          aa.*       
+        FROM (
+		SELECT 
+		A.DORE001,
+		A.DORE002,
+		A.DORE003,
+		A.DORE004,
+		A.DORE005,
+		B.USER005 AS DORE005N,
+		A.DORE006,
+		A.DORE007,
+		CASE WHEN A.DORE007=0 
+		THEN '待审核'
+		WHEN A.DORE007=1 
+		THEN '未通过'
+		WHEN A.DORE007=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE007N,
+		A.DORE008,
+		A.DORE009,
+		C.USER005 AS DORE009N,
+		A.DORE010,
+		A.DORE011,
+		CASE WHEN A.DORE011=0 
+		THEN '待审核'
+		WHEN A.DORE011=1 
+		THEN '未通过'
+		WHEN A.DORE011=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE011N,
+		A.DORE012,
+		A.DORE013,
+		CASE WHEN A.DORE013=0 
+		THEN '待审核'
+		WHEN A.DORE013=1 
+		THEN '未通过'
+		WHEN A.DORE013=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE013N,
+		D.DOFA002,
+		D.dofa001,
+		A.dore014,
+		A.dore015
+		FROM hrsw_t_DocumentaryReport A 
+		LEFT JOIN HRSW_T_USER B ON A.dore005 = B.USER001
+		LEFT JOIN HRSW_T_USER C ON A.dore009 = C.USER001
+		LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D ON A.dore014=D.dofa001
+		WHERE A.dore003 = #{user001} AND A.dore015 = 0 
+		) aa) bb WHERE bb.rn = 1  ORDER BY bb.DORE004 DESC
+  	]]>
+  	
+	</select>
+	
+	<select id="selectFirstrial" parameterType="java.util.Map" resultType="java.util.Map">
+
+  	<!-- 未审核 -->
+  	<if test="permissionType==0 or permissionType==''">
+  	SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+      FROM HRSW_T_DOCUMENTARYREPORT A
+      LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+      LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+      LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+      LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+     <![CDATA[ WHERE B.USER002 = #{orga001} AND D.DOFA009 = 1 AND A.DORE015 = 0
+      AND A.DORE003 NOT IN
+      (SELECT JRAC004 FROM HRSW_T_JOBRIGHTSASSIGCHILD WHERE JRAC003 = #{orga001})
+  	 and a.dore007 = 0 and a.dore013 = 0 and d.dofa010<sysdate and d.dofa011>sysdate
+  	 order by a.dore004 desc
+  	 ]]>
+  	 </if>
+  	 <!-- 已审核 -->
+  	 <if test="permissionType==1">
+  	  <![CDATA[
+		SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+      FROM HRSW_T_DOCUMENTARYREPORT A
+      LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+      LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+      LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+      LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+      WHERE B.USER002 = #{orga001} AND D.DOFA009 = 1 AND A.DORE015 = 0
+      AND A.DORE003 NOT IN
+      (SELECT JRAC004 FROM HRSW_T_JOBRIGHTSASSIGCHILD WHERE JRAC003 = #{orga001})
+      and a.dore007 != 0 and a.dore005 = #{user001}
+      order by a.dore006 desc
+  	]]>
+  	 
+  	 
+  	 </if>
+
+	</select>
+	
+	<select id="selectFirstrialList" parameterType="java.util.Map" resultType="java.util.Map">
+  	<![CDATA[SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,
+  	  c.USER005 DORE009n,e.USER005 DORE005n
+      FROM HRSW_T_DOCUMENTARYREPORT A
+      LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+      LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+      LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+      LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+      WHERE A.DORE015 = 0 and a.dore014 = #{dofa001} 
+      and a.dore005 = #{user001} and a.dore003 = #{dore003}
+      ORDER BY A.DORE006 DESC
+  	 ]]>
+
+	</select>
+	
+	<select id="selectReview" parameterType="java.util.Map" resultType="java.util.Map">
+	<!-- 未审核 -->
+  	<if test="permissionType==0 or permissionType==''">
+	<!-- 查询科长数据 -->
+	<![CDATA[
+	select * from (
+	SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+	  FROM HRSW_T_DOCUMENTARYREPORT A
+	  LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+	  LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+	  LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+	  LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+	  WHERE D.DOFA012 = 1 AND A.DORE015 = 0 and d.dofa013<sysdate and d.dofa014>sysdate
+	  AND A.DORE003 IN (
+	    SELECT JRAC004 FROM HRSW_T_JOBRIGHTSASSIGNMENT A1 
+	    LEFT JOIN HRSW_T_JOBRIGHTSASSIGCHILD B1 ON A1.JRAT001 = B1.JRAC002
+	    WHERE A1.JRAT003 = #{user001}
+	  )
+	]]>
+	UNION ALL
+	<!-- 查询科员数据 -->
+	<![CDATA[
+	SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+	  FROM HRSW_T_DOCUMENTARYREPORT A
+	  LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+	  LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+	  LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+	  LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D ON A.dore014 = D.dofa001
+	  WHERE D.DOFA012 = 1 AND A.DORE015 = 0 AND A.DORE007 = 2 and d.dofa013<sysdate and d.dofa014>sysdate
+	  AND A.DORE003 IN (
+	    SELECT C1.USER001 FROM HRSW_T_JOBRIGHTSASSIGNMENT A1 
+	    LEFT JOIN HRSW_T_JOBRIGHTSASSIGCHILD B1 ON A1.JRAT001 = B1.JRAC002
+	    LEFT JOIN HRSW_T_USER C1 ON B1.JRAC003 = C1.USER002
+	    WHERE A1.JRAT003 = #{user001}
+	  ))aa where  aa.DORE011 = 0 and aa.dore013 = 0
+	]]>
+	
+  	</if>
+  	 <!-- 已审核 -->
+  	 <if test="permissionType==1">
+  	  SELECT *       
+    FROM (
+  	 
+  	 SELECT ROW_NUMBER() OVER(PARTITION BY aa.DOFA001 ORDER BY aa.dore004 DESC) rn,  aa.* from (
+	<!-- 查询科长数据 -->
+	<![CDATA[
+	select * from (
+	SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+	  FROM HRSW_T_DOCUMENTARYREPORT A
+	  LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+	  LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+	  LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+	  LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+	  WHERE D.DOFA012 = 1 AND A.DORE015 = 0 AND A.DORE003 IN (
+	    SELECT JRAC004 FROM HRSW_T_JOBRIGHTSASSIGNMENT A1 
+	    LEFT JOIN HRSW_T_JOBRIGHTSASSIGCHILD B1 ON A1.JRAT001 = B1.JRAC002
+	    WHERE A1.JRAT003 = #{user001}
+	  )
+	]]>
+	UNION ALL
+	<!-- 查询科员数据 -->
+	<![CDATA[
+	SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,c.USER005 DORE009n,e.USER005 DORE005n
+	  FROM HRSW_T_DOCUMENTARYREPORT A
+	  LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+	  LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+	  LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+	  LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D ON A.dore014 = D.dofa001
+	  WHERE D.DOFA012 = 1 AND A.DORE015 = 0 AND A.DORE007 = 2 AND A.DORE003 IN (
+	    SELECT C1.USER001 FROM HRSW_T_JOBRIGHTSASSIGNMENT A1 
+	    LEFT JOIN HRSW_T_JOBRIGHTSASSIGCHILD B1 ON A1.JRAT001 = B1.JRAC002
+	    LEFT JOIN HRSW_T_USER C1 ON B1.JRAC003 = C1.USER002
+	    WHERE A1.JRAT003 = #{user001}
+	  ))aa where  aa.DORE011 != 0 and aa.dore009 = #{user001}
+	]]>
+	) aa )bb  WHERE bb.rn = 1
+  	 </if>
+	</select>
+	
+	<select id="selectReviewList" parameterType="java.util.Map" resultType="java.util.Map">
+
+	<![CDATA[SELECT A.*,D.DOFA002,D.DOFA001,B.USER005 DORE003n,
+  	  c.USER005 DORE009n,e.USER005 DORE005n
+      FROM HRSW_T_DOCUMENTARYREPORT A
+      LEFT JOIN HRSW_T_USER B ON A.DORE003 = B.USER001
+      LEFT JOIN HRSW_T_USER c ON A.DORE009 = c.USER001
+      LEFT JOIN HRSW_T_USER e ON A.DORE005 = e.USER001
+      LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D on A.dore014=D.dofa001
+      WHERE A.DORE015 = 0 and a.dore014 = #{dofa001} and a.dore009 = #{user001} and a.dore003 = #{dore003}
+      order by a.DORE006 desc
+  	 ]]>
+	</select>
+	
+	<select id="selectReviewByDore014" parameterType="java.util.Map" resultType="java.util.Map">
+    <![CDATA[
+
+		SELECT 
+		A.DORE001,
+		A.DORE002,
+		A.DORE003,
+		A.DORE004,
+		A.DORE005,
+		B.USER005 AS DORE005N,
+		A.DORE006,
+		A.DORE007,
+		CASE WHEN A.DORE007=0 
+		THEN '待审核'
+		WHEN A.DORE007=1 
+		THEN '未通过'
+		WHEN A.DORE007=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE007N,
+		A.DORE008,
+		A.DORE009,
+		C.USER005 AS DORE009N,
+		A.DORE010,
+		A.DORE011,
+		CASE WHEN A.DORE011=0 
+		THEN '待审核'
+		WHEN A.DORE011=1 
+		THEN '未通过'
+		WHEN A.DORE011=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE011N,
+		A.DORE012,
+		A.DORE013,
+		CASE WHEN A.DORE013=0 
+		THEN '待审核'
+		WHEN A.DORE013=1 
+		THEN '未通过'
+		WHEN A.DORE013=2 
+		THEN '通过' 
+		ELSE '待审核' 
+		END DORE013N,
+		D.DOFA001,
+		D.DOFA002,
+		A.dore014,
+		A.dore015
+		FROM hrsw_t_DocumentaryReport A 
+		LEFT JOIN HRSW_T_USER B ON A.dore005 = B.USER001
+		LEFT JOIN HRSW_T_USER C ON A.dore009 = C.USER001
+		LEFT JOIN HRSW_T_DOCUMENTARYFACTSTASK D ON A.dore014=D.dofa001
+		WHERE A.dore003 = #{user001} AND A.dore015 = 0 and a.dore014 = #{dofa001}
+		order by a.dore004 desc
+  	]]>
+  	
+	</select>
+
+</mapper>

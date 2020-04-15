@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbtssq02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbtssq02">
+		<id column="TSSQ0201" property="tssq0201" />
+		<result column="TSSQ0202" property="tssq0202" />
+		<result column="TSSQ0203" property="tssq0203" />
+		<result column="TSSQ0204" property="tssq0204" />
+		<result column="TSSQ0205" property="tssq0205" />
+		<result column="TSSQ0206" property="tssq0206" />
+		<result column="TSSQ0207" property="tssq0207" />
+		<result column="TSSQ0208" property="tssq0208" />
+		<result column="TSSQ0209" property="tssq0209" />
+		<result column="TSSQ0210" property="tssq0210" />
+		<result column="TSSQ0211" property="tssq0211" />
+	</resultMap>
+	
+	<select id="findListByUserId" resultType="com.huarui.product2020.entity.Tbtssq02" parameterType="java.util.HashMap">
+        SELECT T.TSSQ0201,T.TSSQ0206,T.TSSQ0208,T.TSSQ0203,T.TSSQ0204,
+            TO_CHAR(T.TSSQ0208,'YYYY-MM-DD HH24:MI') AS TSSQ0208N,S.DD0104 AS ORDERNUMBER,S.CMDY1203 AS BOOKNAME FROM TBTSSQ02 T LEFT JOIN (
+			SELECT * FROM tbDD01 A
+			LEFT JOIN (
+			    SELECT GWC0208,LISTAGG(CMDY0603,'/') WITHIN GROUP (ORDER BY CMDY0603) CMDY0603,
+			        LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY1203) CMDY1203
+			    FROM (
+			        SELECT GWC0208,CMDY1203,GWC0206,CMDY0102,CMDY0306||CMDY0603 AS CMDY0603 FROM tbGWC02 A
+			        LEFT JOIN tbCMDY06 B ON A.GWC0203 = B.CMDY0601
+			        LEFT JOIN (
+			          SELECT CMDY0702,LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY0703) AS CMDY1203 FROM tbCMDY07 A
+			          LEFT JOIN tbCMDY12 B ON A.CMDY0703 = B.CMDY1209 AND A.CMDY0706 = B.CMDY1207
+			          GROUP BY CMDY0702
+			        ) C ON A.GWC0203 = C.CMDY0702
+			        LEFT JOIN tbCMDY03 D ON A.GWC0202 = D.CMDY0301
+			        LEFT JOIN tbCMDY01 E ON D.CMDY0303 = E.CMDY0101
+			        WHERE GWC0204 IS NULL
+			        AND (
+			          NOT EXISTS (
+			            SELECT 1 FROM tbYHQGL08 WHERE YHQGL0804 = A.GWC0203
+			          ) 
+			          OR 
+			          EXISTS (
+			            SELECT 1 FROM tbYHQGL08 WHERE YHQGL0804 = A.GWC0203
+			            AND D.CMDY0324 = 0
+			          )
+			        )
+			        UNION
+			        SELECT GWC0208,CMDY1203,GWC0206,CMDY0102,CMDY0306||CMDY0404 AS CMDY0603 FROM tbGWC02 A
+			        LEFT JOIN tbCMDY07 B ON A.GWC0204 = B.CMDY0701
+			        LEFT JOIN tbCMDY04 C ON B.CMDY0703 = C.CMDY0401
+			        LEFT JOIN (
+			          SELECT CMDY0701,LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY0703) AS CMDY1203 FROM tbCMDY07 A
+			          LEFT JOIN tbCMDY12 B ON A.CMDY0703 = B.CMDY1209 AND A.CMDY0706 = B.CMDY1207
+			          GROUP BY CMDY0701
+			        ) D ON A.GWC0204 = D.CMDY0701
+			        LEFT JOIN tbCMDY03 E ON A.GWC0202 = E.CMDY0301
+			        LEFT JOIN tbCMDY01 F ON E.CMDY0303 = F.CMDY0101
+			        WHERE GWC0203 IS NULL
+			        AND (
+			          NOT EXISTS (
+			            SELECT 1 FROM tbYHQGL08 WHERE YHQGL0805 = A.GWC0204
+			          ) 
+			          OR 
+			          EXISTS (
+			            SELECT 1 FROM tbYHQGL08 WHERE YHQGL0805 = A.GWC0204
+			            AND E.CMDY0324 = 0
+			          )
+			        )
+			    ) GROUP BY GWC0208
+			) B ON A.DD0103 = B.GWC0208
+			where A.DD0106 = 1
+			) S ON T.TSSQ0202=S.DD0101 WHERE TSSQ0210=#{userId}
+    </select>
+	
+	<select id="findBookApplicationListByUserId" resultType="com.huarui.product2020.entity.Tbtssq01" parameterType="HashMap">
+       SELECT T.DD0101 AS TSSQ0101,T.DD0104 AS TSSQ0102, T.CMDY0603 AS TSSQ0103, T.CMDY1203 AS TSSQ0104 FROM (
+            SELECT * FROM tbDD01 A
+            LEFT JOIN (
+                SELECT GWC0208,LISTAGG(CMDY0603,'/') WITHIN GROUP (ORDER BY CMDY0603) CMDY0603,
+                    LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY1203) CMDY1203
+                FROM (
+                    SELECT GWC0208,CMDY1203,GWC0206,CMDY0102,CMDY0306||CMDY0603 AS CMDY0603 FROM tbGWC02 A
+                    LEFT JOIN tbCMDY06 B ON A.GWC0203 = B.CMDY0601
+                    LEFT JOIN (
+                      SELECT CMDY0702,LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY0703) AS CMDY1203 FROM tbCMDY07 A
+                      LEFT JOIN tbCMDY12 B ON A.CMDY0703 = B.CMDY1209 AND A.CMDY0706 = B.CMDY1207 WHERE B.CMDY1202=1
+                      GROUP BY CMDY0702
+                    ) C ON A.GWC0203 = C.CMDY0702
+                    LEFT JOIN tbCMDY03 D ON A.GWC0202 = D.CMDY0301
+                    LEFT JOIN tbCMDY01 E ON D.CMDY0303 = E.CMDY0101
+                    WHERE GWC0204 IS NULL
+                    AND (
+                      NOT EXISTS (
+                        SELECT 1 FROM tbYHQGL08 WHERE YHQGL0804 = A.GWC0203
+                      ) 
+                      OR 
+                      EXISTS (
+                        SELECT 1 FROM tbYHQGL08 WHERE YHQGL0804 = A.GWC0203
+                        AND D.CMDY0324 = 0
+                      )
+                    )
+                    UNION
+                    SELECT GWC0208,CMDY1203,GWC0206,CMDY0102,CMDY0306||CMDY0404 AS CMDY0603 FROM tbGWC02 A
+                    LEFT JOIN tbCMDY07 B ON A.GWC0204 = B.CMDY0701
+                    LEFT JOIN tbCMDY04 C ON B.CMDY0703 = C.CMDY0401
+                    LEFT JOIN (
+                      SELECT CMDY0701,LISTAGG(CMDY1203,'/') WITHIN GROUP (ORDER BY CMDY0703) AS CMDY1203 FROM tbCMDY07 A
+                      LEFT JOIN tbCMDY12 B ON A.CMDY0703 = B.CMDY1209 AND A.CMDY0706 = B.CMDY1207 WHERE B.CMDY1202=1
+                      GROUP BY CMDY0701
+                    ) D ON A.GWC0204 = D.CMDY0701
+                    LEFT JOIN tbCMDY03 E ON A.GWC0202 = E.CMDY0301
+                    LEFT JOIN tbCMDY01 F ON E.CMDY0303 = F.CMDY0101
+                    WHERE GWC0203 IS NULL
+                    AND (
+                      NOT EXISTS (
+                        SELECT 1 FROM tbYHQGL08 WHERE YHQGL0805 = A.GWC0204
+                      ) 
+                      OR 
+                      EXISTS (
+                        SELECT 1 FROM tbYHQGL08 WHERE YHQGL0805 = A.GWC0204
+                        AND E.CMDY0324 = 0
+                      )
+                    )
+                ) GROUP BY GWC0208
+            ) B ON A.DD0103 = B.GWC0208
+            WHERE A.DD0102 = #{userId}
+            AND A.DD0106 = 1
+            ) T LEFT JOIN TBTSSQ02 S ON T.DD0101=S.TSSQ0202 WHERE S.TSSQ0201 IS NULL
+    </select>
+
+</mapper>

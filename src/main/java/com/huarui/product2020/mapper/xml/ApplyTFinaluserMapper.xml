@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ApplyTFinaluserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ApplyTFinaluser">
+		<id column="FIUS001" property="fius001" />
+		<result column="FIUS002" property="fius002" />
+		<result column="FIUS003" property="fius003" />
+		<result column="FIUS004" property="fius004" />
+		<result column="FIUS005" property="fius005" />
+		<result column="FIUS006" property="fius006" />
+		<result column="FIUS007" property="fius007" />
+	</resultMap>
+
+</mapper>

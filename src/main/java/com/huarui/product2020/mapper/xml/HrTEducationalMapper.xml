@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrTEducationalMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrTEducational">
+		<id column="EDUC001" property="educ001" />
+		<result column="EDUC002" property="educ002" />
+		<result column="EDUC003" property="educ003" />
+		<result column="EDUC004" property="educ004" />
+		<result column="EDUC005" property="educ005" />
+		<result column="EDUC005N" property="educ005n" />
+		<result column="EDUC006" property="educ006" />
+		<result column="EDUC007" property="educ007" />
+	</resultMap>
+
+	<select id="selectPage" resultMap="BaseResultMap">
+		 SELECT 
+              A.EDUC001,
+              A.EDUC002,
+              A.EDUC003,
+              A.EDUC004,
+              A.EDUC005,
+              A.EDUC006,
+              B.CATA002 AS EDUC005N,
+              A.EDUC007
+            FROM HR_T_EDUCATIONAL A
+            LEFT JOIN HRSW_T_CATALOG B ON A.EDUC005 = B.CATA001
+           <where>
+          	${ew.getSqlSegment}
+          </where>
+        <![CDATA[ ORDER BY A.EDUC006 DESC ]]>
+	</select>
+
+</mapper>

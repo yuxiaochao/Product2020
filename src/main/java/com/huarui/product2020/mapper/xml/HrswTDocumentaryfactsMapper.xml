@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTDocumentaryfactsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTDocumentaryfacts">
+		<id column="DOFA001" property="dofa001" />
+		<result column="DOFA002" property="dofa002" />
+		<result column="DOFA003" property="dofa003" />
+		<result column="DOFA004" property="dofa004" />
+		<result column="DOFA005" property="dofa005" />
+		<result column="DOFA006" property="dofa006" />
+		<result column="DOFA007" property="dofa007" />
+		<result column="DOFA008" property="dofa008" />
+	</resultMap>
+    <insert id="insertDocumentaryFacts" parameterType="com.huarui.product2020.entity.HrswTDocumentaryfacts">
+        merge into hrsw_t_DocumentaryFacts aa
+		using (SELECT 1 FROM dual) bb
+		on (aa.dofa002=#{dofa002} AND aa.dofa006=#{dofa006} AND aa.dofa005=#{dofa005} AND aa.dofa009= #{dofa009})
+		when matched then 
+		update set aa.dofa003=#{dofa003},aa.dofa007=#{dofa007},aa.dofa008=#{dofa008}
+		when not matched then 
+		insert(dofa001,dofa002,dofa003,dofa004,dofa005,dofa006,dofa007,dofa008,dofa009)
+		VALUES(#{dofa001},#{dofa002},#{dofa003},#{dofa004},#{dofa005},#{dofa006},#{dofa007},#{dofa008},#{dofa009})
+    </insert>
+    
+    <insert id="insertDocumentaryFactsManual" parameterType="com.huarui.product2020.entity.HrswTDocumentaryfacts">
+        merge into hrsw_t_DocumentaryFacts aa
+		using (SELECT 1 FROM dual) bb
+		on (aa.dofa001=#{dofa001} AND aa.dofa005=#{dofa005} AND aa.dofa006=#{dofa006})
+		when matched then 
+		update set aa.dofa003=#{dofa003},aa.dofa007=#{dofa007},aa.dofa008=#{dofa008}
+		when not matched then 
+		insert(dofa001,dofa002,dofa003,dofa004,dofa005,dofa006,dofa007,dofa008)
+		VALUES(#{dofa001},#{dofa002},#{dofa003},#{dofa004},#{dofa005},#{dofa006},#{dofa007},#{dofa008})
+    </insert>
+    
+    <insert id="insertFactsReport" parameterType="com.huarui.product2020.entity.HrswTDocumentaryfactsreport">
+          insert into  hrsw_t_DocumentaryFactsReport(dofr001,dofr002,dofr003,dofr004,dofr007)
+          VALUES(#{dofr001},#{dofr002},#{dofr003},sysdate,0) 
+    </insert>
+    
+    <insert id="insertDocumentary" parameterType="com.huarui.product2020.entity.HrswTDocumentaryfacts">
+          insert into hrsw_t_DocumentaryFacts(dofa001,dofa002,dofa003,dofa005,dofa006,dofa007,dofa009)
+          values(#{dofa001},#{dofa002},#{dofa003},#{dofa005},#{dofa006},sysdate,#{dofa009})
+    
+    </insert>
+    
+    <delete id="deleteFacts" parameterType="java.util.Map" >
+	 delete hrsw_t_DocumentaryFacts where dofa001=#{dofa001} and dofa006=#{dofa006}
+	</delete>
+</mapper>

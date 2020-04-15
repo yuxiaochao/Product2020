@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj13Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj13">
+		<id column="TBJXSJ1301" property="tbjxsj1301" />
+		<result column="TBJXSJ1302" property="tbjxsj1302" />
+		<result column="TBJXSJ1303" property="tbjxsj1303" />
+		<result column="TBJXSJ1304" property="tbjxsj1304" />
+		<result column="TBJXSJ1305" property="tbjxsj1305" />
+	</resultMap>
+	<insert id="insertBatch" parameterType="list">
+		insert into tbJXSJ13
+		(tbJXSJ1301,tbJXSJ1302,tbJXSJ1303,tbJXSJ1304,tbJXSJ1305)
+		<foreach collection="list" item="item" separator="union all">
+			(select 
+			#{item.tbjxsj1301},#{item.tbjxsj1302},#{item.tbjxsj1303},#{item.tbjxsj1304},#{item.tbjxsj1305,jdbcType=VARCHAR}
+			from dual)
+		</foreach>
+	</insert>
+	<select id="findAllUploads" parameterType="com.huarui.common.Req" resultType="HashMap">
+		select tbJXSJ1301 as "uid",tbJXSJ1303 as "name",tbJXSJ1304 as "url",tbJXSJ1305 as "alias",'done' as "status"
+		from tbJXSJ13
+		where tbJXSJ1302=#{parameterMap.tbjxsj1302}
+	</select>
+</mapper>

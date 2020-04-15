@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HotelMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Hotel">
+		<id column="HOTE001" property="hote001" />
+		<result column="HOTE002" property="hote002" />
+		<result column="HOTE003" property="hote003" />
+		<result column="HOTE004" property="hote004" />
+		<result column="HOTE005" property="hote005" />
+		<result column="HOTE006" property="hote006" />
+		<result column="HOTE007" property="hote007" />
+		<result column="HOTE008" property="hote008" />
+		<result column="HOTE009" property="hote009" />
+		<result column="HOTE010" property="hote010" />
+		<result column="HOTE011" property="hote011" />
+	</resultMap>
+	
+	
+	
+	<!-- 宿舍楼资源 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Hotel" parameterType="HashMap">
+		SELECT
+			A.HOTE001,
+			A.HOTE002,
+			A.HOTE003,
+			A.HOTE004,
+			A.HOTE005,
+			A.HOTE006,
+			A.HOTE007,
+			A.HOTE008,
+			A.HOTE009,
+			A.HOTE010,
+			A.HOTE011,
+			( SELECT COUNT( 1 ) FROM HR_T_HOTELROOM T WHERE T.HORO002 = A.HOTE001 ) AS HOTELROOMNUM 
+		FROM
+			HR_T_HOTEL A
+		<where>
+			<if test="hote002 != null">
+				<![CDATA[ AND A.HOTE002 LIKE CONCAT(CONCAT('%',#{hote002}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HOTE009 DESC]]>
+		</if>
+	</select>
+	
+	
+	<!-- 宿舍楼资源导出 -->
+	<select id="findToExcel" resultType="com.huarui.product2020.entity.Hotel" parameterType="HashMap">
+		SELECT
+			A.HOTE001,
+			A.HOTE002,
+			A.HOTE003,
+			A.HOTE004,
+			A.HOTE005,
+			A.HOTE006,
+			A.HOTE007,
+			A.HOTE008,
+			A.HOTE009,
+			A.HOTE010,
+			A.HOTE011,
+			( SELECT COUNT( 1 ) FROM HR_T_HOTELROOM T WHERE T.HORO002 = A.HOTE001 ) AS HOTELROOMNUM 
+		FROM
+			HR_T_HOTEL A
+		<where>
+			<if test="hote002 != null">
+				<![CDATA[ AND A.HOTE002 LIKE CONCAT(CONCAT('%',#{hote002}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HOTE009 DESC]]>
+		</if>
+	</select>
+
+
+	<select id="findHotelList" resultType="com.huarui.product2020.entity.Hotel" parameterType="HashMap">
+		SELECT
+			A.HOTE001,
+			A.HOTE002,
+			A.HOTE003,
+			A.HOTE004,
+			A.HOTE005,
+			A.HOTE006,
+			A.HOTE007,
+			A.HOTE008,
+			A.HOTE009,
+			A.HOTE010,
+			A.HOTE011,
+			( SELECT COUNT( 1 ) FROM HR_T_HOTELROOM T WHERE T.HORO002 = A.HOTE001 ) AS HOTELROOMNUM 
+		FROM
+			HR_T_HOTEL A
+		<where>
+			<if test="hote002 != null">
+				<![CDATA[ AND A.HOTE002 LIKE CONCAT(CONCAT('%',#{hote002}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HOTE009 DESC]]>
+		</if>
+	</select>
+</mapper>

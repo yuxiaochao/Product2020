@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTErrortopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTErrortopic">
+		<id column="ERTO001" property="erto001" />
+		<result column="ERTO002" property="erto002" />
+		<result column="ERTO003" property="erto003" />
+		<result column="ERTO004" property="erto004" />
+		<result column="ERTO005" property="erto005" />
+	</resultMap>
+	<select id="selectErrorTopicPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+		 SELECT COUNT(1) TOPICNUM, NVL(TOPI003  , '--')  TOPI003 
+            FROM ( 
+            <!-- 错题对应的试题（题库练习与试卷试题） -->
+             SELECT 
+             	DISTINCT B.TOPI003,B.TOPI001
+             FROM 
+             	EXAM_T_ERRORTOPIC A 
+             INNER JOIN 
+             	EXAM_T_TOPIC B 
+             ON 
+             	A.ERTO002 = B.TOPI001
+             WHERE 
+             	A.ERTO003 = #{user001} AND A.ERTO004 =1
+            <!--  UNION ALL
+              excel试卷试题
+             SELECT A.TTOP008 TOPI003,A.TTOP006 TOPI001
+             FROM EXAM_T_TESTTOPIC A
+             INNER JOIN EXAM_T_ERRORTOPIC B ON  A.TTOP001= B.ERTO002
+             WHERE B.ERTO003 = #{user001} AND B.ERTO004=2 -->
+          )                   
+            GROUP BY TOPI003
+	</select>
+	
+	<select id="queryErrorTopicCount" resultType="java.lang.Integer">
+		 SELECT COUNT(1) TOPICNUM
+            FROM ( 
+            <!-- 错题对应的试题（题库练习与试卷试题） -->
+             SELECT 
+             	DISTINCT B.TOPI003,B.TOPI001
+             FROM 
+             	EXAM_T_ERRORTOPIC A 
+             INNER JOIN 
+             	EXAM_T_TOPIC B 
+             ON 
+             	A.ERTO002 = B.TOPI001
+             WHERE 
+             	A.ERTO003 = #{user001} AND A.ERTO004 =1
+            <!--  UNION ALL
+             excel试卷试题
+             SELECT A.TTOP008 TOPI003,A.TTOP006 TOPI001
+             FROM EXAM_T_TESTTOPIC A
+             INNER JOIN EXAM_T_ERRORTOPIC B ON  A.TTOP001= B.ERTO002
+             WHERE B.ERTO003 = #{user001} AND B.ERTO004=2 -->
+          )                  
+	</select>
+	
+	<select id="selectExerciseErrorTopicList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT COUNT(1) TOPICNUM, NVL(A.EXTO007	, '--') EXTO007	
+             FROM EXAM_T_EXERTOPIC A
+            INNER JOIN EXAM_T_ERRORTOPIC B ON A.EXTO005 = B.ERTO002
+            WHERE B.ERTO003 = #{user001}
+            GROUP BY A.EXTO007	
+            ORDER BY TOPICNUM DESC, EXTO007	
+	</select>
+	
+	<select id="selectErrorTopicNumWithKnowledge" parameterType="java.lang.String" resultType="java.util.HashMap">
+	   <if test=" TTOP008 != null and TTOP008 != '' ">
+	   
+	    SELECT COUNT(1) TOPICNUM, NVL(A.TTOP008, '--') knowledge
+        FROM EXAM_T_TESTTOPIC A
+        INNER JOIN EXAM_T_ERRORTOPIC B ON A.TTOP006 = B.ERTO002
+        WHERE B.ERTO003 =  #{user001} 
+		and A.TTOP008 =  #{TTOP008}
+        GROUP BY A.TTOP008
+	   </if>
+	    <if test=" TTOP008 == null or TTOP008 == '' ">
+	      SELECT sum(TOPICNUM) TOPICNUM  from( SELECT COUNT(1) TOPICNUM, NVL(A.TTOP008, '--') knowledge
+        FROM EXAM_T_TESTTOPIC A
+        INNER JOIN EXAM_T_ERRORTOPIC B ON A.TTOP006 = B.ERTO002
+        WHERE B.ERTO003 =  #{user001}
+        GROUP BY A.TTOP008
+        )
+	    
+	 </if>
+	</select>
+	
+	<select id="selectExerciseErrorTopicPage" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[ SELECT * FROM ( ]]>
+		<![CDATA[ SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005,TOPI006,TOPI007, ]]>
+		<![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012,TOPI013,TOPI014,TOPI015, ]]>
+		<![CDATA[ TOPI016,TOPI017,TOPI018,TOPI019,TOPI020,TOPI021,TOPI022,
+		 NVL(ZQ,0) TOPI023,NVL(DC,0) TOPI024,
+		 CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' TOPI025,
+		 (NVL(ZQ, 0)+NVL(DC, 0)) TOPI026,TO_CHAR(B.ERTO005,'yyyy-mm-dd hh24:mi') JRRQ
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_ERRORTOPIC B ON B.ERTO002 = A.TOPI001
+		 LEFT JOIN (SELECT COUNT(EATO005) ALLCOUNT,EATO005
+   			FROM EXAM_T_EXERANWSERTOPIC WHERE EATO004 = #{userId} GROUP BY EATO005
+   		 ) C ON B.ERTO002 = C.EATO005
+		 INNER JOIN (SELECT COUNT(ERTO002) ERRORCOUNT,ERTO002
+   			FROM EXAM_T_ERRORTOPIC
+   			WHERE ERTO003 = #{userId} AND ERTO004 = 1 GROUP BY ERTO002
+   		 ) D ON B.ERTO002 = D.ERTO002
+   		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) E ON E.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) F ON F.EATO005 = A.TOPI001
+		 WHERE B.ERTO003 = #{userId}]]> 
+   		<if test="topi003 != null">
+   			<if test="topi003 != ''">
+	   			<![CDATA[ AND INSTR(#{topi003}, A.TOPI003) > 0 ]]>
+   			</if>
+   		</if>
+	 	<![CDATA[ ORDER BY dbms_random.VALUE )]]>
+	</select>
+	
+	<select id="selectErrorTopicContentList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT ERTO001,TOPI001,TTX003,TOPI006,ERTO005,TOPI017,TOPI005,TOPI011,TOPI012,TOPI013,TOPI018,SPACECOUNT,IHADDIDNUM,IRIGHTNUM,ERRORRATE,RIGHTRATE,SN
+			FROM (SELECT B.ERTO001, A.TOPI001, C.TTX003, A.TOPI006, TO_CHAR(B.ERTO005, 'YYYY-MM-DD HH24:MI') AS ERTO005, 
+			             NVL(A.TOPI017, '--') TOPI017, A.TOPI005,  TO_NUMBER(TO_CHAR(A.TOPI011, '999.99')) TOPI011,
+			             A.TOPI012,  A.TOPI013, A.TOPI018, 
+			             CASE
+			               WHEN C.TTX003 = 0 THEN
+			                LENGTH(REGEXP_REPLACE(REGEXP_REPLACE(A.TOPI006, '___{1,20}', '#'),
+			                                      '[^#]+',
+			                                      ''))
+			               ELSE
+			                0
+			             END SPACECOUNT,
+			             NVL(D.IHADDIDNUM, 0) IHADDIDNUM,
+			             CASE
+			               WHEN NVL(D.IHADDIDNUM, 0) - NVL(E.IERRORNUM, 0) < 0 THEN
+			                0
+			               ELSE
+			                NVL(D.IHADDIDNUM, 0) - NVL(E.IERRORNUM, 0)
+			             END IRIGHTNUM,
+			             CASE
+			               WHEN NVL(Z.HADDIDNUM, 0) = 0 THEN
+			                '0%'
+			               ELSE
+			                ROUND((NVL(F.WHOERRORNUM, 0) / NVL(Z.HADDIDNUM, 0)), 0) * 100 || '%'
+			             END ERRORRATE,
+			             CASE
+			               WHEN NVL(Z.HADDIDNUM, 0) = 0 THEN
+			                '0%'
+			               ELSE
+			                ROUND((NVL(G.RIGHTNUM, 0) / NVL(z.HADDIDNUM, 0)), 0) * 100 || '%'
+			             END RIGHTRATE,
+			             ROW_NUMBER() OVER(ORDER BY B.ERTO001 DESC) SN
+			        FROM EXAM_T_TOPIC A
+			 INNER JOIN (SELECT A1.TTOP003,
+			                    A1.TTOP006,
+			                    A1.TTOP009,
+			                    ROW_NUMBER() OVER(PARTITION BY A1.TTOP006 ORDER BY A1.TTOP001 DESC) RN
+			               FROM EXAM_T_TESTTOPIC A1) X ON X.TTOP006 = A.TOPI001
+			 INNER JOIN EXAM_T_ERRORTOPIC B ON A.TOPI001 = B.ERTO002
+			  LEFT JOIN EXAM_T_TESTTX C ON x.TTOP003 = C.TTX002
+			                           AND x.TTOP009 = C.TTX008
+			  LEFT JOIN (SELECT COUNT(1) HADDIDNUM, EATO004 TOPICID
+			               FROM EXAM_T_EXAMANSWERTOPIC A1
+			              INNER JOIN EXAM_T_EXAMINEEGRADE B1 ON A1.EATO002 = B1.EGRA001
+			              GROUP BY EATO004, EGRA002) z ON A.TOPI001 = z.TOPICID
+			  LEFT JOIN (SELECT COUNT(1) IHADDIDNUM, EATO004 TOPICID, EGRA002
+			               FROM EXAM_T_EXAMANSWERTOPIC A1
+			              INNER JOIN EXAM_T_EXAMINEEGRADE B1 ON A1.EATO002 = B1.EGRA001
+			              GROUP BY EATO004, EGRA002) D ON A.TOPI001 = D.TOPICID
+			                                          AND B.ERTO003 = D.EGRA002
+			  LEFT JOIN (SELECT COUNT(1) WHOERRORNUM, ERTO002 TOPICID
+			               FROM EXAM_T_ERRORTOPIC A1
+			              INNER JOIN EXAM_T_TOPIC B1 ON B1.TOPI001 = A1.ERTO002
+			              GROUP BY ERTO003, ERTO002) F ON A.TOPI001 = F.TOPICID
+			  LEFT JOIN (SELECT COUNT(1) IERRORNUM, ERTO002 TOPICID, ERTO003
+			               FROM EXAM_T_ERRORTOPIC A1
+			              INNER JOIN EXAM_T_TOPIC B1 ON B1.TOPI001 = A1.ERTO002
+			              GROUP BY ERTO003, ERTO002) E ON A.TOPI001 = E.TOPICID
+			                                          AND B.ERTO003 = E.ERTO003
+			  LEFT JOIN (SELECT COUNT(1) RIGHTNUM, EATO004 TOPICID
+			               FROM EXAM_T_EXAMANSWERTOPIC A1
+			              INNER JOIN EXAM_T_EXAMINEEGRADE B1 ON A1.EATO002 = B1.EGRA001
+			              WHERE EGRA013 > 0
+			              GROUP BY EATO004, EGRA002) G ON A.TOPI001 = G.TOPICID
+						 WHERE NVL(A.TOPI019, '0') = '0'
+			 ]]>
+			 	AND X.RN >= 1
+			   	AND B.ERTO003 = #{user001}
+			    <if test=" erto003 != null and erto003 != '' ">
+				  	AND A.TOPI003 = #{erto003}
+			   	
+			   	</if>
+			 ORDER BY B.ERTO001 DESC)
+			 WHERE SN = #{sn}
+	</select>
+	
+	<select id="selectErrorChildTopicContentList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT A.TOPI001,C.TTX003,  A.TOPI006,NVL(A.TOPI017, '--') TOPI017,  A.TOPI005, 
+			       TO_NUMBER(TO_CHAR(A.TOPI011, '999.99')) TOPI011, A.TOPI012, 
+			       A.TOPI013,  A.TOPI018, 
+			       CASE
+			         WHEN C.TTX003 = 0 THEN
+			          LENGTH(REGEXP_REPLACE(REGEXP_REPLACE(A.TOPI006, '___{1,20}', '#'),
+			                                '[^#]+',
+			                                ''))
+			         ELSE
+			          0
+			       END SPACECOUNT
+			  FROM EXAM_T_TOPIC A
+			 INNER JOIN EXAM_T_TESTTOPIC  X ON X.TTOP006 = A.TOPI001
+			  LEFT JOIN EXAM_T_TESTTX C ON x.TTOP003 = C.TTX002
+			                           AND x.TTOP009 = C.TTX008
+		                           ]]>
+		 WHERE NVL(A.TOPI019, '0') = #{TOPI019}
+		 ORDER BY TTOP006
+	</select>
+	
+	<delete id="deleteByTopicId"  parameterType="java.lang.String" flushCache="true">
+		 <![CDATA[ DELETE FROM EXAM_T_ERRORTOPIC WHERE ERTO002 = #{erto002} ]]> 
+	</delete>
+	
+	<select id="queryErrorTopicByEntity" parameterType="com.huarui.product2020.entity.ExamTErrortopic"  resultMap="BaseResultMap">
+	    SELECT 
+	    	ERTO001,ERTO002,ERTO003,ERTO004,ERTO005 
+	    FROM 
+	    	EXAM_T_ERRORTOPIC 
+	    <where>
+	    	ERTO002=#{erto002}
+	    AND
+	    	ERTO003=#{erto003} 
+	    AND 
+	    	ERTO004=#{erto004}
+	    </where>
+	</select>
+	
+	<insert id="addErrorTopic" parameterType="com.huarui.product2020.entity.ExamTErrortopic">
+		INSERT INTO 
+			EXAM_T_ERRORTOPIC(ERTO001,ERTO002,ERTO003,ERTO004,ERTO005)
+		VALUES
+			(#{erto001},#{erto002},#{erto003},#{erto004},#{erto005})
+	</insert>
+	
+	<select id="checkRandomErrorTopic" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		SELECT 
+			A.EXSA001,B.EXGR001
+		FROM 
+			EXAM_T_EXERSAMPLE A
+		INNER JOIN 
+			EXAM_T_EXERGRADE B 
+		ON 
+			A.EXSA003=B.EXGR001
+		<where>
+			<if test="topi003 != null and topi003 != '' ">
+				AND A.EXSA006 = #{topi003}
+				AND A.EXSA010 = 5
+			</if>
+			<if test="topi003 == null or topi003 == ''">
+				AND A.EXSA010 = 4
+			</if>
+			AND A.EXSA002 IS NULL
+			AND A.EXSA004 = #{user001}
+			AND B.EXGR007 = 1
+		</where> 
+		ORDER BY A.EXSA009 DESC
+	</select>
+	
+	<select id="queryErrorTopicList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+			SELECT TOPI001 ID,
+		       TOPI001 TOPICID,
+		       TOPI002,
+		       TOPI003 TTOP008,
+		       TOPI004,
+		       TOPI005 BTXTITLE,
+		       TOPI006 TOPIC,
+		       TOPI007,
+		       TOPI008,
+		       TOPI009,
+		       TOPI010,
+		       TOPI011 TOPICMARK,
+		       TOPI012 TOPICCOUNT,
+		       TOPI013 TOPICOPTION,
+		       TOPI014,
+		       TOPI015 TOPICK,
+		       TOPI016 TTOP021,
+		       TOPI017 TOPICKEY,
+		       TOPI018 TOPREMARK,
+		       TOPI019 PARENTID,
+		       TOPI020,
+		       TOPI021,
+		       TOPI022,
+		       NVL(ZQ, 0) TOPI023,
+		       NVL(DC, 0) TOPI024,
+		       CASE
+		         WHEN NVL(ZQ, 0) = 0 THEN
+		          0
+		         ELSE
+		          ROUND(ZQ / (ZQ + NVL(DC, 0)) * 100, 2)
+		       END || '%' TOPI025,
+		       F.BTX003 BASETYPE,
+		       P.ERTO001
+		  FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_EXERTOPIC B
+		    ON B.EXTO005 = A.TOPI001
+		 INNER JOIN EXAM_T_EXERSAMPLE O
+		    ON O.EXSA001 = B.EXTO004
+		 INNER JOIN 
+		 	EXAM_T_ERRORTOPIC P 
+		 ON 
+		 	P.ERTO002=A.TOPI001
+		 AND 
+		 	O.EXSA004 = P.ERTO003
+		  LEFT JOIN (SELECT EATO005, COUNT(DISTINCT EATO004) ZQ
+		               FROM EXAM_T_EXERANWSERTOPIC
+		              WHERE EATO007 = 2
+		              GROUP BY EATO005) C
+		    ON C.EATO005 = A.TOPI001
+		  LEFT JOIN (SELECT EATO005, COUNT(DISTINCT EATO004) DC
+		               FROM EXAM_T_EXERANWSERTOPIC
+		              WHERE EATO007 = 1
+		              GROUP BY EATO005) D
+		    ON D.EATO005 = A.TOPI001
+		 INNER JOIN EXAM_T_BASETX F
+		    ON A.TOPI004 = F.BTX001
+		 <where>
+		   	O.EXSA001 = #{exsa001}
+		   	AND P.ERTO004 = 1
+		   	<if test="topi019 != null">
+			 	<choose>
+			    	<when test="topi019 == 'topic'">
+			     		AND NVL(A.TOPI019,'0')='0'
+					</when>
+			     	<when test="topi019 == 'child'">
+			     		AND NVL(A.TOPI019,'0')&lt;&gt;'0'
+					</when>
+				</choose>
+			 </if>
+		 </where>
+		  ORDER BY F.BTX003
+	</select>
+	
+	<select id="queryQuestionErrorTopicList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * FROM(
+			SELECT TOPI001 ID,
+		       TOPI001 TOPICID,
+		       TOPI002,
+		       TOPI003 TTOP008,
+		       TOPI004,
+		       TOPI005 BTXTITLE,
+		       TOPI006 TOPIC,
+		       TOPI007,
+		       TOPI008,
+		       TOPI009,
+		       TOPI010,
+		       TOPI011 TOPICMARK,
+		       TOPI012 TOPICCOUNT,
+		       TOPI013 TOPICOPTION,
+		       TOPI014,
+		       TOPI015 TOPICK,
+		       TOPI016 TTOP021,
+		       TOPI017 TOPICKEY,
+		       TOPI018 TOPREMARK,
+		       TOPI019 PARENTID,
+		       TOPI020,
+		       TOPI021,
+		       TOPI022,
+		       NVL(ZQ, 0) TOPI023,
+		       NVL(DC, 0) TOPI024,
+		       CASE
+		         WHEN NVL(ZQ, 0) = 0 THEN
+		          0
+		         ELSE
+		          ROUND(ZQ / (ZQ + NVL(DC, 0)) * 100, 2)
+		       END || '%' TOPI025,
+		       F.BTX003 BASETYPE,
+		       B.ERTO001
+		  FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_ERRORTOPIC B
+		    ON B.ERTO002 = A.TOPI001
+		  LEFT JOIN (SELECT EATO005, COUNT(DISTINCT EATO004) ZQ
+		               FROM EXAM_T_EXERANWSERTOPIC
+		              WHERE EATO007 = 2
+		              GROUP BY EATO005) C
+		    ON C.EATO005 = A.TOPI001
+		  LEFT JOIN (SELECT EATO005, COUNT(DISTINCT EATO004) DC
+		               FROM EXAM_T_EXERANWSERTOPIC
+		              WHERE EATO007 = 1
+		              GROUP BY EATO005) D
+		    ON D.EATO005 = A.TOPI001
+		 INNER JOIN EXAM_T_BASETX F
+		    ON A.TOPI004 = F.BTX001
+		 <where>
+		 	B.ERTO003 = #{user001}
+		 	AND B.ERTO004 =1
+		 	<if test="topi019 != null">
+			 	<choose>
+			    	<when test="topi019 == 'topic'">
+			     		AND NVL(A.TOPI019,'0')='0'
+					</when>
+			     	<when test="topi019 == 'child'">
+			     		AND NVL(A.TOPI019,'0')&lt;&gt;'0'
+					</when>
+				</choose>
+			</if>
+		 	<if test="topi003 != null and topi003 != '' ">
+				AND A.TOPI003 = #{topi003}
+			</if>
+		 </where>
+		  ORDER BY F.BTX003
+		  <![CDATA[ ) WHERE ROWNUM <= #{randomTopicNum} ]]>
+	</select>
+	
+	<select id="findErrorTopicTx" resultType="com.huarui.product2020.entity.ExamTBasetx" parameterType="java.util.Map">
+			SELECT DISTINCT C.BTX001,
+		                C.BTX002,
+		                C.BTX003,
+		                C.BTX004,
+		                C.BTX005,
+		                C.BTX006,
+		                C.BTX007
+		  FROM EXAM_T_ERRORTOPIC A
+		 INNER JOIN EXAM_T_TOPIC B
+		    ON A.ERTO002 = B.TOPI001
+		 INNER JOIN EXAM_T_BASETX C
+		    ON B.TOPI004 = C.BTX001
+		 WHERE A.ERTO003 =#{user001}
+		 ORDER BY C.BTX003
+	</select>
+	
+	<select id="querySampleInfoById" resultType="com.huarui.product2020.entity.ExerSampleEntity" parameterType="java.lang.String">
+		SELECT 
+			EXSA001,
+			EXSA002,
+			EXSA003,
+			EXSA004,
+			EXSA005,
+			EXSA006,
+			EXSA007,
+			EXSA008,
+			EXSA009,
+			EXSA010
+		FROM
+			EXAM_T_EXERSAMPLE
+		WHERE
+			EXSA001=#{exsa001}
+	</select>
+</mapper>
+
+
+
+

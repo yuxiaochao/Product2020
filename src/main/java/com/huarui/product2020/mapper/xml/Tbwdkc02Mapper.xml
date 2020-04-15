@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbwdkc02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbwdkc02">
+		<id column="WDKC0201" property="wdkc0201" />
+		<result column="WDKC0202" property="wdkc0202" />
+		<result column="WDKC0203" property="wdkc0203" />
+		<result column="WDKC0204" property="wdkc0204" />
+		<result column="WDKC0205" property="wdkc0205" />
+		<result column="WDKC0206" property="wdkc0206" />
+		<result column="WDKC0207" property="wdkc0207" />
+	</resultMap>
+
+	<!-- 我的课程——课程list -->
+	<select id="findbyCourseList" resultMap="BaseResultMap" parameterType="com.huarui.product2020.entity.Tbwdkc02">
+		<![CDATA[ select t.WDKC0201,t.WDKC0202,t.WDKC0203,t4.CMDY0312,
+ 			to_char(t4.CMDY0313,'yyyy-mm-dd')CMDY0313n,
+ 			to_char(t4.CMDY0308 + t4.CMDY0314,'yyyy-mm-dd') CMDY0314N,
+
+ 			t.WDKC0204,t.WDKC0205,t.WDKC0206,t.WDKC0207,
+			t71.cour004,t71.cour010,t7.Cmdy0503,t8.LERE0110,t8.LERE0105,
+			(
+				select count(1) from tbCMDY05 x
+				inner join course_t_courseware y on x.CMDY0503 = y.ccwe002
+				and y.ccwe004 = 1  where CMDY0502 = t.WDKC0203
+			) classHour
+
+			from tbWDKC02 t
+			left join tbWDKC01 t1  on t1.WDKC0101 = t.WDKC0202
+			left join tbCMDY05 t7 on t.WDKC0203 = t7.CMDY0502
+			left join tbCMDY03 t4 on t1.WDKC0102 = t4.Cmdy0301
+			left join tbCMDY04 t6 on t.WDKC0203 = t6.cmdy0401
+			inner join xzxy_t_course t71 on t7.Cmdy0503 = t71.cour001
+			left join tbLERE01 t8 on t8.LERE0109 = t.wdkc0201 and t8.lere0102 = t7.Cmdy0503
+		 ]]>
+		<where>
+			<if test="wdkc0202 != null">
+				<![CDATA[ AND t.WDKC0202 = #{wdkc0202} ]]>
+			</if>
+			<if test="wdkc0203 != null">
+				<![CDATA[ AND t.WDKC0203 = #{wdkc0203} ]]>
+			</if>
+			<if test="wdkc0204 != null">
+				<![CDATA[ AND t.WDKC0204 = #{wdkc0204} ]]>
+			</if>
+			<if test="wdkc0207 != null">
+				<![CDATA[ AND t.WDKC0207 = #{wdkc0207} ]]>
+			</if>
+			<if test="cour010 != null">
+				<![CDATA[ AND t71.cour010 LIKE CONCAT(CONCAT('%',#{cour010}), '%') ]]>
+			</if>
+			<!-- 商品过期时间 -->
+			and case when t6.CMDY0409 is not null and t6.CMDY0408 = 0 then
+			t6.CMDY0409
+			else
+			sysdate
+			end >= sysdate
+			<!-- 商品包过期时间 -->
+			and case when t4.CMDY0313 is not null and t4.CMDY0312 = 0 then
+			t4.CMDY0313
+			else
+			sysdate
+			end >= sysdate
+		</where>
+
+	</select>
+
+</mapper>

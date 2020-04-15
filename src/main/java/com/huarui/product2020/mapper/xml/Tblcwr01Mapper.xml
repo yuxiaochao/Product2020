@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tblcwr01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tblcwr01">
+		<id column="LCWR0101" property="lcwr0101" />
+		<result column="LCWR0102" property="lcwr0102" />
+		<result column="LCWR0103" property="lcwr0103" />
+		<result column="LCWR0104" property="lcwr0104" />
+		<result column="LCWR0105" property="lcwr0105" />
+		<result column="LCWR0106" property="lcwr0106" />
+		<result column="LCWR0107" property="lcwr0107" />
+		<result column="LCWR0108" property="lcwr0108" />
+		<result column="LCWR0109" property="lcwr0109" />
+		<result column="LCWR0110" property="lcwr0110" />
+		<result column="LCWR0111" property="lcwr0111" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbxxkgl01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbxxkgl01">
+		<id column="XXKGL0101" property="xxkgl0101" />
+		<result column="XXKGL0102" property="xxkgl0102" />
+		<result column="XXKGL0103" property="xxkgl0103" />
+		<result column="XXKGL0104" property="xxkgl0104" />
+		<result column="XXKGL0105" property="xxkgl0105" />
+		<result column="XXKGL0106" property="xxkgl0106" />
+		<result column="XXKGL0107" property="xxkgl0107" />
+		<result column="XXKGL0108" property="xxkgl0108" />
+		<result column="XXKGL0109" property="xxkgl0109" />
+		<result column="XXKGL0110" property="xxkgl0110" />
+		<result column="XXKGL0111" property="xxkgl0111" />
+		<result column="XXKGL0112" property="xxkgl0112" />
+		<result column="XXKGL0113" property="xxkgl0113" />
+		<result column="XXKGL0114" property="xxkgl0114" />
+		<result column="XXKGL0115" property="xxkgl0115" />
+		<result column="XXKGL0116" property="xxkgl0116" />
+		<result column="XXKGL0117" property="xxkgl0117" />
+		<result column="XXKGL0118" property="xxkgl0118" />
+		<result column="XXKGL0119" property="xxkgl0119" />
+		<result column="XXKGL0120" property="xxkgl0120" />
+	</resultMap>
+
+</mapper>

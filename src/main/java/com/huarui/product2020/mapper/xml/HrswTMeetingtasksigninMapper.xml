@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMeetingtasksigninMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMeetingtasksignin">
+		<id column="MTSI001" property="mtsi001" />
+		<result column="MTSI002" property="mtsi002" />
+		<result column="MTSI003" property="mtsi003" />
+		<result column="MTSI004" property="mtsi004" />
+		<result column="MTSI005" property="mtsi005" />
+		<result column="MTSI006" property="mtsi006" />
+		<result column="MTSI007" property="mtsi007" />
+	</resultMap>
+
+    <insert id="signIn" parameterType="java.util.Map">
+    INSERT INTO hrsw_t_MeetingTaskSignIn(mtsi001,mtsi002,mtsi003,mtsi004,mtsi005) VALUES(#{mtsi001},#{mtsi002},#{mtsi003},#{mtsi004},sysdate)
+    </insert>
+    
+    <select id="selectTaskStye" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT 
+		case when cc.calt007=dd.SINGNUM then 2 else 1 end style
+		FROM hrsw_t_calendarTask cc 
+		INNER JOIN
+		(SELECT
+		aa.CALT001,
+		count(BB.MTSI005) singNUm
+		FROM hrsw_t_calendarTask aa
+		LEFT JOIN hrsw_t_MeetingTaskSignIn bb on bb.mtsi002=aa.calt001 AND BB.MTSI004=#{user001} 
+		WHERE AA.calt001=#{mtsi002} GROUP BY aa.CALT001) dd ON CC.CALT001=DD.CALT001
+    
+    </select>
+    
+    <update id="updateTaskResult" parameterType="com.huarui.product2020.entity.HrswTTaskresult">
+        merge into hrsw_t_TaskResult aa
+		using(select 1 AS tare002,2 as tare003 FROM dual) b
+		on(aa.tare002=#{tare002} AND aa.tare003=#{tare003})
+		when matched then
+		update set aa.tare004=#{tare004} , aa.tare005=SYSDATE
+		when not matched then
+		INSERT(aa.tare001,aa.tare002,aa.tare003,aa.tare004,aa.tare005) VALUES(#{tare001},#{tare002},#{tare003},#{tare004},SYSDATE)   
+    </update>
+    
+    <select id="taskResult" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+		AA.METP004,
+		BB.CALT001,
+		BB.CALT002,
+		dd.*,
+		nvl(to_char(bb.calt006,'yyyy-mm-dd'),'--') endyear,
+		nvl(to_char(bb.calt006,'hh24:mi'),'--') endtime01,
+		nvl(to_char(cc.TARE005,'mm'),'--') mon, 
+		nvl(to_char(cc.TARE005,'dd') ,'--')dayy,
+		nvl(to_char(cc.TARE005,'yyyy-mm-dd') ,'--') completetime,
+		nvl(to_char(cc.TARE005,'hh24:mi'),'-:-') endtime,
+		case  when to_char(bb.calt006 - 1,'d')=1 THEN'周一'
+		      when to_char(bb.calt006 - 1,'d')=2 THEN'周二'
+		      when to_char(bb.calt006 - 1,'d')=3 THEN'周三'
+		      when to_char(bb.calt006 - 1,'d')=4 THEN'周四'
+		      when to_char(bb.calt006 - 1,'d')=5 THEN'周五'
+		      when to_char(bb.calt006 - 1,'d')=6 THEN'周六'
+		      when to_char(bb.calt006 - 1,'d')=7 THEN'周日'
+		      else '--' end week01,
+		case  when to_char(cc.TARE005 - 1,'d')=1 THEN'周一'
+		      when to_char(cc.TARE005 - 1,'d')=2 THEN'周二'
+		      when to_char(cc.TARE005 - 1,'d')=3 THEN'周三'
+		      when to_char(cc.TARE005 - 1,'d')=4 THEN'周四'
+		      when to_char(cc.TARE005 - 1,'d')=5 THEN'周五'
+		      when to_char(cc.TARE005 - 1,'d')=6 THEN'周六'
+		      when to_char(cc.TARE005 - 1,'d')=7 THEN'周日'
+		      else '--' end week
+		FROM  hrsw_t_MeetingTaskPeople aa 
+		INNER JOIN hrsw_t_calendarTask bb ON <![CDATA[ BB.CALT001=AA.METP002 AND sysdate>=trunc(bb.calt005,'d')+1 AND sysdate<= trunc(bb.calt006,'iw') + 6]]>
+		INNER JOIN(
+		SELECT 
+		AA.METP002,
+		LISTAGG( to_char(bb.user005), ',') WITHIN GROUP(ORDER BY bb.user005) userList
+		FROM hrsw_t_MeetingTaskPeople aa
+		INNER JOIN HRSW_T_USER bb ON BB.user001=AA.METP005
+		WHERE AA.METP004=4
+		GROUP BY aa.METP002) dd ON bb.CALT001=dd.METP002
+		INNER JOIN hrsw_t_TaskResult cc ON cc.tare002=aa.metp002 AND cc.tare003=aa.metp005 AND cc.tare004=2
+		WHERE AA.METP005=#{user001} AND aa.metp003=2 ORDER BY cc.TARE005
+   </select>
+</mapper>

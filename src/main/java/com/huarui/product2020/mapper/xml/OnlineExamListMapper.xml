@@ -1,0 +1,1367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.OnlineExamListMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap type="com.huarui.product2020.entity.ExamTTestactivity" id="ExamTTestactivityMapper">
+		<result column="tact001" property="id" />
+		<result column="tact002" property="tact002" />
+		<result column="tact003" property="tact003" />
+		<result column="tact004" property="tact004" />
+		<result column="tact005" property="tact005" />
+		<result column="tact006" property="tact006" />
+		<result column="tact007" property="tact007" />
+		<result column="tact008" property="tact008" />
+		<result column="tact009" property="tact009" />
+		<result column="tact010" property="tact010" />
+		<result column="tact011" property="tact011" />
+		<result column="tact012" property="tact012" />
+		<result column="tact013" property="tact013" />
+		<result column="tact014" property="tact014" />
+		<result column="tact015" property="tact015" />
+		<result column="tact016" property="tact016" />
+		<result column="tact017" property="tact017" />
+		<result column="tact018" property="tact018" />
+		<result column="tact019" property="tact019" />
+		<result column="tact020" property="tact020" />
+		<result column="tact021" property="tact021" />
+		<result column="tact022" property="tact022" />
+		<result column="tact023" property="tact023" />
+		<result column="tact024" property="tact024" />
+		<result column="tact025" property="tact025" />
+		<result column="tact026" property="tact026" />
+		<result column="tact027" property="tact027" />
+		<result column="tact028" property="tact028" />
+		<result column="tact029" property="tact029" />
+		<result column="tact030" property="tact030" />
+		<result column="tact031" property="tact031" />
+		<result column="tact032" property="tact032" />
+		<result column="tact033" property="tact033" />
+		<result column="tact034" property="tact034" />
+		<result column="tact035" property="tact035" />
+		<result column="tact036" property="tact036" />
+		<result column="tact037" property="tact037" />
+		<result column="tact038" property="tact038" />
+		<result column="tact039" property="tact039" />
+		<result column="tact040" property="tact040" />
+		<result column="tact041" property="tact041" />
+		<result column="tact042" property="tact042" />
+		<result column="tact043" property="tact043" />
+	</resultMap>
+
+
+
+	 <select id="queryOnlineExamList" resultType="java.util.HashMap" parameterType="java.util.Map">
+		SELECT A.TACT001,A.TACT004,A.TACT005,A.TACT006,A.TACT007,
+		CASE A.TACT008 WHEN 1 THEN '无限制' WHEN 2 THEN A.TACT009 || '分' WHEN 3 THEN CEIL((TO_DATE(TACT011 , 'MI-SS') - TO_DATE(TACT010 , 'MI-SS')) * 24 * 60  ) || '分钟' END  TACT008 ,
+		A.TACT009,A.TACT010,
+		A.TACT011,A.TACT012,A.TACT041
+		FROM EXAM_T_TESTACTIVITY A
+		INNER JOIN EXAM_V_EXAMUSER B ON A.TACT001=B.TUSE002
+		<where> 
+			SYSDATE BETWEEN A.TACT006 
+			AND  A.TACT007
+			AND  B.USER001 = #{userid}
+			AND A.TACT038 = 2
+			<if test="tact005 != null">
+			    AND A.TACT005 = #{tact005}
+			</if>
+			
+			<if test="keyword != null and keyword !=''">
+			     AND A.TACT004  LIKE CONCAT(CONCAT('%',#{keyword}), '%')
+			</if>
+		</where>
+		ORDER BY A.TACT006
+	</select>
+	
+
+
+	<select id="queryExamInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		<![CDATA[
+		SELECT TACT001,TACT004,TO_CHAR(TACT007, 'YYYY-MM-DD HH24:SS')TACT007,
+		CASE A.TACT008 WHEN 1 THEN '无限制' WHEN 2 THEN A.TACT009 || '分' WHEN 3 THEN CEIL((TO_DATE(TACT011 , 'MI-SS') - TO_DATE(TACT010 , 'MI-SS')) * 24 * 60  ) || '分钟' END  TACT008 ,
+		TACT009,
+		TO_CHAR(TACT006, 'YYYY-MM-DD HH24:SS')TACT006,TACT010,TACT011,
+		DECODE(TACT012,0,'无限制',TO_CHAR(TACT012)) TACT012,TACT013,TACT014,TO_CHAR(TACT015, 'YYYY-MM-DD HH24')TACT015, 
+		TO_CHAR(TACT016, 'YYYY-MM-DD HH24')TACT016,TACT017,TACT018,TACT020,TACT021,TACT019,
+		(SELECT COUNT(EGRA001) FROM EXAM_T_EXAMINEEGRADE
+			WHERE  EGRA004 = #{tact001} AND EGRA002 = #{userid}
+		)EXAMNUM
+		FROM EXAM_T_TESTACTIVITY A
+		]]>
+		<where>
+			TACT001 = #{tact001}
+		</where>
+	</select>
+
+	<select id="queryExamResult" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+			<![CDATA[ SELECT A.EGRA001,
+		       A.EGRA002,
+		       A.EGRA004,
+		       A.EGRA005,
+		       A.EGRA006,
+		       A.EGRA007,
+		       A.EGRA010,
+		       DECODE(B.TACT014,
+		              2,
+		              TO_CHAR(A.EGRA013) || '',
+		              3,
+		              CASE
+		                WHEN B.TACT015 <= SYSDATE AND SYSDATE <= B.TACT016 THEN 
+		                 TO_CHAR(A.EGRA013) || ''
+		                ELSE
+		                 '--'
+		              END,
+		              '--') EGRA013,
+		       
+		       DECODE(B.TACT014,
+		              2,
+		              TO_CHAR(B.TACT021),
+		              3,
+		              CASE
+		                WHEN B.TACT015 <= SYSDATE AND SYSDATE <= B.TACT016 THEN 
+		                 TO_CHAR(B.TACT021)
+		                ELSE
+		                 '--'
+		              END,
+		              '--') TACT021,
+		       DECODE(B.TACT014,
+		              2,
+		              CASE
+		                WHEN NVL(EGRA013, 0) - NVL(B.TACT021, 0) < 0 THEN 
+		                 '不及格'
+		                WHEN EGRA013 >= B.TACT021 * 0.9 THEN
+		                 '优'
+		                WHEN EGRA013 >= B.TACT021 * 0.8 THEN
+		                 '良'
+		                WHEN EGRA013 >= B.TACT021 * 0.7 THEN
+		                 '中'
+		                ELSE
+		                 '及格'
+		              END,
+		              3,
+		              CASE
+		                WHEN B.TACT015 <= SYSDATE AND SYSDATE <= B.TACT016 THEN
+		                 CASE
+		                   WHEN NVL(EGRA013, 0) - NVL(B.TACT021, 0) < 0 THEN
+		                    '不及格'
+		                   WHEN EGRA013 >= B.TACT021 * 0.9 THEN
+		                    '优'
+		                   WHEN EGRA013 >= B.TACT021 * 0.8 THEN
+		                    '良'
+		                   WHEN EGRA013 >= B.TACT021 * 0.7 THEN
+		                    '中'
+		                   ELSE
+		                    '及格'
+		                 END
+		                ELSE
+		                 '--'
+		              END,
+		              
+		              '--') AS RESULT,
+		       B.TACT017,B.TACT001
+		  FROM EXAM_T_EXAMINEEGRADE A
+		 INNER JOIN EXAM_T_TESTACTIVITY B
+		    ON A.EGRA004 = B.TACT001
+		 ]]>
+		 <where>EGRA001 =  #{EGRA001}</where>
+	</select>
+
+	<select id="queryExamTimes" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		<![CDATA[
+		SELECT  NVL((SUM(CASE WHEN EGRA007>2 THEN 1 ELSE 0 END)),0) AS TOTAL FROM EXAM_T_EXAMINEEGRADE
+		]]>
+		WHERE EGRA002= #{arg0} AND EGRA004= #{arg1}
+	</select>
+
+	<select id="findExamGrade" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		SELECT EGRA001,EGRA010,EGRA005 FROM EXAM_T_EXAMINEEGRADE
+		<where>
+			EGRA002 = #{arg0} AND EGRA004 = #{arg1}
+		</where>
+		AND (EGRA007=1 OR EGRA007=2) AND ROWNUM=1
+		ORDER BY EGRA001 ASC
+	</select>
+
+	<select id="findTestTxById" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<if test="tact024 != null">
+			<choose>
+				<when test="tact024 == 1">
+					 <![CDATA[SELECT B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE 
+					FROM EXAM_T_TESTTX T JOIN EXAM_T_BASETX B ON T.TTX008=B.BTX001
+					 ]]>
+					<where>
+						T.TTX002 = #{tact001}
+					</where>
+				</when>
+				<when test="tact024 != 1">
+						 <![CDATA[SELECT B.TTX003 AS BASETYPE,B.TTX004 AS BTXTITLE FROM EXAM_T_TESTTX B ]]>
+					<where>
+						TTX002 = #{tact001}
+					</where>
+				</when>
+			</choose>
+		</if>
+	</select> 
+
+	<select id="queryExamFixTopicList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT T.TTOP001 AS ID,T.TTOP003 AS TPID,T.TTOP006 AS TOPICID,
+			B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE,T.TTOP011 AS TOPIC,
+			TO_NUMBER(TO_CHAR(T.TTOP016, '999.99')) TOPICMARK,T.TTOP017 AS TOPICCOUNT,
+			T.TTOP018 AS TOPICOPTION,T.TTOP020 AS TOPICK,T.TTOP021,T.TTOP022 AS TOPICKEY,
+			NVL(T.TTOP023, '--') AS TOPREMARK,T.TTOP024 AS PARENTID,0 AS MUSTRIGHT,
+			0 AS TIMELIMIT
+			FROM EXAM_T_TESTTOPIC T
+			JOIN EXAM_T_BASETX B ON T.TTOP009 = B.BTX001
+		]]>
+		<where>
+			T.TTOP003 = #{tact001} AND T.TTOP004 = #{serialNO}
+			AND NVL(T.TTOP024, 0) = '0' ORDER BY T.TTOP027 ASC
+		</where>
+
+	</select>
+
+	<select id="queryExamFixTopicChildList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<!-- <select id="queryExamFixTopicChildList" resultMap="BaseResultMap" 
+			parameterType="java.util.Map"> -->
+		<![CDATA[
+			SELECT T.TTOP001 AS ID,T.TTOP003 AS TPID,T.TTOP006 AS TOPICID,
+      		B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE,T.TTOP011 AS TOPIC,
+       		TO_NUMBER(TO_CHAR(T.TTOP016, '999.99')) TOPICMARK,
+       		T.TTOP017 AS TOPICCOUNT,T.TTOP018 AS TOPICOPTION,
+       		T.TTOP020 AS TOPICK,T.TTOP022 AS TOPICKEY,T.TTOP023 AS TOPREMARK,
+       		T.TTOP024 AS PARENTID,0 AS MUSTRIGHT,0 AS TIMELIMIT
+  			FROM EXAM_T_TESTTOPIC T
+  			JOIN EXAM_T_BASETX B ON T.TTOP009 = B.BTX001
+		]]>
+		WHERE T.TTOP003 = #{tact001} AND T.TTOP004 = #{serialNO}
+		AND NVL(T.TTOP024, 0) > 0 ORDER BY T.TTOP027 ASC
+	</select>
+
+	<select id="getTestPaperById" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		<![CDATA[SELECT TACT001,TACT002,TACT003,TACT004,TACT005,TACT006,TACT007,TACT008,TACT009,TACT010,
+		TACT011,TACT012,TACT013,TACT014,TACT015,TACT016,TACT017,TACT018,TACT019,TACT020,TACT021,
+		TACT022,TACT023,TACT024,TACT025,TACT026,TACT027,TACT028,TACT029,TACT030,TACT031,TACT032,
+		TACT033,TACT034,TACT035,TACT036,TACT037,TACT038,TACT039,B.ORGA006 AS ORGANNAME
+		FROM EXAM_T_TESTACTIVITY A
+		INNER JOIN HRSW_T_ORGAN B ON A.TACT003 = B.ORGA001
+		]]>
+		WHERE TACT001 = #{TPID}
+	</select>
+
+	<select id="findTopicByExamId" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		<!-- <select id="findTopicByExamId" resultMap="com.huarui.product2020.mapper.ExamTTesttopicMapper"
+			parameterType="java.util.Map"> -->
+		select ttop001,ttop006,ttop009,ttop010,ttop011,ttop016,ttop017,
+		ttop018,ttop020,ttop021,ttop022,ttop023,ttop024,btx003 as basetype
+		from exam_t_testtopic t
+		<!-- <if test="subjective != null"> -->
+		join exam_t_basetx b on t.ttop009=b.btx001
+		<!-- </if> -->
+		<if test="markuserid != null">
+			join exam_t_TestMarkUser tu on t.ttop006=tu.tmus004 and
+			tu.tmus005= #{markuserid}
+		</if>
+		<where>
+			AND ttop003 = #{tpid}
+			<if test="type != null">
+				<choose>
+					<when test="type == 'topic'">
+			     <![CDATA[ AND nvl(ttop024,'0')='0' ]]>
+					</when>
+					<when test="type == 'child'">
+			     <![CDATA[ AND nvl(ttop024,'0')<>'0' ]]>
+					</when>
+				</choose>
+			</if>
+			<if test="serialno != null">
+				AND ttop004 = #{serialno}
+			</if>
+			<if test="subjective != null">
+				AND b.BTX003 in (0,4)
+			</if>
+		</where>
+	</select>
+
+	<insert id="insertExamGrade" parameterType="com.huarui.pojo.ExamineeGrade">
+	
+	 <![CDATA[ INSERT INTO EXAM_T_EXAMINEEGRADE(
+	    EGRA001,
+	    EGRA002,
+	    EGRA003,
+	    EGRA004,
+	    EGRA005,
+	    EGRA006,
+	    EGRA007,
+	    EGRA008,
+	    EGRA009,
+	    EGRA010,
+	    EGRA011,
+	    EGRA012,
+	    EGRA013,
+	    EGRA014,
+	    EGRA015,
+	    EGRA016
+	)
+	VALUES
+	(
+	    #{EGRA001,jdbcType=VARCHAR},
+	    #{EGRA002,jdbcType=VARCHAR},
+	    #{EGRA003,jdbcType=VARCHAR},
+	    #{EGRA004,jdbcType=VARCHAR},
+	    #{EGRA005,jdbcType=VARCHAR},
+	    #{EGRA006,jdbcType=VARCHAR},
+	    #{EGRA007,jdbcType=VARCHAR},
+	    #{EGRA008,jdbcType=TIMESTAMP},
+	    #{EGRA009,jdbcType=TIMESTAMP},
+	    #{EGRA010,jdbcType=VARCHAR},
+	    #{EGRA011,jdbcType=FLOAT},
+	    #{EGRA012,jdbcType=FLOAT},
+	    #{EGRA013,jdbcType=FLOAT},
+	    #{EGRA014,jdbcType=VARCHAR},
+	    #{EGRA015,jdbcType=VARCHAR},
+	    #{EGRA016,jdbcType=TIMESTAMP}
+	
+	) ]]> 
+		
+	</insert>
+
+	<select id="findExamGradeByID" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		SELECT EGRA001,EGRA002,EGRA003,EGRA004,EGRA005,EGRA006,
+		EGRA007,EGRA008,EGRA009,EGRA010
+		FROM EXAM_T_EXAMINEEGRADE
+		<where>
+			EGRA001 = #{arg0}
+		</where>
+	</select>
+
+	<select id="queryExamFixTopicList1" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT T.TTOP001 AS ID,T.TTOP003 AS TPID,T.TTOP006 AS TOPICID,
+			B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE,T.TTOP011 AS TOPIC,
+			TO_NUMBER(TO_CHAR(T.TTOP016, '999.99')) TOPICMARK,T.TTOP017 AS TOPICCOUNT,
+			T.TTOP018 AS TOPICOPTION,T.TTOP020 AS TOPICK,T.TTOP021,T.TTOP022 AS TOPICKEY,
+			NVL(T.TTOP023, '--') AS TOPREMARK,T.TTOP024 AS PARENTID,0 AS MUSTRIGHT,
+			0 AS TIMELIMIT, NVL(C.EATO005, '--') STUANSWER
+			FROM EXAM_T_TESTTOPIC T
+			JOIN EXAM_T_BASETX B ON T.TTOP009 = B.BTX001
+			JOIN EXAM_T_TESTTX A ON T.TTOP003 = A.TTX002 AND T.TTOP009 = A.TTX008
+			LEFT JOIN EXAM_T_EXAMANSWERTOPIC C ON  C.EATO003 = T.TTOP003 AND C.EATO004 = T.TTOP001 
+			AND  C.EATO002 = #{egra001}
+		]]>
+		WHERE T.TTOP003 = #{tact001} AND T.TTOP004 = #{serialNO}
+		<if test="type != null and type == 2"><!-- 查询学员答题错误的试题 -->
+			<!-- 查询答错的题,若题型是3判断题，0代表答案‘错’，1代表答案‘对’ -->
+			and T.TTOP022 != case b.BTX003 when 3 then case c.EATO005 when '1' then 'A' when '2' then 'B' end else c.EATO005 end  
+		</if>
+		AND NVL(T.TTOP024, 0) = '0' ORDER BY A.TTX005 ASC
+	</select>
+
+
+	<select id="findFixTopicUserAnswer" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT EATO001 AS ID,EATO004 TOPICID,NVL(EATO005,'') AS EXTANSWER,EATO006 SCORE 
+			FROM EXAM_T_EXAMANSWERTOPIC 
+		]]>
+		WHERE EATO002= #{egra001} AND EATO005 IS NOT NULL
+	</select>
+
+	<select id="findByPageObjectForUser" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		<!-- <![CDATA[ SELECT EXER001,EXER002,EXER003,EXER004,EXER005,EXER006,EXER007,EXER008,EXER009,EXER010,EXER011,C.USER005 
+			AS MANAGER, ]]> <![CDATA[ NVL(D.ZS,0) ZS,NVL(E.YD,0) YD,NVL(F.ZQ,0) answerRight,NVL(G.CW,0) 
+			answerError,NVL (D .ZS, 0)-NVL (E .YD, 0) noAnswer, ]]> <![CDATA[ CASE WHEN 
+			NVL(E.YD, 0) = 0 THEN 0 ELSE ROUND(NVL(F.ZQ,0)/E.YD*100,2) END accuracy, 
+			]]> <![CDATA[ CASE WHEN NVL(E.YD, 0) = 0 THEN 0 ELSE ROUND(E.YD/NVL(D.ZS,0)*100,2) 
+			END || '%' JD, ]]> <![CDATA[ CASE WHEN NVL(F.ZQ,0) = 0 THEN '0' ]]> <![CDATA[ 
+			ELSE DECODE(NVL(F.ZQ,0)/NVL(D.ZS,0),0,'0',to_char(ROUND(NVL(F.ZQ,0)/NVL(D.ZS,0)*100,2),'FM90.99')) 
+			END ZWL, ]]> <![CDATA[ H.exgr007 AS type,H.EXGR001 ]]> -->
+		<![CDATA[ SELECT EXER001,EXER004,C.USER005 AS MANAGER,EXER006,EXER010,NVL(F.ZQ,0) answerRight,NVL(G.CW,0) answerError,NVL (D .ZS, 0)-NVL (E .YD, 0) noAnswer,]]> 
+		 <![CDATA[ CASE WHEN NVL(E.YD, 0) = 0 THEN 0 ELSE ROUND(NVL(F.ZQ,0)/E.YD*100,2) END accuracy ]]> 
+		 <![CDATA[ FROM exam_t_exercise A ]]> 
+		 <![CDATA[ INNER JOIN EXAM_T_USERRESOURCERELATION B ON A.EXER001 = B.URRE013 AND B.URRE011=1 ]]> 
+		 <![CDATA[ JOIN HRSW_T_USER C ON C.USER001=B.URRE009 ]]> 
+		 <![CDATA[ INNER JOIN EXAM_V_EXERCISEUSER J ON A.EXER001=J.EXUS002 AND J.USER001=#{userid} ]]> 
+		 <![CDATA[ LEFT JOIN (SELECT E1.exsu002,NVL(COUNT(A.TOPI001),0) ZS FROM EXAM_T_TOPIC A ]]> 
+		 <![CDATA[ 	INNER JOIN EXAM_T_TOPICCATALOG ET ON A .TOPI001 = ET.TCAT002 ]]> 
+		 <![CDATA[ 	INNER JOIN hrsw_t_levelrelation E1 ON E1.LREL002 = ET.TCAT003 ]]> 
+		 <![CDATA[ 	INNER JOIN EXAM_T_EXERSUBJECT E1 ON E1.EXSU003 = E1.LREL004 ]]> 
+		 <![CDATA[ 	GROUP BY E1.EXSU002) D ON D.EXSU002 = A.EXER001 ]]> 
+		 <![CDATA[ LEFT JOIN (SELECT eato002,NVL(COUNT(DISTINCT eato005),0) YD FROM exam_t_ExerAnwserTopic ]]> 
+		 <![CDATA[ 	WHERE eato004 = #{userid} GROUP BY eato002) E ON E.eato002 = A.EXER001 ]]> 
+		 <![CDATA[ LEFT JOIN (SELECT eato002,NVL(COUNT(DISTINCT eato005),0) ZQ FROM exam_t_ExerAnwserTopic ]]> 
+		 <![CDATA[ 	WHERE eato004 = #{userid} AND eato007 = 2 GROUP BY eato002) F ON F.eato002 = A.EXER001 ]]> 
+		 <![CDATA[ LEFT JOIN (SELECT eato002,NVL(COUNT(DISTINCT eato005),0) CW FROM exam_t_ExerAnwserTopic ]]> 
+		 <![CDATA[ 	WHERE eato004 = #{userid} AND eato007 = 1 GROUP BY eato002) G ON G.eato002 = A.EXER001 ]]> 
+		 <![CDATA[ 	LEFT JOIN (SELECT EXGR001,EXGR002,EXGR005,EXGR007 FROM EXAM_T_EXERGRADE  ]]> 
+		 <![CDATA[ 		WHERE (exgr005,exgr002) IN(SELECT MAX(EXGR005),EXGR002 FROM EXAM_T_EXERGRADE ]]> 
+		 <![CDATA[ 			WHERE exgr003 = #{userid} GROUP BY exgr002 ]]> 
+		 <![CDATA[ 	) ) H ON H .exgr002 = A .EXER001 ]]>
+		<where>
+				<![CDATA[ AND EXER007 = 3 ]]> 
+				<![CDATA[ AND EXER011 = 1 ]]> 
+				<![CDATA[ AND EXER005 <= SYSDATE ]]> 
+				<![CDATA[ AND EXER006 >= SYSDATE ]]>
+		</where>
+		<![CDATA[  ORDER BY A .EXER005 ]]>
+	</select>
+
+
+
+	<update id="updateExamGrade" parameterType="java.util.Map">
+		<![CDATA[  
+			UPDATE EXAM_T_EXAMINEEGRADE
+			SET EGRA007= #{EGRA007,jdbcType=VARCHAR},
+			EGRA009= SYSDATE,
+			EGRA010= #{EGRA010,jdbcType=VARCHAR},
+			EGRA011= #{EGRA011,jdbcType=VARCHAR},
+			EGRA012= #{EGRA012,jdbcType=VARCHAR},
+			EGRA013= #{EGRA013,jdbcType=VARCHAR} 
+			WHERE EGRA001= #{EGRA001,jdbcType=VARCHAR}
+		]]>
+	</update>
+
+	<select id="queryCourseMap" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		SELECT A.LEAC001,A.LEAC018, C.TACT001,C.TACT021
+		FROM STUDY_T_LEARNACTIVITY A
+		INNER JOIN STUDY_T_LEARNEXAM B ON A.LEAC001 = B.LEEX002 AND B.LEEX004 = 1
+		INNER JOIN EXAM_T_TESTACTIVITY C ON B.LEEX003 = C.TACT001
+		<where>
+			C.TACT001 = #{tact001}
+		</where>
+	</select>
+
+	<update id="updateLearnResult" parameterType="java.util.Map">
+		<!-- LERE002 学习活动ID leac001 LERE003 用户ID user001 -->
+		<![CDATA[  
+	 		MERGE INTO STUDY_T_LEARNRESULT A
+	 		USING(SELECT #{leac001} LERE002, #{user001} LERE003,
+	 		NVL((SELECT B1.EGRA013 FROM STUDY_T_LEARNEXAM A1
+	 		INNER JOIN(SELECT MAX(EGRA013) EGRA013,EGRA004
+			FROM EXAM_T_EXAMINEEGRADE
+	 		WHERE EGRA002 = #{user001}
+	 		GROUP BY EGRA004)B1  ON A1.LEEX003 = B1.EGRA004
+	 		AND A1.LEEX002 = #{leac001} AND A1.LEEX004 = 1 ),0)EGRA013
+	 		FROM DUAL)P ON(A.LERE002 = P.LERE002 AND A.LERE003 = P.LERE003)
+			WHEN MATCHED THEN UPDATE SET  A.LERE005 = 100, A.LERE006 = P.EGRA013,
+	 		A.LERE007 = SYSDATE, A.LERE008 = 1 
+		]]>
+	</update>
+
+	<update id="updateCAllUserHours" parameterType="java.util.Map">
+		<![CDATA[  
+	 		MERGE INTO STUDY_T_USERHOURS A
+	 		USING(
+	 		 SELECT A1.LEAC001,C1.COUR001,:UHOU003 UHOU003,
+	 		 ROUND(NVL(C1.COUR005,0) /60/45, 1) COURHOURS,
+	 		  DECODE(B1.LECW007,0,2,1,1)LECW007
+	 		   FROM STUDY_T_LEARNACTIVITY A1
+	 		   INNER JOIN STUDY_T_LEARNCW B1
+	 		   ON A1.LEAC001 = B1.LECW002
+	 		   INNER JOIN HRSW_T_COURSEWARE C1
+	 		   ON B1.LECW006 = C1.COUR001
+	 		   WHERE A1.LEAC001 = :UHOU004
+	 		   )P
+	 		   ON (A.UHOU003 = P.UHOU003 AND A.UHOU004 = P.LEAC001 AND A.UHOU009 = P.COUR001)
+	 		   WHEN NOT MATCHED THEN
+	 		   INSERT(
+	 		   UHOU001,
+	 		   UHOU002,
+	 		   UHOU003,
+	 		   UHOU004,
+	 		   UHOU005,
+	 		   UHOU006,
+	 		   UHOU007,
+	 		   UHOU008,
+	 		   UHOU009
+	 		   )
+	 		   VALUES(
+	 		   :UHOU001,
+	 		  	1,
+	 		    P.UHOU003,
+	 		    P.LEAC001,
+	 		   	:UHOU005,
+	 		   	P.COURHOURS,
+	 		    P.LECW007,
+	 		    SYSDATE,
+	 		    P.COUR001
+	 		   )
+		]]>
+	</update>
+
+	<update id="updateUserHours" parameterType="java.util.Map">
+		<![CDATA[  
+	 		MERGE INTO STUDY_T_USERHOURS A 
+		USING( 
+	 		 SELECT A1.LCWR002,A1.LCWR003,A1.LCWR005,
+	 		ROUND(NVL(B1.COUR005,0) /60/45, 1) COURHOURS,
+			DECODE(B1.LECW007,0,2,1,1)LECW007
+	 		FROM STUDY_T_LEARNACTIVITY A1
+	 		INNER JOIN HRSW_T_COURSEWARE B1
+	 		ON A1.LCWR005 = B1.COUR001 AND A1.LCWR010 = 1
+	 		INNER JOIN STUDY_T_LEARNCW C1 ON A1.LCWR002 = C1.LECW002
+	 		AND A1.LCWR005 = C1.LECW006  WHERE A1.LCWR002 = :UHOU004 
+	 		AND A1.LCWR003 = :UHOU003
+	 		)P
+	 		ON (A.UHOU003 = P.LCWR003 AND A.UHOU004 = P.LCWR002 AND A.UHOU009 = P.LCWR005)
+	 		WHEN NOT MATCHED THEN
+	 		INSERT(UHOU001,UHOU002,UHOU003,UHOU004,UHOU005,UHOU006,UHOU007,UHOU008,UHOU009)
+	 		VALUES(:UHOU001,1,:P.LCWR003,P.LCWR002,:UHOU005,P.COURHOURS,P.LECW007,SYSDATE,
+	 		P.LCWR005)
+		]]>
+	</update>
+
+	<insert id="insertTopicAnswer" parameterType="java.util.List">
+	 INSERT INTO EXAM_T_EXAMANSWERTOPIC(
+	    EATO001,
+	    EATO002,
+	    EATO003,
+	    EATO004,
+	    EATO005,
+	    EATO006
+	 )
+	<foreach collection="list" item="item" index="index" separator="UNION ALL">
+		(SELECT 
+			sys_guid(),
+		    #{item.egra001,jdbcType=VARCHAR},
+		    #{item.tpid,jdbcType=VARCHAR},
+		    #{item.topi001,jdbcType=VARCHAR},
+		    #{item.answer,jdbcType=VARCHAR},
+		    #{item.score,jdbcType=FLOAT}
+			
+		FROM DUAL)
+	</foreach>
+	</insert>
+
+
+	<insert id="insertGrade" parameterType="java.util.Map">
+		 <![CDATA[ INSERT INTO EXAM_T_EXERGRADE(
+		    EXGR001,
+		    EXGR002,
+		    EXGR003,
+		    EXGR004,
+		    EXGR005,
+		    EXGR007
+		)
+		VALUES
+		(
+		    #{uuid,jdbcType=VARCHAR},
+		    #{exer001,jdbcType=VARCHAR},
+		    #{userid,jdbcType=VARCHAR},
+		    #{exgr004,jdbcType=VARCHAR},
+		    #{exgr005,jdbcType=VARCHAR},
+		    #{exgr007,jdbcType=INTEGER}
+		) ]]>
+	</insert>
+
+	<select id="findAllExerciseList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+   		<![CDATA[ SELECT * FROM (]]> 
+   		<![CDATA[ SELECT A .CATA001, A .CATA002 tkName, A.CATA004 ]]> 
+   		<![CDATA[ FROM HRSW_T_CATALOG A ]]> 
+   		<![CDATA[ START WITH A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001}) ]]> 
+   		<![CDATA[ CONNECT BY PRIOR CATA001 = CATA004 ]]>
+   		<![CDATA[ ORDER BY 	A .CATA011) ]]> 
+   		<![CDATA[ WHERE 1 = 1 ]]>
+		<if test="cata004 == null">
+	   		<![CDATA[ AND CATA004 = '-1' ]]>
+		</if>
+		<if test="cata004 != null">
+	   		<![CDATA[ AND CATA004 = #{cata004} ]]>
+		</if>
+	</select>
+
+	<select id="queryAnswerList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+   		<![CDATA[ SELECT COUNT (A.TOPI001) COUNTS,NVL (C.YD, 0) YD,NVL (D.ZQ, 0) ZQ, ]]> 
+   		<![CDATA[ NVL (E.CW, 0) CW,COUNT (DISTINCT ET.TCAT002) - NVL (C.YD, 0) WD,NVL (E .CW, 0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL (C.YD, 0) = 0 THEN 0 ]]> 
+   		<![CDATA[ 	ELSE ROUND (NVL (D .ZQ, 0) / NVL (C.YD, 0) * 100,2) END || '%' ZQL, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.ZQ,0) = 0 THEN '0' ]]> 
+		<![CDATA[ ELSE DECODE(NVL(D.ZQ,0)/COUNT(DISTINCT ET.TCAT002),0,'0',to_char(ROUND(NVL(D.ZQ,0)/COUNT(DISTINCT ET.TCAT002)*100,2),'FM90.99')) END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG ET ON A .TOPI001 = ET.TCAT002 ]]>
+   		<![CDATA[ INNER JOIN HRSW_T_LEVELRELATION E1 ON E1.LREL002 = ET.TCAT003 ]]>
+   		<![CDATA[ INNER JOIN EXAM_T_EXERSUBJECT ES ON ES.EXSU003 = E1.LREL004 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) YD FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) C ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) ZQ FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} AND B.EATO007 = 2 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) D ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) CW FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} AND B.EATO007 = 1 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) E ON 1=1 ]]>
+   		<![CDATA[ WHERE ES.EXSU002 = #{exer001} ]]>
+   		<![CDATA[ AND ES.EXSU003 = #{CATA001} ]]>
+   		<![CDATA[ GROUP BY C.YD, D.ZQ, E.CW ]]>
+	</select>
+
+
+	<select id="findKnowledgesList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+   		<![CDATA[ SELECT A.tkName,COUNT(TOPI001) total, NVL(D.YD,0) alreadyDone,NVL(E.ZQ,0) ZQ, ]]> 
+   		<![CDATA[ COUNT(TOPI001) - NVL(D.YD,0) WD, NVL(F.CW,0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.YD,0) = 0 THEN 0 ELSE ROUND(NVL(E.ZQ,0)/NVL(D.YD,0)*100,2) END || '%' accuracy, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.YD,0) = 0 THEN 0 ELSE ROUND(NVL(E.YD,0)/NVL(COUNT(TOPI001),0)*100,2) END || '%' progress, ]]> 
+   		<![CDATA[ CASE WHEN NVL(E.ZQ,0) = 0 THEN '0' ELSE DECODE(NVL(E.ZQ,0)/COUNT(TOPI001),0,'0',to_char(ROUND(NVL(E.ZQ,0)/COUNT(TOPI001)* 100 ,2),'FM90.99')) END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG B ON A.TOPI001 = B.TCAT002 ]]> 
+   		<![CDATA[ INNER JOIN hrsw_t_levelrelation E1 ON E1.LREL002 = B.TCAT003  ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_EXERSUBJECT C ON C.EXSU003 = E1.LREL004 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) YD ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) D ON A.TOPI003 = D.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) ZQ ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} AND B.EATO007 = 2 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) E ON A.TOPI003 = E.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) CW ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} AND B.EATO007 = 1 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) F ON A.TOPI003 = F.TOPI003 ]]> 
+	   	<![CDATA[ WHERE C.EXSU002 = #{exer001} ]]>
+		<if test="cata008 != null">
+	   		<![CDATA[ AND C.CATA008 = #{cata008} ]]>
+		</if>
+		<if test="topi003 != null">
+	   		<![CDATA[ AND A.TOPI003 = #{topi003} ]]>
+		</if>
+   		<![CDATA[ GROUP BY A.TOPI003,D.YD,E.ZQ,F.CW ]]>
+	</select>
+
+
+	<select id="tk_list" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		 <![CDATA[ SELECT EXER001,EXER004,EXER006,EXER010,C.USER005 AS MANAGER FROM EXAM_T_EXERCISE A ]]> 
+		 <![CDATA[ INNER JOIN EXAM_T_USERRESOURCERELATION B ON A.EXER001 = B.URRE013 AND B.URRE011=1 ]]> 
+		 <![CDATA[ JOIN HRSW_T_USER C ON C.USER001=B.URRE009]]> 
+	     <![CDATA[ INNER JOIN EXAM_V_EXERCISEUSER J ON A.EXER001=J.EXUS002 AND J.USER001=#{userid} ]]> 
+         <![CDATA[ WHERE EXER007 = 3 ]]>	
+	      <![CDATA[ ORDER BY EXER006 DESC]]>
+
+	</select>
+
+	<select id="tk_practiseContent" resultType="java.util.HashMap"
+		parameterType="java.util.Map">	
+		 <![CDATA[ SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005,to_char(TOPI006) TOPI006,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012,to_char(TOPI013) TOPI013,TOPI014,TOPI015, ]]>
+		 <![CDATA[ to_char(TOPI016) TOPI016,TOPI017,to_char(TOPI018) TOPI018,TOPI019,TOPI020,TOPI021,TOPI022,
+		 NVL(ZQ,0) TOPI023,NVL(DC,0) TOPI024,
+		 CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' TOPI025
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_TOPICCATALOG B ON B.TCAT002=A.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E3 ON E3.LREL002 = B.TCAT003
+		 INNER JOIN EXAM_T_EXERSUBJECT E ON E.EXSU003 = E3.LREL004
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) C ON C.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) D ON D.EATO005 = A.TOPI001
+		 WHERE EXSU002= #{exer001}]]>
+		<if test="cata001 != '-1'">
+		 	<![CDATA[ AND EXSU003 = #{cata001} ]]>
+		</if>
+		<if test="eato007 !=null">
+		 	<![CDATA[ AND D.EATO007 = #{eato007} ]]>
+		</if>
+		<if test="type != null">
+			<choose>
+				<when test="type == 'topic'">
+					AND nvl(TOPI019,'0')='0'
+				</when>
+				<when test="type == 'child'">
+					AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		</if>
+	</select>
+
+
+	<select id="findRightAndError" resultType="java.util.HashMap"
+		parameterType="java.lang.String">	
+		 <![CDATA[ SELECT NVL (E.ZQ, 0) rightCount, NVL (F.DC, 0) errorCount, ]]>
+		 <![CDATA[ CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' allcityAccuracy ]]>
+		 <![CDATA[  FROM EXAM_T_TOPIC A
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) C ON C.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) D ON D.EATO005 = A.TOPI001
+		 WHERE TOPI001= #{tpid} ]]>
+	</select>
+
+	<select id="selectOnLineExerciseList" resultType="java.util.HashMap" parameterType="java.util.Map">
+   		<![CDATA[ SELECT * FROM (]]> 
+   		<![CDATA[ SELECT A .CATA001, A .CATA002, A.CATA004 ]]> 
+   		<![CDATA[ FROM HRSW_T_CATALOG A ]]>
+		<choose>
+			<when test="cata004 != null">
+		   		<![CDATA[ START WITH A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001}) ]]> 
+		   		<![CDATA[ CONNECT BY PRIOR CATA001 = CATA004 ]]>
+			</when>
+			<otherwise>
+		   		<![CDATA[ WHERE A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001})) ]]>
+			</otherwise>
+		</choose>
+   		<if test="cata004 != null">
+	   		<![CDATA[ AND CATA004 = #{exer001} )]]>
+		</if>
+	</select>
+
+	<select id="selectCountType" resultType="java.util.HashMap"	parameterType="java.lang.String">
+	<![CDATA[ SELECT COUNT(TOPI001) TOTAL, E2.BTX003  TYPENAME FROM EXAM_T_TOPIC A]]> 
+    <![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG B ON A.TOPI001 = B.TCAT002]]> 
+	<![CDATA[ INNER JOIN HRSW_T_LEVELRELATION E1 ON E1.LREL002 = B.TCAT003]]> 
+	<![CDATA[ INNER JOIN EXAM_T_BASETX E2 ON E2.BTX001=A.TOPI004]]> 
+	<![CDATA[ WHERE E1.LREL004 = #{cata001}]]> 
+	<![CDATA[ GROUP BY E2.BTX003 ]]> 
+	</select>
+	
+	<insert id="insertBatch_exersample" parameterType="java.util.List"
+		flushCache="true">  
+	    <![CDATA[ INSERT INTO EXAM_T_EXERSAMPLE(EXSA001,EXSA002,EXSA003,EXSA004,EXSA005,EXSA006,EXSA007,EXSA008,EXSA009,EXSA010)
+	 ]]>
+		<foreach collection="list" item="item" index="index"
+			separator="UNION ALL">
+			(SELECT
+			#{item.exsa001,jdbcType=VARCHAR},
+
+			#{item.exsa002,jdbcType=VARCHAR},
+
+			#{item.exsa003,jdbcType=VARCHAR},
+
+			#{item.exsa004,jdbcType=VARCHAR},
+
+			#{item.exsa005,jdbcType=VARCHAR},
+
+			#{item.exsa006,jdbcType=VARCHAR},
+
+			#{item.exsa007,jdbcType=INTEGER},
+
+			#{item.exsa008,jdbcType=INTEGER},
+
+			#{item.exsa009,jdbcType=TIMESTAMP},
+
+			#{item.exsa010,jdbcType=INTEGER}
+
+			FROM DUAL)
+		</foreach>
+	</insert>
+
+	<insert id="insertExerSampleContent" parameterType="java.util.Map">
+		 <![CDATA[ INSERT INTO EXAM_T_EXERSAMPLE(EXSA001,EXSA002,EXSA003,EXSA004,EXSA005,EXSA006,EXSA007,EXSA008,EXSA009,EXSA010)
+	VALUES
+	(
+			#{exsa001,jdbcType=VARCHAR},
+			
+			#{exsa002,jdbcType=VARCHAR},
+			
+			#{exsa003,jdbcType=VARCHAR},
+			
+			#{exsa004,jdbcType=VARCHAR},
+			
+			#{exsa005,jdbcType=VARCHAR},
+			
+			#{exsa006,jdbcType=VARCHAR},
+			
+			#{exsa007,jdbcType=INTEGER},
+			
+			#{exsa008,jdbcType=INTEGER},
+			
+			#{exsa009,jdbcType=TIMESTAMP},
+			
+			#{exsa010,jdbcType=INTEGER}
+			
+	) ]]>
+	</insert>
+
+	<insert id="insert_findTopicByExerciseId" parameterType="java.util.Map">
+         
+        <![CDATA[ INSERT INTO EXAM_T_EXERTOPIC ( ]]>
+        <![CDATA[ EXTO001,EXTO002,EXTO003,EXTO004,EXTO005,EXTO006,EXTO007,EXTO008,EXTO009,EXTO010,]]>
+        <![CDATA[ EXTO011,EXTO012,EXTO013,EXTO014,EXTO015,EXTO016,EXTO017,EXTO018,EXTO019,EXTO020,]]>
+        <![CDATA[ EXTO021,EXTO022,EXTO023,EXTO024,EXTO025,EXTO026)]]>
+        <![CDATA[ SELECT 
+         #{exto001}, #{exto002}, #{exto003}, #{exto004},D.*
+         FROM ( ]]>
+		 <![CDATA[  SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005, TOPI006,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012, TOPI013,TOPI014,TOPI015, ]]>
+		 <![CDATA[ TOPI016,TOPI017,TOPI018,TOPI019,TOPI020,TOPI021,TOPI022
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_TOPICCATALOG B ON B.TCAT002=A.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E3 ON E3.LREL002 = B.TCAT003
+		 INNER JOIN EXAM_T_BASETX E2 ON A.TOPI004 = E2.BTX001
+		 INNER JOIN EXAM_T_EXERSUBJECT E ON E.EXSU003 = E3.LREL004
+		 WHERE EXSU002= #{exer001}]]>
+		<if test="cata001 != '-1'">
+			<!-- <![CDATA[ AND TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]> 
+				<![CDATA[ START WITH CATA001 = #{cata001} CONNECT BY PRIOR CATA001 = CATA004) 
+				]]> -->
+		 	<![CDATA[ AND EXSU003 = #{cata001}]]>
+		</if>
+		<if test="btx003 !=null"> <![CDATA[ AND E2.BTX003=${btx003} 
+			]]>
+	    </if>
+		<if test="type != null">
+			<choose>
+				<when test="type == 'topic'">
+					AND nvl(TOPI019,'0')='0'
+				</when>
+				<when test="type == 'child'">
+					AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		</if>
+	 	<![CDATA[ ORDER BY dbms_random.VALUE)D]]>
+	 	<![CDATA[  WHERE ROWNUM <2]]>
+	</insert>
+	<insert id="insert_findTopicByExerciseId1" parameterType="java.util.Map">
+         
+        <![CDATA[ INSERT INTO EXAM_T_EXERTOPIC ( ]]>
+        <![CDATA[ EXTO001,EXTO002,EXTO003,EXTO004,EXTO005,EXTO006,EXTO007,EXTO008,EXTO009,EXTO010,]]>
+        <![CDATA[ EXTO011,EXTO012,EXTO013,EXTO014,EXTO015,EXTO016,EXTO017,EXTO018,EXTO019,EXTO020,]]>
+        <![CDATA[ EXTO021,EXTO022,EXTO023,EXTO024,EXTO025,EXTO026)]]>
+        <![CDATA[ SELECT 
+         sys_guid(), #{exto002}, #{exto003}, #{exto004},D.*
+         FROM ( ]]>
+		 <![CDATA[  SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005, TOPI006,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012, TOPI013,TOPI014,TOPI015, ]]>
+		 <![CDATA[ TOPI016,TOPI017,TOPI018,TOPI019,TOPI020,TOPI021,TOPI022
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_TOPICCATALOG B ON B.TCAT002=A.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E3 ON E3.LREL002 = B.TCAT003
+		 INNER JOIN EXAM_T_BASETX E2 ON A.TOPI004 = E2.BTX001
+		 INNER JOIN EXAM_T_EXERSUBJECT E ON E.EXSU003 = E3.LREL004
+		 WHERE EXSU002= #{exer001}]]>
+		<if test="cata001 != '-1'">
+			<!-- <![CDATA[ AND TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]> 
+				<![CDATA[ START WITH CATA001 = #{cata001} CONNECT BY PRIOR CATA001 = CATA004) 
+				]]> -->
+		 	<![CDATA[ AND EXSU003 = #{cata001}]]>
+		</if>
+		<if test="btx003 !=null"> <![CDATA[ AND E2.BTX003=${btx003} 
+			]]>
+	    </if>
+		<if test="type != null">
+			<choose>
+				<when test="type == 'topic'">
+					AND nvl(TOPI019,'0')='0'
+				</when>
+				<when test="type == 'child'">
+					AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		</if>
+	 	<![CDATA[ ORDER BY dbms_random.VALUE)D]]>
+	</insert>
+
+	<select id="queryExamFixTopicList2" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT T.EXTO001 AS ID,T.EXTO002 AS TPID,T.EXTO005 AS TOPICID,A.EXSA003 AS EXGRID,T.EXTO004 as CTID,
+			B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE,T.EXTO010 AS TOPIC,
+			TO_NUMBER(TO_CHAR(T.EXTO015, '999.99')) TOPICMARK,T.EXTO016 AS TOPICCOUNT,
+			T.EXTO017 AS TOPICOPTION,T.EXTO019 AS TOPICK,T.EXTO021 AS TOPICKEY,
+			NVL(T.EXTO022, '--') AS TOPREMARK,T.EXTO023 AS PARENTID,0 AS MUSTRIGHT,
+			0 AS TIMELIMIT
+			FROM EXAM_T_EXERTOPIC T
+			JOIN EXAM_T_BASETX B ON T.EXTO008	 = B.BTX001
+			JOIN EXAM_T_EXERSAMPLE A ON T.EXTO004 = A.exsa001
+		]]>
+		<where>
+			T.EXTO002 = #{exto002} AND T.EXTO004= #{exto004}
+			AND
+			NVL(T.EXTO023, 0) = '0'
+		</where>
+	</select>
+   
+   <insert id="insert_exerGrade" parameterType="java.util.Map" >
+		 <![CDATA[ INSERT INTO exam_t_exerGrade(EXGR001,EXGR002,EXGR003,exgr005,exgr007)
+	VALUES
+	(
+			#{exgr001,jdbcType=VARCHAR},
+			
+			#{exgr002,jdbcType=VARCHAR},
+			
+			#{exgr003,jdbcType=VARCHAR},
+			
+			#{exgr005,jdbcType=TIMESTAMP},
+			1
+						
+	) ]]> 
+	</insert>
+	
+	<select id="queryExerciseResult" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		SELECT
+		exgr001,exgr002,exgr003,exgr005,exgr007
+		FROM exam_t_exerGrade A
+		<where>
+			exgr001 = #{exgr001}
+		</where>
+	</select>
+   
+   <update id="update_ExerAnwserTopic" parameterType="java.util.Map" flushCache="true">
+		 <![CDATA[  UPDATE exam_t_ExerAnwserTopic ]]> 
+		<set>
+			<if test="eato001 != null">
+			      <![CDATA[ EATO001 = #{eato001}, ]]>
+			</if>
+			<if test="eato002 != null">
+			      <![CDATA[ EATO002 = #{eato002}, ]]>
+			</if>
+			<if test="eato003 != null">
+			      <![CDATA[ EATO003 = #{eato003}, ]]>
+			</if>
+			<if test="eato004 != null">
+			      <![CDATA[ EATO004 = #{eato004}, ]]>
+			</if>
+			<if test="eato005 != null">
+			      <![CDATA[ EATO005 = #{eato005}, ]]>
+			</if>
+			<if test="eato006 != null">
+			      <![CDATA[ EATO006 = #{eato006}, ]]>
+			</if>
+			<if test="eato007 != null">
+			      <![CDATA[ EATO007 = #{eato007}, ]]>
+			</if>
+			<if test="eato008 != null">
+			      <![CDATA[ EATO008 = #{eato008} ]]>
+			</if>
+		</set>
+		 <![CDATA[  WHERE EATO001 = #{eato001} ]]> 
+	</update>
+
+    <select id="findAnwserTopic1" resultType="java.util.Map" parameterType="java.util.Map">
+		 <![CDATA[ SELECT EATO001,EATO002,EATO003,EATO004,EATO005,EATO006,EATO007,EATO008 ]]> 
+		 <![CDATA[ FROM exam_t_ExerAnwserTopic ]]> 
+		 <![CDATA[ WHERE EATO003 =#{eato003} ]]> 
+		 <![CDATA[ AND EATO004 =#{eato004} AND EATO005 =#{eato005} ]]> 
+	</select>
+	
+	
+	 
+    
+    <update id="updateExerGrade" parameterType="com.huarui.product2020.entity.ExamTExergrade" flushCache="true">
+		 <![CDATA[  UPDATE exam_t_exerGrade ]]> 
+		<set>
+			<if test="exgr001 != null">
+			      <![CDATA[ EXGR001 = #{exgr001}, ]]>
+			</if>
+			<if test="exgr002 != null">
+			      <![CDATA[ EXGR002 = #{exgr002}, ]]>
+			</if>
+			<if test="exgr003 != null">
+			      <![CDATA[ EXGR003 = #{exgr003}, ]]>
+			</if>
+			<if test="exgr004 != null">
+			      <![CDATA[ EXGR004 = #{exgr004}, ]]>
+			</if>
+			<if test="exgr005 != null">
+			      <![CDATA[ EXGR005 = #{exgr005}, ]]>
+			</if>
+			<if test="exgr006 != null">
+			      <![CDATA[ EXGR006 = #{exgr006}, ]]>
+			</if>
+			<if test="exgr007 != null">
+			      <![CDATA[ EXGR007 = #{exgr007} ]]>
+			</if>
+		</set>
+		 <![CDATA[  WHERE EXGR001 = #{exgr001} ]]> 
+	</update>
+	
+	
+	<insert id="insert_ExerAnwserTopic" parameterType="java.util.Map" flushCache="true">
+		 <![CDATA[ INSERT INTO EXAM_T_EXERANWSERTOPIC (EATO001,EATO002,EATO003,EATO004,EATO005,EATO006,EATO007,EATO008)
+	VALUES
+	(
+			#{eato001,jdbcType=VARCHAR},
+			
+			#{eato002,jdbcType=VARCHAR},
+			
+			#{eato003,jdbcType=VARCHAR},
+			
+			#{eato004,jdbcType=VARCHAR},
+			
+			#{eato005,jdbcType=VARCHAR},
+			
+			#{eato006,jdbcType=VARCHAR},
+			
+			#{eato007,jdbcType=INTEGER},
+			
+			#{eato008,jdbcType=INTEGER}
+			
+	) ]]> 
+	</insert>
+    
+	<select id="findExerciseTxById" resultType="java.util.HashMap"	parameterType="java.util.Map">
+		 <![CDATA[SELECT B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE 
+					FROM EXAM_T_BASETX  B
+					WHERE BTX001 IN(
+                    SELECT DISTINCT( EXTO008)
+                      FROM EXAM_T_EXERTOPIC
+                     WHERE EXTO003=#{EXTO003}
+                      )]]>
+	</select>
+	
+	<select id="findAnwserTopic" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT eato001 AS ID,eato005 TOPICID,NVL(eato005,'') AS EXTANSWER
+			FROM EXAM_T_EXERANWSERTOPIC 
+					]]>
+		WHERE EATO003= #{exgr001}  and EATO002= #{exgr002} AND EATO005 IS NOT NULL
+	</select>
+	
+	<select id="selectExerSample" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT EXSA001,EXSA002,EXSA003,EXSA004 
+			FROM EXAM_T_EXERSAMPLE 
+		]]>
+		WHERE EXSA003= #{exgr001}
+	</select>
+	
+	
+	<insert id="insertBatch_ExerAnwserTopic1" parameterType="java.util.List" >  
+	    <![CDATA[ INSERT INTO exam_t_ExerAnwserTopic(EATO001,EATO002,EATO003,EATO004,EATO005,EATO006)
+	 ]]> 
+	<foreach collection="list" item="item" index="index" separator="UNION ALL">
+	 <![CDATA[	(SELECT 
+			#{sys_guid(),jdbcType=VARCHAR},
+			
+			#{item.eato002,jdbcType=VARCHAR},
+			
+			#{item.eato003,jdbcType=VARCHAR},
+			
+			#{item.eato004,jdbcType=VARCHAR},
+			
+			#{item.eato005,jdbcType=VARCHAR},
+			
+			#{item.eato006,jdbcType=VARCHAR}]]> 
+			
+		<if test="item.eato007!=null ">
+		   <![CDATA[  #{item.eato007,jdbcType=INTEGER}]]>
+		</if>	
+			
+			
+		FROM DUAL)
+	</foreach>
+    </insert> 
+    
+    <insert id="insertBatch_ExerAnwserTopic" parameterType="java.util.List">
+	 INSERT INTO exam_t_ExerAnwserTopic(
+	    EATO001,
+	    EATO002,
+	    EATO003,
+	    EATO004,
+	    EATO005,
+	    EATO006,
+	    EATO007
+	 )
+	<foreach collection="list" item="item" index="index" separator="UNION ALL">
+		(SELECT 
+			sys_guid(),
+		    #{item.eato002,jdbcType=VARCHAR},
+		    #{item.eato003,jdbcType=VARCHAR},
+		    #{item.eato004,jdbcType=VARCHAR},
+		    #{item.eato005,jdbcType=VARCHAR},
+		    #{item.eato006,jdbcType=FLOAT},
+		    #{item.eato007,jdbcType=INTEGER}	
+			
+			
+			
+		FROM DUAL)
+	</foreach>
+	</insert>
+	
+	<select id="queryExamFixTopicList3" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT T.EXTO001 AS ID,T.EXTO002 AS TPID,T.EXTO005 AS TOPICID,A.EXSA003 AS EXGRID,T.EXTO004 as CTID,
+			B.BTX003 AS BASETYPE,B.BTX002 AS BTXTITLE,T.EXTO010 AS TOPIC,
+			TO_NUMBER(TO_CHAR(T.EXTO015, '999.99')) TOPICMARK,T.EXTO016 AS TOPICCOUNT,
+			T.EXTO017 AS TOPICOPTION,T.EXTO019 AS TOPICK,T.EXTO021 AS TOPICKEY,
+			NVL(T.EXTO022, '--') AS TOPREMARK,T.EXTO023 AS PARENTID,0 AS MUSTRIGHT,
+			0 AS TIMELIMIT
+			FROM EXAM_T_EXERTOPIC T
+			JOIN EXAM_T_BASETX B ON T.EXTO008	 = B.BTX001
+			JOIN EXAM_T_EXERSAMPLE A ON T.EXTO004 = A.exsa001
+			 JOIN EXAM_T_EXERANWSERTOPIC C ON T.EXTO003=C.EATO003 AND T.EXTO005=C.EATO005
+		]]>
+		<where>
+			T.EXTO002 = #{exto002} AND T.EXTO003= #{exto003}
+			<if test="exto007!=null"> and  C.EATO007=1</if>
+			AND	NVL(T.EXTO023, 0) = '0'
+		</where>
+	</select>
+	
+	 
+   <select id="select_exerGrade" parameterType="java.util.Map" >
+		 <![CDATA[ SELECT FROM  exam_t_exerGrade
+		 where exgr001={exgr001}
+	]]> 
+	</select>
+	
+	<select id="selectExerciseHistoryPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT A.exer001,
+		       A.exer004,
+		       A.exer010,
+		       TO_CHAR(D.exgr005, 'YYYY-MM-DD') EXGR005,
+		       D.TIMES
+		      FROM exam_t_exercise A
+		  LEFT JOIN exam_t_exerGrade B ON A.exer001 = B.exgr002
+		  LEFT JOIN (SELECT COUNT(exgr002) TIMES, exgr002, MAX(C.exgr005) exgr005
+		               FROM exam_t_exerGrade C
+		              GROUP BY exgr002) D ON A.exer001 = D.exgr002
+		  LEFT JOIN (SELECT exgr002, exgr003
+		               FROM exam_t_exerGrade E
+		              GROUP BY exgr002, exgr003) F ON F.exgr002 = A.exer001
+		  LEFT JOIN exam_t_exerUser G ON G.exus001 = F.exgr003
+		  LEFT JOIN HRSW_T_ORGAN O ON A.exer003 = O.ORGA001
+		 WHERE B.exgr007 IN (1, 2, 3)
+		   AND B.exgr003 = #{user001}
+		 <if test="exer004 != ''">
+		   AND UPPER(A.exer004) LIKE UPPER(CONCAT(CONCAT('%',#{exer004}), '%')) 
+		 </if>
+		 GROUP BY exer001, A.exer004, TIMES, A.exer010, D.exgr005
+		 ORDER BY EXGR005 DESC, EXER001 DESC
+	</select>
+	
+	<!-- 练习记录 -->
+	<select id="findExerciseRecordByUserId" resultType="java.util.HashMap" parameterType="java.lang.String">
+		 <![CDATA[SELECT A.EXGR001,B.EXER001,C.EXSA001,NVL(B.EXER004, '--') EXER004,TO_CHAR(A.EXGR005, 'YYYY-MM-DD HH24:MI')EGRA008,
+		    TO_CHAR(A.EXGR006, 'YYYY-MM-DD HH24:MI')EGRA009,
+			DECODE(C.EXSA010,1,'题库练习',2,'知识点练习',3,'高频错题练习',4,'我的错题练习') EXERCISETYPE,
+			NVL(D.ALLCOUNT,0) ALLCOUNT,NVL(E.ERRORCOUNT,0) ERRORCOUNT,NVL(F.RIGHTCOUNT,0) RIGHTCOUNT,
+			DECODE(NVL(D.ALLCOUNT,0),0,0,ROUND(NVL(F.RIGHTCOUNT,0)/NVL(D.ALLCOUNT,0)*100,2)) || '%' ZQL
+			FROM EXAM_T_EXERGRADE A 
+			LEFT JOIN EXAM_T_EXERCISE B ON B.EXER001 = A.EXGR002 
+			INNER JOIN EXAM_T_EXERSAMPLE C ON C.EXSA003 = A.EXGR001 AND C.EXSA004 = A.EXGR003
+			LEFT JOIN (SELECT COUNT(EXTO005) ALLCOUNT,EXTO003,EXTO004 FROM EXAM_T_EXERTOPIC
+				GROUP BY EXTO003,EXTO004
+			) D ON D.EXTO003=A .EXGR001 AND D.EXTO004=C.EXSA001
+			LEFT JOIN (SELECT COUNT(EATO005) ERRORCOUNT,EATO002,EATO003 FROM EXAM_T_EXERANWSERTOPIC
+				WHERE EATO007 = 1 AND EATO004 = #{arg1} GROUP BY EATO002,EATO003
+			) E ON E.EATO003 = A.EXGR001
+			LEFT JOIN (SELECT COUNT(EATO005) RIGHTCOUNT,EATO002,EATO003 FROM EXAM_T_EXERANWSERTOPIC
+				WHERE EATO007 = 2 AND EATO004 = #{arg1} GROUP BY EATO002,EATO003
+			) F ON F.EATO003 = A.EXGR001
+			 ]]> 
+		<where>
+			A.EXGR003 = #{arg1}
+			     <![CDATA[ AND A.EXGR002=#{arg2}]]> 
+		</where>
+		ORDER BY A.EXGR005 DESC
+	</select>
+	<!-- 练习记录 -->
+	<select id="findExerciseRecordByUserId1" resultType="java.util.HashMap" parameterType="java.lang.String">
+		 <![CDATA[ SELECT A.EXGR001,B.EXER001,C.EXSA001,NVL(B.EXER004, '--') EXER004,TO_CHAR(sysdate, 'YYYY-MM-DD HH24:MI')EGRA008,
+			DECODE(C.EXSA010,1,'题库练习',2,'知识点练习',3,'高频错题练习',4,'我的错题练习') EXERCISETYPE,
+			NVL(D.ALLCOUNT,0) ALLCOUNT,NVL(E.ERRORCOUNT,0) ERRORCOUNT,NVL(F.RIGHTCOUNT,0) RIGHTCOUNT,
+			DECODE(NVL(D.ALLCOUNT,0),0,0,ROUND(NVL(F.RIGHTCOUNT,0)/NVL(D.ALLCOUNT,0)*100,2)) || '%' ZQL
+			FROM EXAM_T_EXERGRADE A 
+			LEFT JOIN EXAM_T_EXERCISE B ON B.EXER001 = A.EXGR002 
+			INNER JOIN EXAM_T_EXERSAMPLE C ON C.EXSA003 = A.EXGR001 AND C.EXSA004 = A.EXGR003
+			LEFT JOIN (SELECT COUNT(EXTO005) ALLCOUNT,EXTO003,EXTO004 FROM EXAM_T_EXERTOPIC
+				GROUP BY EXTO003,EXTO004
+			) D ON D.EXTO003=A .EXGR001 AND D.EXTO004=C.EXSA001
+			LEFT JOIN (SELECT COUNT(EATO005) ERRORCOUNT,EATO002,EATO003 FROM EXAM_T_EXERANWSERTOPIC
+				WHERE EATO007 = 1 AND EATO004 = '74717c632e5549ad8b7d6d6e9ce3e593' GROUP BY EATO002,EATO003
+			) E ON E.EATO003 = A.EXGR001
+			LEFT JOIN (SELECT COUNT(EATO005) RIGHTCOUNT,EATO002,EATO003 FROM EXAM_T_EXERANWSERTOPIC
+				WHERE EATO007 = 2 AND EATO004 = '74717c632e5549ad8b7d6d6e9ce3e593' GROUP BY EATO002,EATO003
+			) F ON F.EATO003 = A.EXGR001]]> 
+		   <where> 
+			 A.EXGR003 = '74717c632e5549ad8b7d6d6e9ce3e593'
+		     and A.EXGR002='1aaaa2f2863542c383a574379df6c5af'
+		
+		   </where> 
+		ORDER BY A.EXGR005 DESC 
+	</select>
+	
+		<select id="selectExerHistoryDetailsPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+			SELECT A.EXGR001,
+		       B.EXSA001,
+		       TO_CHAR(A.EXGR005, 'YYYY-MM-DD HH24:MI') EXGR005,
+		       A.EGRA010,
+		       TRUNC(A.EGRA013, 1) EGRA013,
+		       B.TACT014
+		  FROM EXAM_T_EXERGRADE A
+		  INNER JOIN EXAM_T_EXERSAMPLE B ON C.EXSA003 = A.EXGR001 AND C.EXSA004 = A.EXGR003
+		    LEFT JOIN exam_t_exerUser G ON G.exus001 = F.exgr003
+		  LEFT JOIN HRSW_T_ORGAN O ON B.TACT003 = O.ORGA001
+		 WHERE A.EGRA007 IN (3, 4, 5)
+		   AND A.EGRA002 = #{arg1}
+		   AND B.TACT001 = #{arg2}
+		 ORDER BY EGRA008 DESC
+	</select>
+	
+	<select id="findKnowledgesList1" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+   		<![CDATA[ SELECT EE.exer004 tkName,COUNT(TOPI001) total, NVL(D.YD,0) alreadyDone,NVL(E.ZQ,0) ZQ, EE.exer006,]]> 
+   		<![CDATA[ COUNT(TOPI001) - NVL(D.YD,0) WD, NVL(F.CW,0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.YD,0) = 0 THEN 0 ELSE ROUND(NVL(E.ZQ,0)/NVL(D.YD,0)*100,2) END || '%' accuracy, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.YD,0) = 0 THEN 0 ELSE ROUND(NVL(D.YD,0)/NVL(COUNT(TOPI001),0)*100,2) END || '%' progress, ]]> 
+   		<![CDATA[ CASE WHEN NVL(E.ZQ,0) = 0 THEN '0' ELSE DECODE(NVL(E.ZQ,0)/COUNT(TOPI001),0,'0',to_char(ROUND(NVL(E.ZQ,0)/COUNT(TOPI001)* 100 ,2),'FM90.99')) END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG B ON A.TOPI001 = B.TCAT002 ]]> 
+   		<![CDATA[ INNER JOIN hrsw_t_levelrelation E1 ON E1.LREL002 = B.TCAT003  ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_EXERSUBJECT C ON C.EXSU003 = E1.LREL004 ]]> 
+   		<![CDATA[ INNER JOIN exam_t_exercise EE ON C.EXSU002 = EE.EXER001 ]]>
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) YD ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) D ON A.TOPI003 = D.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) ZQ ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} AND B.EATO007 = 2 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) E ON A.TOPI003 = E.TOPI003 ]]> 
+   		<![CDATA[ LEFT JOIN (SELECT A.TOPI003, NVL (COUNT(DISTINCT B.EATO005), 0) CW ]]> 
+   		<![CDATA[ 	FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A.TOPI001 = B.EATO005 AND B.EATO004 = #{userid} AND B.EATO007 = 1 ]]> 
+   		<![CDATA[ 	GROUP BY A.TOPI003) F ON A.TOPI003 = F.TOPI003 ]]> 
+	   	<![CDATA[ WHERE C.EXSU002 = #{exer001} ]]>
+		<if test="cata008 != null">
+	   		<![CDATA[ AND C.CATA008 = #{cata008} ]]>
+		</if>
+		<if test="topi003 != null">
+	   		<![CDATA[ AND A.TOPI003 = #{topi003} ]]>
+		</if>
+   		<![CDATA[ GROUP BY A.TOPI003,D.YD,E.ZQ,F.CW,EE.exer006,EE.exer004]]>
+	</select>
+	
+	<select id="findExerciseList1" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+   		<![CDATA[ SELECT * FROM (]]> 
+   		<![CDATA[ SELECT A .CATA001, A .CATA002 tkName, A.CATA004 ]]> 
+   		<![CDATA[ FROM HRSW_T_CATALOG A ]]> 
+   		<![CDATA[ START WITH A.CATA001 IN (SELECT EXSU003 FROM EXAM_T_EXERSUBJECT WHERE EXSU002 = #{exer001}) ]]> 
+   		<![CDATA[ CONNECT BY PRIOR CATA001 = CATA004 ]]>
+   		<![CDATA[ ORDER BY 	A .CATA011) ]]> 
+   		<![CDATA[ WHERE 1 = 1  and CATA001=#{cata001} ]]>
+		<if test="cata004 == null">
+	   		<![CDATA[ AND CATA004 = '-1' ]]>
+		</if>
+		<if test="cata004 != null">
+	   		<![CDATA[ AND CATA004 = #{cata004} ]]>
+		</if>
+	</select>
+	
+	<select id="queryAnswerResult" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+   		<![CDATA[ SELECT COUNT (A.TOPI001) COUNTS,NVL (C.YD, 0) YD,NVL (D.ZQ, 0) ZQ, ]]> 
+   		<![CDATA[ NVL (E.CW, 0) CW,COUNT (DISTINCT ET.TCAT002) - NVL (C.YD, 0) WD,NVL (E .CW, 0) CW, ]]> 
+   		<![CDATA[ CASE WHEN NVL (C.YD, 0) = 0 THEN 0 ]]> 
+   		<![CDATA[ 	ELSE ROUND (NVL (D .ZQ, 0) / NVL (C.YD, 0) * 100,2) END || '%' ZQL, ]]> 
+   		<![CDATA[ CASE WHEN NVL(D.ZQ,0) = 0 THEN '0' ]]> 
+		<![CDATA[ ELSE DECODE(NVL(D.ZQ,0)/COUNT(DISTINCT ET.TCAT002),0,'0',to_char(ROUND(NVL(D.ZQ,0)/COUNT(DISTINCT ET.TCAT002)*100,2),'FM90.99')) END || '%' ZWL ]]> 
+   		<![CDATA[ FROM EXAM_T_TOPIC A ]]> 
+   		<![CDATA[ INNER JOIN EXAM_T_TOPICCATALOG ET ON A .TOPI001 = ET.TCAT002 ]]>
+   		<![CDATA[ INNER JOIN HRSW_T_LEVELRELATION E1 ON E1.LREL002 = ET.TCAT003 ]]>
+   		<![CDATA[ INNER JOIN EXAM_T_EXERSUBJECT ES ON ES.EXSU003 = E1.LREL004 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) YD FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) C ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) ZQ FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} AND B.EATO007 = 2 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) D ON 1=1 ]]>
+   		<![CDATA[ LEFT JOIN ( ]]>
+   		<![CDATA[ 	SELECT NVL (COUNT(DISTINCT EATO005), 0) CW FROM EXAM_T_TOPICCATALOG A ]]>
+   		<![CDATA[ 	LEFT JOIN EXAM_T_EXERANWSERTOPIC B ON A .TCAT002 = B.EATO005 ]]>
+   		<![CDATA[ 	AND B.EATO004 = #{userid} AND B.EATO007 = 1 ]]>
+   		<![CDATA[ 	AND A .TCAT003 IN (SELECT CATA001 FROM HRSW_T_CATALOG ]]>
+   		<![CDATA[ 		START WITH CATA001 = #{CATA001} ]]>
+   		<![CDATA[ 		CONNECT BY PRIOR CATA001 = CATA004) ]]>
+   		<![CDATA[ ) E ON 1=1 ]]>
+   		<![CDATA[ WHERE ES.EXSU002 = #{exer001} ]]>
+   		<![CDATA[ AND ES.EXSU003 = #{CATA001} ]]>
+   		<![CDATA[ GROUP BY C.YD, D.ZQ, E.CW,EE.EXER006  ]]>
+	</select>
+	<select id="findExerciseDetailsById" parameterType="java.lang.String">
+	<!--  SELECT A.EXGR006,C.EXER004 FROM EXAM_T_EXERGRADE A 
+	 JOIN EXAM_T_EXERANWSERTOPIC  B ON EATO003=EXGR001
+	 JOIN EXAM_T_EXERCISE C ON EXER001=EXGR002
+	 WHERE EXGR001=#{egid} AND EATO007=2 -->
+	<![CDATA[SELECT NVL(COU,0),TT.EXER004 ,TT.EXGR006 FROM (
+       SELECT  EXER004,EXGR006
+            FROM EXAM_T_EXERCISE 
+            JOIN EXAM_T_EXERGRADE   ON EXGR002 =EXER001
+            WHERE EXGR001 = 'D427255D-57F2-4295-A86A-C973D533C679' 
+                ) TT
+      LEFT JOIN (
+       SELECT  COUNT(1) COU, EXER004 ,EXGR006
+              FROM EXAM_T_EXERANWSERTOPIC 
+              JOIN EXAM_T_EXERGRADE   ON  EATO003 =EXGR001
+              JOIN EXAM_T_EXERCISE   ON EATO002 =EXER001
+              WHERE EXGR001 = #{egid} AND EATO007=2
+              GROUP BY EXGR006,EXER004,EXER001
+             ) TT2 ON TT.EXER004 = TT2.EXER004]]>
+	</select>
+	
+	<select id="pravticeResultResolve" resultType="java.util.HashMap"
+		parameterType="java.util.Map">	
+		 <![CDATA[ SELECT TOPI001,TOPI002,TOPI003,TOPI004,TOPI005,to_char(TOPI006) TOPI006,TOPI007, ]]>
+		 <![CDATA[ TOPI008,TOPI009,TOPI010,TOPI011,TOPI012,to_char(TOPI013) TOPI013,TOPI014,TOPI015, ]]>
+		 <![CDATA[ to_char(TOPI016) TOPI016,TOPI017,to_char(TOPI018) TOPI018,TOPI019,TOPI020,TOPI021,TOPI022,
+		 NVL(ZQ,0) TOPI023,NVL(DC,0) TOPI024,
+		 CASE WHEN NVL(ZQ,0) = 0 THEN 0 ELSE ROUND(ZQ/(ZQ+NVL(DC,0))*100,2) END || '%' TOPI025
+		 FROM EXAM_T_TOPIC A
+		 INNER JOIN EXAM_T_TOPICCATALOG B ON B.TCAT002=A.TOPI001
+		 INNER JOIN hrsw_t_levelrelation E3 ON E3.LREL002 = B.TCAT003
+		 INNER JOIN EXAM_T_EXERSUBJECT E ON E.EXSU003 = E3.LREL004
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) ZQ FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 2 GROUP BY EATO005) C ON C.EATO005 = A.TOPI001
+		 LEFT JOIN (SELECT EATO005,COUNT(DISTINCT EATO004) DC FROM EXAM_T_EXERANWSERTOPIC WHERE EATO007 = 1 GROUP BY EATO005) D ON D.EATO005 = A.TOPI001
+		 WHERE EXSU002= #{exer001}]]>
+		<if test="cata001 != '-1'">
+		 	<![CDATA[ AND EXSU003 = #{cata001} ]]>
+		</if>
+		<if test="eato007 !=null">
+		 	<![CDATA[ AND D.EATO007 = #{eato007} ]]>
+		</if>
+		<if test="type != null">
+			<choose>
+				<when test="type == 'topic'">
+					AND nvl(TOPI019,'0')='0'
+				</when>
+				<when test="type == 'child'">
+					AND nvl(TOPI019,'0')&lt;&gt;'0'
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+</mapper>

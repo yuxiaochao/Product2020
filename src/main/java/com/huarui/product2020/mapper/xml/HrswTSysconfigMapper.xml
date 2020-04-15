@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTSysconfigMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTSysconfig">
+		<id column="SYSC001" property="sysc001" />
+		<result column="SYSC002" property="sysc002" />
+		<result column="SYSC003" property="sysc003" />
+		<result column="SYSC004" property="sysc004" />
+		<result column="SYSC005" property="sysc005" />
+		<result column="SYSC006" property="sysc006" />
+		<result column="SYSC007" property="sysc007" />
+		<result column="SYSC008" property="sysc008" />
+		<result column="SYSC009" property="sysc009" />
+		<result column="SYSC010" property="sysc010" />
+		<result column="SYSC011" property="sysc011" />
+		<result column="SYSC012" property="sysc012" />
+	</resultMap>
+</mapper>

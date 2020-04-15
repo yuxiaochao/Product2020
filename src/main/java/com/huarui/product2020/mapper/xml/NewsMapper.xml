@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.NewsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNews">
+		<id column="NEWS001" property="news001" />
+		<result column="NEWS002" property="news002" />
+		<result column="NEWS003" property="news003" />
+		<result column="NEWS004" property="news004" />
+		<result column="NEWS005" property="news005" />
+		<result column="NEWS006" property="news006" />
+		<result column="NEWS007" property="news007" />
+		<result column="NEWS008" property="news008" />
+		<result column="NEWS009" property="news009" />
+		<result column="NEWS010" property="news010" />
+		<result column="NEWS011" property="news011" />
+		<result column="NEWS012" property="news012" />
+		<result column="NEWS013" property="news013" />
+		<result column="NEWS014" property="news014" />
+		<result column="NEWS015" property="news015" />
+		<result column="NEWS016" property="news016" />
+		<result column="NEWS017" property="news017" />
+		<result column="NEWS018" property="news018" />
+		<result column="NEWS019" property="news019" />
+		<result column="NEWS020" property="news020" />
+		<result column="NEWS021" property="news021" />
+		<result column="NEWS022" property="news022" />
+		<result column="NEWS023" property="news023" />
+		<result column="NEWS024" property="news024" />
+		<result column="NEWS025" property="news025" />
+		<result column="NEWS026" property="news026" />
+		<result column="NEWS027" property="news027" />
+		<result column="NEWS028" property="news028" />
+		<result column="NEWS029" property="news029" />
+		<result column="NEWS030" property="news030" />
+		<result column="NEWS031" property="news031" />
+	</resultMap>
+	
+	
+	<!-- 栏目所属新闻列表并分页 -->
+	<select id="findNewsList" resultType="com.huarui.product2020.entity.HrswTNews" parameterType="HashMap">
+		SELECT A.NEWS001,
+			A.NEWS002,
+			A.NEWS003,
+			A.NEWS004,
+			A.NEWS005,
+			A.NEWS006,
+			A.NEWS007,
+			A.NEWS008,
+			A.NEWS009,
+			A.NEWS010,
+			A.NEWS011,
+			A.NEWS012,
+			A.NEWS013,
+			A.NEWS014,
+			A.NEWS015,
+			A.NEWS016,
+			A.NEWS017,
+			A.NEWS018,
+			A.NEWS019,
+			A.NEWS020,
+			A.NEWS021,
+			A.NEWS022,
+			A.NEWS023,
+			A.NEWS024,
+			A.NEWS025,
+			A.NEWS026,
+			A.NEWS027,
+			A.NEWS028,
+			A.NEWS029,
+			A.NEWS030,
+			A.NEWS031
+		FROM HRSW_T_NEWS A
+		LEFT JOIN HRSW_T_NEWSCATALOG B ON A.NEWS002 = B.NCAT001
+		<where>
+			<if test="keyword != null and keyword !=''">
+				<![CDATA[ B.NCAT014 = #{keyword} ]]>  
+			</if>
+		</where>
+		<![CDATA[  ORDER BY NEWS005 DESC  ]]>
+	</select>
+	
+	<!-- 查询新闻内容 -->
+	<select id="findById" resultType="com.huarui.product2020.entity.HrswTNews" parameterType="String">
+		 SELECT A.NEWS001,
+			A.NEWS002,
+			A.NEWS003,
+			A.NEWS004,
+			A.NEWS005,
+			A.NEWS006,
+			A.NEWS007,
+			A.NEWS008,
+			A.NEWS009,
+			A.NEWS010,
+			A.NEWS011,
+			A.NEWS012,
+			A.NEWS013,
+			A.NEWS014,
+			A.NEWS015,
+			A.NEWS016,
+			A.NEWS017,
+			A.NEWS018,
+			A.NEWS019,
+			A.NEWS020,
+			A.NEWS021,
+			A.NEWS022,
+			A.NEWS023,
+			A.NEWS024,
+			A.NEWS025,
+			A.NEWS026,
+			A.NEWS027,
+			A.NEWS028,
+			A.NEWS029,
+			A.NEWS030,
+			A.NEWS031
+		FROM HRSW_T_NEWS A
+		<where>
+			<![CDATA[ A.NEWS001 = #{news001} ]]>  
+		</where>
+		<![CDATA[  ORDER BY NEWS005 DESC  ]]>
+	</select>
+	
+	<!-- 查询新闻栏目下的总条数 -->
+	<select id="findNewsSumByCatalog" resultType="Integer" parameterType="String">
+		 SELECT NVL(COUNT(*),0) FROM HRSW_T_NEWSCATALOG A 
+		 LEFT JOIN HRSW_T_NEWS B ON A.NCAT001 = B.NEWS002
+		<where>
+			<if test="keyword != null and keyword !=''">
+				<![CDATA[ A.NCAT014 = #{keyword} ]]>  
+			</if>
+		</where>
+	</select>
+</mapper>

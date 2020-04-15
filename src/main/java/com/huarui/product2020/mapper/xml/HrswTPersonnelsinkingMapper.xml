@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTPersonnelsinkingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTPersonnelsinking">
+		<id column="PESI001" property="pesi001" />
+		<result column="PESI002" property="pesi002" />
+		<result column="PESI003" property="pesi003" />
+		<result column="PESI004" property="pesi004" />
+		<result column="PESI005" property="pesi005" />
+		<result column="PESI006" property="pesi006" />
+		<result column="PESI007" property="pesi007" />
+		<result column="PESI008" property="pesi008" />
+		<result column="PESI009" property="pesi009" />
+	</resultMap>
+
+</mapper>

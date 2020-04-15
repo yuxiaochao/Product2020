@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTesttacticMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTesttactic">
+		<id column="TTAC001" property="ttac001" />
+		<result column="TTAC002" property="ttac002" />
+		<result column="TTAC003" property="ttac003" />
+		<result column="TTAC004" property="ttac004" />
+		<result column="TTAC005" property="ttac005" />
+		<result column="TTAC006" property="ttac006" />
+		<result column="TTAC007" property="ttac007" />
+		<result column="TTAC008" property="ttac008" />
+		<result column="TTAC009" property="ttac009" />
+		<result column="TTAC010" property="ttac010" />
+		<result column="TTAC011" property="ttac011" />
+		<result column="TTAC012" property="ttac012" />
+		<result column="TTAC013" property="ttac013" />
+	</resultMap>
+	<select id="insertBatch" parameterType="java.util.List">
+	<![CDATA[ INSERT INTO EXAM_T_TESTTACTIC(
+	    TTAC001,
+	    TTAC002,
+	    TTAC003,
+	    TTAC004,
+	    TTAC005,
+	    TTAC006,
+	    TTAC007,
+	    TTAC008,
+	    TTAC009,
+	    TTAC010,
+	    TTAC011,
+	    TTAC012,
+	    TTAC013,
+	    TTAC016
+	)
+	 ]]> 
+	<foreach collection="list" item="item" index="index" separator="UNION ALL">
+		SELECT
+		    #{item.ttac001,jdbcType=VARCHAR},
+		    #{item.ttac002,jdbcType=VARCHAR},
+		    #{item.ttac003,jdbcType=VARCHAR},
+		    #{item.ttac004,jdbcType=VARCHAR},
+		    #{item.ttac005,jdbcType=INTEGER},
+		    #{item.ttac006,jdbcType=INTEGER},
+		    #{item.ttac007,jdbcType=VARCHAR},
+		    #{item.ttac008,jdbcType=INTEGER},
+		    #{item.ttac009,jdbcType=FLOAT},
+		    #{item.ttac010,jdbcType=VARCHAR},
+		    #{item.ttac011,jdbcType=VARCHAR},
+		    #{item.ttac012,jdbcType=VARCHAR},
+		    #{item.ttac013,jdbcType=INTEGER},
+		    #{item.ttac016,jdbcType=VARCHAR}
+		FROM DUAL
+	</foreach>
+	</select>
+	<select id="findTestPaperByExamId" resultType="com.huarui.product2020.entity.ExamTTesttactic">
+		 <![CDATA[ SELECT TTAC001,TTAC002,TTAC003,TTAC004,TTAC005,B.BTX003 AS TTAC006,B.BTX002 AS TTAC007,
+		 TTAC008,TTAC009,TTAC010,TTAC011,TTAC012,NVL(TTAC013,0) TTAC013,TTAC016,C.EXSY002 TTAC016TEXT
+		 FROM EXAM_T_TESTTACTIC A
+		 LEFT JOIN EXAM_T_BASETX B ON A.TTAC012=B.BTX001
+		 LEFT JOIN HR_T_EXAMSYLLABUS C ON C.EXSY001 = A.TTAC016
+		 WHERE TTAC002= #{ttac002}]]> 
+	</select>
+</mapper>

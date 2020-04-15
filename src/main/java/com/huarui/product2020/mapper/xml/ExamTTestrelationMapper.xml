@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestrelationMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestrelation">
+		<id column="TREL001" property="trel001" />
+		<result column="TREL002" property="trel002" />
+		<result column="TREL003" property="trel003" />
+		<result column="TREL004" property="trel004" />
+		<result column="TREL005" property="trel005" />
+	</resultMap>
+
+</mapper>

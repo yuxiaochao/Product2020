@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNoteMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNote">
+		<id column="NOTE001" property="note001" />
+		<result column="NOTE002" property="note002" />
+		<result column="NOTE003" property="note003" />
+		<result column="NOTE004" property="note004" />
+		<result column="NOTE005" property="note005" />
+		<result column="NOTE006" property="note006" />
+		<result column="NOTE007" property="note007" />
+	</resultMap>
+
+</mapper>

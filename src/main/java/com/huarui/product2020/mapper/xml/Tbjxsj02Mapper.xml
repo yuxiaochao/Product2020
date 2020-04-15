@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj02">
+		<id column="JXSJ0201" property="jxsj0201" />
+		<result column="JXSJ0202" property="jxsj0202" />
+		<result column="JXSJ0203" property="jxsj0203" />
+		<result column="JXSJ0204" property="jxsj0204" />
+		<result column="JXSJ0205" property="jxsj0205" />
+		<result column="JXSJ0206" property="jxsj0206" />
+		<result column="JXSJ0207" property="jxsj0207" />
+	</resultMap>
+	<select id="findByPage" resultType="HashMap" parameterType="com.huarui.common.Req">
+	select JXSJ0201,JXSJ0202,JXSJ0203,JXSJ0204,JXSJ0205,JXSJ0206,JXSJ0207,JXSJ0208,JXSJ0209,JXSJ0210
+			,to_char(JXSJ0210,'YYYY-MM-DD HH24:MI') jxsj0210n,USER005
+	from tbJXSJ02
+	left join hrsw_t_user 
+	on user001=JXSJ0208
+	<where>
+		and JXSJ0202=#{parameterMap.pxb0101}
+		<if test="parameterMap.jxsj0203!='' and parameterMap.jxsj0203!=null">
+		and JXSJ0203 like concat('%',concat(#{parameterMap.jxsj0203},'%'))
+		</if>
+	</where>
+	</select>
+</mapper>

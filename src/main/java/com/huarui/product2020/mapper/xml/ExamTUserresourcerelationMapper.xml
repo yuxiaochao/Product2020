@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTUserresourcerelationMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTUserresourcerelation">
+		<id column="URRE001" property="urre001" />
+		<result column="URRE004" property="urre004" />
+		<result column="URRE005" property="urre005" />
+		<result column="URRE006" property="urre006" />
+		<result column="URRE007" property="urre007" />
+		<result column="URRE008" property="urre008" />
+		<result column="URRE009" property="urre009" />
+		<result column="URRE010" property="urre010" />
+		<result column="URRE011" property="urre011" />
+		<result column="URRE012" property="urre012" />
+		<result column="URRE013" property="urre013" />
+		<result column="URRE014" property="urre014" />
+		<result column="URRE002" property="urre002" />
+		<result column="URRE003" property="urre003" />
+	</resultMap>
+
+</mapper>

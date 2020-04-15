@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCalendarmeetingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCalendarmeeting">
+		<id column="MEET001" property="meet001" />
+		<result column="MEET002" property="meet002" />
+		<result column="MEET003" property="meet003" />
+		<result column="MEET004" property="meet004" />
+		<result column="MEET005" property="meet005" />
+		<result column="MEET006" property="meet006" />
+		<result column="MEET007" property="meet007" />
+		<result column="MEET008" property="meet008" />
+		<result column="MEET009" property="meet009" />
+		<result column="MEET010" property="meet010" />
+		<result column="MEET011" property="meet011" />
+	</resultMap>
+	<select id="selectTaskList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		DISTINCT
+		gg.CALT001, 
+		gg.CALT002,
+		GG.calt005,
+		GG.calt006,
+		abs(trunc(to_number(sysdate-GG.calt005)*24)) starhours,
+        abs(trunc(mod(to_number(sysdate-GG.calt005)*24,1)*60)) startminut,
+		to_char(GG.calt006,'mm') endmon,
+		to_char(GG.calt006,'dd') endday,
+		to_char(GG.calt006,'hh24:mi') endtime,
+		to_char(GG.calt010,'mm') creatmon,
+		to_char(GG.calt010,'dd') creatday,
+		to_char(GG.calt010,'hh24:mi') creattime,
+		<![CDATA[case when sysdate>GG.CALT005 THEN 1 else 0 END style,
+		case when sysdate<GG.CALT006 THEN 1 else 0 END style01,]]>
+		CASE when to_char(gg.CALT006-1,'d')=1 THEN '周一'
+		    when to_char(gg.CALT006-1,'d')=2 THEN '周二'
+		    when to_char(gg.CALT006-1,'d')=3 THEN '周三'
+		    when to_char(gg.CALT006-1,'d')=4 THEN '周四'
+		    when to_char(gg.CALT006-1,'d')=5 THEN '周五'
+		    when to_char(gg.CALT006-1,'d')=6 THEN '周六'
+		    when to_char(gg.CALT006-1,'d')=7 THEN '周日'
+		ELSE '--' END weekstyle,
+		hh.eee,
+		wew.user005,
+		CASE WHEN ddf.MREA001 is null THEN 0 ELSE 1 END isRead 
+		FROM hrsw_t_calendarTask gg
+		INNER JOIN(
+			SELECT 
+				ggt.THISID,
+				sum(ggt.style) eee
+				FROM(
+				SELECT
+				tty.THISID,
+				tty.userid,
+				tty.signNum,
+				CASE WHEN tty.signNum=RRT.CALT007 THEN 1 ELSE 0 END style
+				FROM hrsw_t_calendarTask rrt
+				INNER JOIN
+				(
+				SELECT
+				ee.THISID,
+				ee.USERID,
+				nvl(sum(ee.ISsign),0) signNum
+				FROM
+				(
+				SELECT
+				AA.THISID, 
+				BB.USERID,
+				DD.mtsi001,
+				DD.mtsi004,
+				CASE WHEN DD.mtsi001 IS NULL THEN 0 ELSE 1 END ISsign
+				FROM 
+				GBJXKH_V_DAILYTASK AA
+				INNER JOIN  GBJXKH_V_DAILYTASK BB ON BB.THISID=AA.THISID
+				INNER JOIN  hrsw_t_calendarTask CC ON CC.CALT001=BB.THISID 
+				AND <![CDATA[SYSDATE>=TRUNC(CC.CALT005,'IW') AND SYSDATE<=TRUNC(CC.CALT006,'IW')+7 
+				AND CC.calt011=1]]>
+				left  JOIN  hrsw_t_MeetingTaskSignIn DD ON DD.mtsi002=BB.THISID
+				AND DD.mtsi004=BB.USERID
+				WHERE AA.USERID=#{user001} AND AA.ISTYPE='3') ee
+                GROUP BY ee.THISID,ee.USERID) tty  ON tty.THISID=rrt.CALT001 ) ggt 
+                GROUP BY GGT.THISID
+
+		 ) hh ON hh.THISID=gg.calt001
+		LEFT JOIN hrsw_t_messageReader ddf ON ddf.MREA002=gg.calt001 AND ddf.MREA003=#{user001}
+		LEFT JOIN HRSW_T_USER wew ON wew.user001=gg.calt009 ORDER BY gg.calt006 desc	
+
+	</select>
+	
+	<select id="selectTaskDetails" parameterType="java.util.Map" resultType="java.util.Map">
+	    SELECT 
+		AA.CALT002,
+		AA.CALT008,
+		aa.calt004,
+		BB.USER005,
+		cc.CATA002,
+		to_char(aa.CALT010,'mm') creatmon,
+		to_char(aa.CALT010,'dd') creatday,
+		to_char(aa.CALT010,'hh24:mi') creattime,
+		aa.calt005 startime,
+		aa.calt006 endime,
+		ee.tali002,
+		to_char(aa.calt005,'yyyy-mm-dd') startyear,
+		to_char(aa.calt005,'hh24:mi') starttime,
+		CASE when to_char(aa.CALT005-1,'d')=1 THEN '周一'
+		     when to_char(aa.CALT005-1,'d')=2 THEN '周二'
+		     when to_char(aa.CALT005-1,'d')=3 THEN '周三'
+		     when to_char(aa.CALT005-1,'d')=4 THEN '周四'
+		     when to_char(aa.CALT005-1,'d')=5 THEN '周五'
+		     when to_char(aa.CALT005-1,'d')=6 THEN '周六'
+		     when to_char(aa.CALT005-1,'d')=7 THEN '周日'
+		ELSE '--' END weekstyle, 
+		CASE when to_char(aa.CALT006-1,'d')=1 THEN '周一'
+		     when to_char(aa.CALT006-1,'d')=2 THEN '周二'
+		     when to_char(aa.CALT006-1,'d')=3 THEN '周三'
+		     when to_char(aa.CALT006-1,'d')=4 THEN '周四'
+		     when to_char(aa.CALT006-1,'d')=5 THEN '周五'
+		     when to_char(aa.CALT006-1,'d')=6 THEN '周六'
+		     when to_char(aa.CALT006-1,'d')=7 THEN '周日'
+		ELSE '--' END weekstyle01,
+		to_char(aa.calt006,'yyyy-mm-dd') endyear,
+		to_char(aa.calt006,'hh24:mi') endtime
+		FROM hrsw_t_calendarTask aa
+		INNER JOIN HRSW_T_USER bb ON BB.USER001=AA.CALT009
+		INNER JOIN hrsw_t_catalog  cc ON cc.CATA001=aa.calt003
+		INNER JOIN hrsw_t_TaskLabelRelation dd ON dd.tlre002=aa.CALT001
+		LEFT JOIN hrsw_t_TagLibrary ee ON ee.tali001=dd.tlre003
+		WHERE aa.CALT001=#{calt001}
+	
+	</select>
+	
+	
+	<select id="queryMeetingList02" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		SELECT DISTINCT USER005,MEET001,MEET002,MEET003,MEET004,MEET009,
+		CASE WHEN sysdate<meet003 
+		THEN 0 
+		WHEN sysdate>meet003 and sysdate<meet004
+		THEN 1
+		WHEN sysdate>meet004
+		THEN 2
+		ELSE 0 END ISTYPE
+  		FROM HRSW_T_CALENDARMEETING A
+ 		INNER JOIN HRSW_T_MEETINGTASKPEOPLE B
+    	ON A.MEET001 = B.METP002
+   		AND (B.METP005 = #{user001} or A.MEET008 = #{user001})
+   		LEFT JOIN HRSW_T_USER C ON A.MEET008 = C.USER001
+   		]]>
+   		<where>
+   			B.METP003 = 1 AND A.MEET011 = 1
+	   		<if test="type ==0 or type =='' or type =='undefined'">
+				<![CDATA[ and sysdate<meet004 ]]>
+			</if>
+			<if test="type ==1">
+				<![CDATA[ and sysdate>meet004  ]]>
+			</if>
+			<if test="type ==2">
+				<![CDATA[ and meet008=#{user001}  ]]>
+			</if>
+		</where>
+		order by ISTYPE
+	</select>
+	
+	<select id="queryMeetingInfo02" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+   
+   SELECT DISTINCT C.USER005 AS MEET008N,
+                MEET001,
+                MEET002,
+                MEET003,
+                MEET004,
+                MEET005,
+                MEET006,
+                MEET007,
+                MEET008,
+                MEET009,
+                MEET012,
+                MEET013,
+                USERNUM,
+                E.METP005,
+                F.USER005 AS METP005N,
+                NVL(H.SIGNINNUM, 0) SIGNINNUM,
+                NVL(l.SIGNINNUM, 0) GSIGNINNUM,
+                NVL(I.SIGNINTOTALNUM, 0) SIGNINTOTALNUM,
+                NVL(J.SIGNINMYNUM, 0) SIGNINMYNUM
+  FROM HRSW_T_CALENDARMEETING A
+ INNER JOIN HRSW_T_MEETINGTASKPEOPLE B
+    ON A.MEET001 = B.METP002
+  LEFT JOIN HRSW_T_USER C
+    ON A.MEET008 = C.USER001
+  LEFT JOIN (SELECT COUNT(DISTINCT METP005) USERNUM
+               FROM HRSW_T_MEETINGTASKPEOPLE
+              WHERE METP002 = #{meet001}
+                AND METP004 = 2) D
+    ON 1 = 1
+  LEFT JOIN HRSW_T_MEETINGTASKPEOPLE E
+    ON A.MEET001 = E.METP002
+   AND E.METP004 = 1
+  LEFT JOIN HRSW_T_USER F
+    ON E.METP005 = F.USER001
+    LEFT JOIN (SELECT T.MTSI002,
+       COUNT(MTSI004) SIGNINNUM
+  FROM (SELECT A.MTSI002,
+               A.MTSI004,
+               COUNT(a.MTSI004) AA
+          FROM HRSW_T_MEETINGTASKSIGNIN A
+         WHERE MTSI003 = 1
+         GROUP BY MTSI002,
+                  MTSI004) T
+    WHERE T.AA>=(SELECT MEET012 FROM 
+    HRSW_T_CALENDARMEETING 
+    WHERE MEET001 = #{meet001})
+ GROUP BY MTSI002) H
+    ON H.MTSI002 = A.MEET001
+    LEFT JOIN (SELECT T.MTSI002,
+                    COUNT(MTSI004) SIGNINNUM
+               FROM (SELECT A.MTSI002,
+                            A.MTSI004,
+                            COUNT(a.MTSI004) AA
+                       FROM HRSW_T_MEETINGTASKSIGNIN A
+                      WHERE MTSI003 = 1
+                      GROUP BY MTSI002,
+                               MTSI004) T
+              GROUP BY MTSI002) l
+              
+              ON l.MTSI002 = A.MEET001
+  LEFT JOIN (SELECT COUNT(METP005) SIGNINTOTALNUM,METP002 FROM (SELECT METP005,
+       METP002
+  FROM HRSW_T_MEETINGTASKPEOPLE
+ WHERE METP003 = 1
+ GROUP BY METP002,METP005) A GROUP BY METP002) I
+ 
+    ON I.METP002 = A.MEET001
+    LEFT JOIN (SELECT COUNT(1) SIGNINMYNUM,
+                    MTSI002
+               FROM HRSW_T_MEETINGTASKSIGNIN
+              WHERE MTSI004 = #{user001}
+              GROUP BY MTSI002) J
+    ON J.MTSI002 = A.MEET001
+ WHERE B.METP003 = 1
+   AND A.MEET001 = #{meet001}
+   		]]>
+	</select>
+	
+	<select id="queryMeetingList" resultType="java.util.Map" parameterType="java.util.Map">
+	  SELECT 
+			DISTINCT
+			AA.THISID,
+			bb.MEET002,
+			bb.MEET003,
+			bb.MEET009,
+			bb.meet007,
+			bb.meet006,
+			bb.meet012,
+			eer.signNumber,
+			CASE WHEN to_char(bb.MEET003 - 1,'d')='1' THEN '周一'
+			     WHEN to_char(bb.MEET003 - 1,'d')='2' THEN '周二'
+			     WHEN to_char(bb.MEET003 - 1,'d')='3' THEN '周三'
+			     WHEN to_char(bb.MEET003 - 1,'d')='4' THEN '周四'
+			     WHEN to_char(bb.MEET003 - 1,'d')='5' THEN '周五'
+			     WHEN to_char(bb.MEET003 - 1,'d')='6' THEN '周六'
+			     WHEN to_char(bb.MEET003 - 1,'d')='7' THEN '周日'
+			  else '' END weekday01,
+			
+			CASE WHEN to_char(bb.MEET004 - 1,'d')='1' THEN '周一'
+			     WHEN to_char(bb.MEET004 - 1,'d')='2' THEN '周二'
+			     WHEN to_char(bb.MEET004 - 1,'d')='3' THEN '周三'
+			     WHEN to_char(bb.MEET004 - 1,'d')='4' THEN '周四'
+			     WHEN to_char(bb.MEET004 - 1,'d')='5' THEN '周五'
+			     WHEN to_char(bb.MEET004 - 1,'d')='6' THEN '周六'
+			     WHEN to_char(bb.MEET004 - 1,'d')='7' THEN '周日'
+			  else '' END weekday02,
+			cc.USER005,
+			to_char(BB.MEET003,'mm') startMon,
+			to_char(BB.MEET003,'dd') startDd,
+			to_char(BB.MEET003,'hh24:mi') startMinu,
+			to_char(BB.MEET004,'mm') endMon,
+			to_char(BB.MEET004,'dd') endDd,
+			to_char(BB.MEET004,'hh24:mi') endMinu,
+			<![CDATA[case WHen SYSdate<bb.MEET003 then 1 else 0 end style01,
+			CASE when sysdate>bb.MEET004 THEN 1 ELSE 0 END style,]]>
+			case WHEN wwr.MREA001 is null THEN 1 else 0 END  isReader
+			FROM GBJXKH_V_DAILYTASK aa
+			INNER JOIN hrsw_t_calendarMeeting bb ON bb.MEET001=aa.THISID AND <![CDATA[sysdate>=TRUNC(bb.MEET003, 'iw') AND sysdate<=TRUNC(bb.MEET004, 'iw')+7 AND BB.meet011=1]]>
+			LEFT JOIN hrsw_t_messageReader wwr ON wwr.MREA002=bb.meet001 AND wwr.MREA003=#{user001}
+			LEFT  JOIN HRSW_T_USER cc ON cc.user001=bb.meet008
+			INNER JOIN(
+			SELECT
+							WWE.thisid,
+							WWE.userid,
+							sum(WWE.style) signNumber
+			FROM(
+			SELECT  
+			ff.thisid,
+			ff.userid,
+			gg.mtsi001,
+			CASE WHEN gg.mtsi001 is null then 0 else 1 end style
+			FROM GBJXKH_V_DAILYTASK ff 
+			LEFT JOIN hrsw_t_MeetingTaskSignIn gg ON ff.thisid=gg.mtsi002 AND gg.mtsi004=ff.userid
+			where ff.userid=#{user001} AND ff.istype='2') wwe GROUP BY WWE.thisid,wwe.userid
+			) eer ON eer.thisid=bb.MEET001 
+
+    </select>
+    
+    <select id="queryTaskList" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			dd.*,
+			mm.USER005,
+			case when endweek='1' THEN '周一' 
+			     when endweek='2' THEN '周二' 
+						when endweek='3' THEN '周三' 
+						when endweek='4' THEN '周四' 
+						when endweek='5' THEN '周五' 
+						when endweek='6' THEN '周六' 
+						when endweek='7' THEN '周七' 
+			  ELSE '--' END weekstyle,
+			case when endweek1='1' THEN '周一' 
+			     when endweek1='2' THEN '周二' 
+						when endweek1='3' THEN '周三' 
+						when endweek1='4' THEN '周四' 
+						when endweek1='5' THEN '周五' 
+						when endweek1='6' THEN '周六' 
+						when endweek1='7' THEN '周日' 
+			  ELSE '--' END weekstyle1,
+			  <![CDATA[case when sysdate>DD.calt005 then 1 else 0 end style,
+			  case when sysdate<DD.calt006 THEN 1 else 0 end style01 ]]>
+			 FROM hrsw_t_user mm right JOIN(
+			SELECT
+				aa.*,
+				ww.CATA002 taskType,
+				bb.signNumber,
+				yy.tali002 Label,
+			  to_char(aa.CALT005,'yyyy-mm-dd') starttime,
+			  to_char(aa.CALT005,'hh24:mi') starttime02,
+			  to_char(aa.CALT005,'mm') monone,
+			  to_char(aa.CALT005,'dd') dayone,
+			  to_char(aa.CALT006,'yyyy-mm-dd') endtime01,
+			  to_char(aa.CALT006,'mm') endmon,
+			  to_char(aa.CALT006,'dd') endday,
+			  to_char(AA.CALT006,'hh24:mi') endtime,
+			  to_char(aa.CALT006-1,'d') endweek,
+			  to_char(aa.CALT005-1,'d') endweek1,
+			  to_char(aa.calt010,'mm') creatmon,
+			  to_char(aa.calt010,'dd') creatday,
+			  to_char(aa.calt010,'hh24:mi') creatime
+				FROM
+					hrsw_t_calendarTask aa
+			    INNER JOIN hrsw_t_TaskLabelRelation rr ON rr.tlre002=AA.CALT001
+                LEFT JOIN hrsw_t_TagLibrary yy ON yy.tali001=rr.tlre003
+				INNER JOIN hrsw_t_catalog ww ON WW.CATA001=aa.calt003
+				INNER JOIN (
+				SELECT 
+				rr.THISID,
+				sum(rr.SINmUN) signNumber
+				FROM
+				(
+				SELECT 
+				AA.THISID,
+				MSI.mtsi001,
+				CASE WHEN MSI.mtsi001 IS NULL THEN 0 ELSE 1 END SINmUN
+				FROM GBJXKH_V_DAILYTASK AA
+				INNER JOIN hrsw_t_calendarTask BB ON AA.THISID=BB.calt001  AND <![CDATA[SYSDATE>=TRUNC(BB.CALT005,'IW') AND SYSDATE<=TRUNC(BB.CALT006,'IW')+7 AND BB.calt011=1]]>
+				LEFT JOIN hrsw_t_MeetingTaskSignIn msi ON MSI.mtsi002=AA.THISID  AND MSI.mtsi004=#{user001} AND MSI.mtsi003=2
+				WHERE USERID=#{user001} AND ISTYPE='3') rr GROUP BY rr.THISID
+				) bb ON AA.calt001 = BB.THISID
+                <!--  AND AA.calt011 = 1 <![CDATA[ AND sysdate>=trunc(aa.calt005,'iw')
+                 AND sysdate<=trunc(AA.calt006,'iw') + 7 ]]>  -->
+                 ORDER BY aa.calt006 desc ) dd ON dd.calt009=mm.USER001
+    </select>
+    
+    <select id="totalNumber" resultType="java.lang.Integer" parameterType="java.util.Map">
+         SELECT 
+         COUNT(metp005) COUNT01 
+         FROM hrsw_t_MeetingTaskPeople 
+         WHERE metp002=#{meet001} 
+         AND metp003=#{metp003}
+         <if test="metp003 == 1">
+         and metp004=2
+         </if>
+         <if test="metp003 == 2">
+         and metp004=3
+         </if>
+    </select>
+    
+    <select id="selectTaskOrMeetingPeople" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        aa.USER001,
+        aa.USER006,
+		aa.USER005 ,
+		bb.metp004  typeofpersonnel,
+		CC.ATTA007
+		FROM HRSW_T_USER aa 
+		INNER JOIN hrsw_t_MeetingTaskPeople bb 
+		ON bb.metp005=aa.user001 AND bb.metp002=#{meet001} AND bb.metp003=#{metp003}
+		LEFT JOIN hrsw_t_attachment CC ON CC.ATTA002=AA.user001 and cc.ATTA004=1
+		
+    </select>
+    
+    <select id="selectSignNumber" parameterType="java.util.Map" resultType="java.lang.Integer">
+         SELECT 
+         COUNT(*) 
+         FROM(
+         SELECT 
+         count(*) sinNumber,
+         dd.calt007,
+         dd.mtsi004 
+         FROM(
+         SELECT 
+         DISTINCT 
+         bb.mtsi005,
+         bb.mtsi004,
+         cc.calt007 
+         FROM hrsw_t_MeetingTaskPeople aa
+         INNER JOIN hrsw_t_MeetingTaskSignIn bb ON aa.metp002=BB.mtsi002  AND bb.mtsi004=aa.metp005
+         INNER JOIN hrsw_t_calendarTask cc ON cc.calt001=aa.metp002
+         WHERE  aa.metp002	=#{meet001} AND aa.metp003=2 AND AA. metp004=3 )dd 
+         GROUP BY dd.mtsi004,dd.calt007) EE WHERE EE.sinNumber=EE.calt007  
+    </select>
+    
+    <select id="selectSignNumberofMeet" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+		sum(cc.style) 
+		FROM
+		(
+		SELECT 
+		DISTINCT
+		aa.METP005,
+		CASe WHEN bb.MTSI001 is null then 0 else 1  END style 
+		FROM hrsw_t_MeetingTaskPeople aa
+		LEFT JOIN hrsw_t_MeetingTaskSignIn bb ON BB.MTSI002=aa.METP002 AND BB.MTSI004=AA.METP005
+		WHERE AA.metp002=#{meet001}  AND AA.metp003=1) cc
+		
+		<!-- SELECT count(*) FROM (
+		SELECT * FROM hrsw_t_MeetingTaskPeople aa
+		INNER JOIN  hrsw_t_MeetingTaskSignIn bb ON bb.mtsi002=aa.metp002 AND bb.mtsi004=aa.metp005
+		WHERE aa.metp002=#{meet001} AND aa.metp003=1 AND AA. metp004=2) -->
+    </select>
+    
+     <select id="selectAccomplishedpersonofMeet" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+		CC.USER001,
+		cc.USER005,
+		cc.USER006,
+		ee.ATTA007
+		FROM HRSW_T_USER cc 
+		INNER JOIN
+		(
+		SELECT 
+		DISTINCT
+		aa.METP005,
+		CASe WHEN bb.MTSI001 is null then 0 else 1  END style 
+		FROM hrsw_t_MeetingTaskPeople aa
+		LEFT JOIN hrsw_t_MeetingTaskSignIn bb ON BB.MTSI002=aa.METP002 AND BB.MTSI004=AA.METP005
+		WHERE AA.metp002=#{meet001}  AND AA.metp003=1) dd
+		ON CC.USER001=DD.METP005 AND dd.style=1
+		left JOIN hrsw_t_attachment ee ON ee.ATTA002=cc.user001 and ee.ATTA004=1
+		
+		<!-- SELECT count(*) FROM (
+		SELECT * FROM hrsw_t_MeetingTaskPeople aa
+		INNER JOIN  hrsw_t_MeetingTaskSignIn bb ON bb.mtsi002=aa.metp002 AND bb.mtsi004=aa.metp005
+		WHERE aa.metp002=#{meet001} AND aa.metp003=1 AND AA. metp004=2) -->
+    </select>
+    
+    <select id="signCompletionNum" parameterType="java.util.Map" resultType="java.lang.Integer">
+			SELECT
+			sum(wwr.sss)
+			FROM
+			(
+			SELECT 
+			ee.METP002,
+			EE.signNum,
+			DD.MEET012,
+			<![CDATA[case WHEN EE.signNum>=DD.MEET012 then 1 else 0 end sss]]>
+			FROM hrsw_t_calendarMeeting dd 
+			INNER JOIN(
+			SELECT 
+			CC.METP005,
+			cc.metp002,
+			sum(CC.style) signNum
+			FROM 
+			(
+			SELECT 
+			DISTINCT
+			aa.METP005,
+			aa.metp002,
+			bb.MTSI001,
+			CASe WHEN bb.MTSI001 is null then 0 else 1  END style 
+			FROM hrsw_t_MeetingTaskPeople aa
+			left JOIN hrsw_t_MeetingTaskSignIn bb ON BB.MTSI002=aa.METP002 AND BB.MTSI004=AA.METP005
+			WHERE AA.metp002=#{meet001}  AND AA.metp003=1) cc 
+			GROUP BY CC.METP005,cc.metp002)ee ON dd.MEET001=ee.metp002) wwr
+    </select>
+    
+    <select id="selectNoReaderMeet" parameterType="java.util.Map" resultType="java.lang.Integer">
+		
+		    SELECT 
+		    sum(dd.style) 
+		    FROM (
+			SELECT 
+			DISTINCT
+			aa.thisid,
+			cc.MREA001,
+			case WHEN cc.mrea001 is null then 1 else 0 END style 
+			FROM GBJXKH_V_DAILYTASK aa 
+			INNER JOIN hrsw_t_calendarMeeting bb ON BB.meet001=aa.thisid AND <![CDATA[sysdate>=trunc(bb.meet003,'iw') AND sysdate<=trunc(bb.meet004,'iw') + 7 AND BB.meet011=1]]>
+			LEFT JOIN hrsw_t_messageReader cc ON cc.MREA002=aa.THISID AND cc.MREA003=AA.USERID
+			WHERE aa.USERID=#{user001} AND ISTYPE='2') dd
+		
+		<!-- SELECT sum(dd.style) 
+		FROM (
+		SELECT
+		DISTINCT
+		BB.meet001,
+		case WHEN cc.mrea001 is null then 1 else 0 END style 
+		FROM hrsw_t_MeetingTaskPeople aa
+		INNER JOIN hrsw_t_calendarMeeting bb ON <![CDATA[ BB.meet001=AA.METP002 AND sysdate>=trunc(bb.meet003,'iw') AND sysdate<=trunc(bb.meet004,'iw') + 7]]> 
+		and bb.meet011=1
+		LEFT JOIN hrsw_t_messageReader cc ON cc.MREA002=aa.METP002 AND cc.MREA003=aa.metp005
+		WHERE aa.metp005=#{user001} AND aa.metp003=1) dd
+	 -->
+	</select>
+    
+</mapper>

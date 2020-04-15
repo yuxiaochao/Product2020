@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTSelectcourseMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTSelectcourse">
+		<id column="SECO001" property="seco001" />
+		<result column="SECO002" property="seco002" />
+		<result column="SECO003" property="seco003" />
+		<result column="SECO004" property="seco004" />
+		<result column="SECO005" property="seco005" />
+		<result column="SECO006" property="seco006" />
+	</resultMap>
+
+</mapper>

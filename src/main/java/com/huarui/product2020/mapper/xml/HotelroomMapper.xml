@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HotelroomMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Hotelroom">
+		<id column="HORO001" property="horo001" />
+		<result column="HORO002" property="horo002" />
+		<result column="HORO003" property="horo003" />
+		<result column="HORO004" property="horo004" />
+		<result column="HORO005" property="horo005" />
+		<result column="HORO006" property="horo006" />
+		<result column="HORO007" property="horo007" />
+		<result column="HORO008" property="horo008" />
+		<result column="HORO009" property="horo009" />
+		<result column="HORO010" property="horo010" />
+		<result column="HORO011" property="horo011" />
+		<result column="HORO012" property="horo012" />
+	</resultMap>
+	
+	
+	<!-- 宿舍楼资源 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Hotelroom" parameterType="HashMap">
+		SELECT
+			A.HORO001,
+			A.HORO002,
+			A.HORO003,
+			A.HORO004,
+			B.CATA002 AS HORO004N,
+			A.HORO005,
+			A.HORO006,
+			A.HORO007,
+			A.HORO008,
+			A.HORO009,
+			A.HORO010,
+			A.HORO011,
+			A.HORO012
+		FROM
+			HR_T_HOTELROOM A
+		LEFT JOIN HRSW_T_CATALOG B
+			ON A.HORO004 = B.CATA001
+		<where>
+			<!-- 关联关系 -->
+			<![CDATA[  AND A.HORO002 = #{horo002} ]]>
+			<if test="horo005 != null">
+				<![CDATA[ AND A.HORO005 LIKE CONCAT(CONCAT('%',#{horo005}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HORO011 DESC]]>
+		</if>
+	</select>
+	
+	
+	<select id="findToExcel" resultType="com.huarui.product2020.entity.Hotelroom" parameterType="HashMap">
+		SELECT
+			A.HORO001,
+			A.HORO002,
+			A.HORO003,
+			A.HORO004,
+			B.CATA002 AS HORO004N,
+			A.HORO005,
+			A.HORO006,
+			A.HORO007,
+			A.HORO008,
+			A.HORO009,
+			A.HORO010,
+			A.HORO011,
+			A.HORO012
+		FROM
+			HR_T_HOTELROOM A
+		LEFT JOIN HRSW_T_CATALOG B
+			ON A.HORO004 = B.CATA001
+		<where>
+			<!-- 关联关系 -->
+			<![CDATA[  AND A.HORO002 = #{horo002} ]]>
+			<if test="horo005 != null">
+				<![CDATA[ AND A.HORO005 LIKE CONCAT(CONCAT('%',#{horo005}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HORO011 DESC]]>
+		</if>
+	</select>
+
+
+	<select id="findHotelroomById" resultType="com.huarui.product2020.entity.Hotelroom" >
+		SELECT
+			A.HORO001,
+			A.HORO002,
+			A.HORO003,
+			A.HORO004,
+			B.CATA002 AS HORO004N,
+			A.HORO005,
+			A.HORO006,
+			A.HORO007,
+			A.HORO008,
+			A.HORO009,
+			A.HORO010,
+			A.HORO011,
+			A.HORO012
+		FROM
+			HR_T_HOTELROOM A
+		LEFT JOIN HRSW_T_CATALOG B
+			ON A.HORO004 = B.CATA001
+		<where>
+			<!-- 关联关系 -->
+			<![CDATA[  AND A.HORO001 = #{horo001} ]]>
+		</where>
+	</select>
+</mapper>

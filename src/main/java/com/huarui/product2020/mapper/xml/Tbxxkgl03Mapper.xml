@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbxxkgl03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbxxkgl03">
+		<id column="XXKGL0301" property="xxkgl0301" />
+		<result column="XXKGL0302" property="xxkgl0302" />
+		<result column="XXKGL0303" property="xxkgl0303" />
+		<result column="XXKGL0304" property="xxkgl0304" />
+		<result column="XXKGL0305" property="xxkgl0305" />
+	</resultMap>
+
+	<select id="findStudyCardList" resultType="com.huarui.product2020.entity.Tbxxkgl03" parameterType="HashMap">
+		<![CDATA[ SELECT XXKGL0301,XXKGL0302,XXKGL0303,XXKGL0304,XXKGL0305, XXKGL0704N,CARDTYPE,USERID
+			FROM available_learning_card A
+		]]>
+		<where>
+			<!-- 卡激活状态：0:未激活 1:已激活 -->
+			<!-- <![CDATA[ AND B.XXKGL0704 = 0 ]]> -->
+			<!-- 卡生成状态：0:待生成 1:已生成 2:作废 3:失效 -->
+			<!-- <![CDATA[ AND A.XXKGL0115 IN (1,2) ]]> -->
+			<!-- 卡类型：0、学习卡；1、试听卡 -->
+			<!-- <![CDATA[ AND C.XXKGL0120 = 0 ]]> -->
+		    <![CDATA[ AND A.XXKGL0303 = #{xxkgl0303} ]]>
+		    <![CDATA[ AND A.XXKGL0304 = #{xxkgl0304} ]]>
+		</where>
+	</select>
+	
+	<select id="findById" resultType="com.huarui.product2020.entity.Tbxxkgl03">
+		 <![CDATA[ SELECT XXKGL0301,XXKGL0302,XXKGL0303,XXKGL0304,XXKGL0305,
+		 B.XXKGL0120 XXKGL0120N,B.XXKGL0112 XXKGL0112N
+		 FROM tbXXKGL03 A
+		 LEFT JOIN tbXXKGL01 B ON B.XXKGL0101 = A.XXKGL0302 
+		 WHERE XXKGL0301 =#{xxkgl0301} ]]> 
+	</select>
+</mapper>

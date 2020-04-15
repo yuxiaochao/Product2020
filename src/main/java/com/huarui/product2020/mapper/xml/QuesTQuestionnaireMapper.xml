@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuestionnaireMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuestionnaire">
+		<id column="QUES001" property="ques001" />
+		<result column="QUES002" property="ques002" />
+		<result column="QUES003" property="ques003" />
+		<result column="QUES004" property="ques004" />
+		<result column="QUES005" property="ques005" />
+		<result column="QUES006" property="ques006" />
+		<result column="QUES007" property="ques007" />
+		<result column="QUES008" property="ques008" />
+		<result column="QUES009" property="ques009" />
+		<result column="QUES010" property="ques010" />
+		<result column="QUES011" property="ques011" />
+		<result column="QUES012" property="ques012" />
+		<result column="QUES013" property="ques013" />
+		<result column="QUES014" property="ques014" />
+		<result column="QUES015" property="ques015" />
+		<result column="QUES016" property="ques016" />
+		<result column="QUES018" property="ques018" />
+		<result column="QUES017" property="ques017" />
+		<result column="QUES019" property="ques019" />
+		<result column="QUES020" property="ques020" />
+	</resultMap>
+	
+	<select id="selectResearchNum" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT COUNT(1) RESEARCHNUM
+  			FROM QUES_T_QUESTIONNAIRE T
+ 			WHERE (SYSDATE BETWEEN T.QUES004 AND T.QUES005)
+   			AND (T.QUES007 = 0 OR (EXISTS (SELECT 1
+                   FROM QUES_T_QUESGRADE EG
+                  WHERE EG.QGTA002 = T.QUES001
+                    AND EG.QGTA003 = #{user001} 
+                   <![CDATA[
+                    HAVING COUNT(1) < T.QUES007)))
+                    ]]> 
+  			AND (EXISTS (SELECT 1
+                  FROM QUES_V_001QUESUSER QU
+                 WHERE QU.QUSE002 = T.QUES001
+                   AND QU.USER001 =#{user001}))
+	</select>
+	
+	<select id="selectRecentQuestionnaireList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT QUES001,QUES003,TO_CHAR(QUES004, 'YYYY-MM-DD HH24:MI') QUES004, TO_CHAR(QUES005, 'YYYY-MM-DD HH24:MI') QUES005,
+       			QUES011,QUES020
+		  FROM QUES_T_QUESTIONNAIRE A
+		 INNER JOIN HRSW_T_ORGAN B ON A.QUES011 = B.ORGA001
+		  LEFT JOIN EXAM_T_USERRESOURCERELATION C ON A.QUES001 = C.URRE006
+		                                         AND C.URRE011 = 1
+		  LEFT JOIN HRSW_T_USER D ON D.USER001 = C.URRE009
+		  JOIN QUES_V_001QUESUSER V ON A.QUES001 = V.QUSE002
+		                           AND V.USER001 = #{user001}
+		  LEFT JOIN ques_v_002quesrusultforjoin E ON A.QUES001 = E.QID
+		                                         AND E.USERID = #{user001}
+		 WHERE SYSDATE BETWEEN QUES004 AND QUES005
+		 <![CDATA[
+		 	AND (A.QUES007 = 0 OR E.JOINCOUNT < A.QUES007)
+		   	AND QUES018 = 2
+		    AND ROWNUM < 4
+		 ORDER BY A.QUES004 DESC
+		]]>
+	</select>
+	
+	<select id="selectResearchHistoryPage" resultType="java.util.HashMap" parameterType="java.lang.String">
+		 <![CDATA[
+			SELECT Q.QUES001,Q.QUES003, Q.QUES009, Q.QUES020,TO_CHAR(QG.QGTA005,'YYYY-MM-DD HH24:MI') QGTA005,
+       		O.ORGA006, U.USER005
+			FROM QUES_T_QUESGRADE QG INNER 
+			JOIN QUES_T_QUESTIONNAIRE Q ON QG.QGTA002=Q.QUES001
+			INNER JOIN HRSW_T_ORGAN O ON Q.QUES011=O.ORGA001
+			LEFT JOIN EXAM_T_USERRESOURCERELATION R ON R.URRE006 = Q.QUES001 AND R.URRE011 = 1
+			LEFT JOIN HRSW_T_USER U ON U.USER001 = R.URRE009
+			 ]]> 
+			WHERE QG.QGTA007=2 AND Q.QUES018 IN (1,2)
+			AND QG.QGTA003=#{user001}
+			<if test="ques003 != ''">
+		   		AND UPPER(Q.QUES003) LIKE UPPER(CONCAT(CONCAT('%',#{ques003}), '%')) 
+		 	</if>
+		ORDER BY QG.QGTA004 DESC
+	</select>
+</mapper>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTopic">
+		<result column="TOPI001" property="topi001" />
+		<result column="TOPI002" property="topi002" />
+		<result column="TOPI003" property="topi003" />
+		<result column="TOPI004" property="topi004" />
+		<result column="TOPI005" property="topi005" />
+		<result column="TOPI006" property="topi006" />
+		<result column="TOPI007" property="topi007" />
+		<result column="TOPI008" property="topi008" />
+		<result column="TOPI009" property="topi009" />
+		<result column="TOPI010" property="topi010" />
+		<result column="TOPI011" property="topi011" />
+		<result column="TOPI012" property="topi012" />
+		<result column="TOPI013" property="topi013" />
+		<result column="TOPI014" property="topi014" />
+		<result column="TOPI015" property="topi015" />
+		<result column="TOPI016" property="topi016" />
+		<result column="TOPI017" property="topi017" />
+		<result column="TOPI018" property="topi018" />
+		<result column="TOPI019" property="topi019" />
+		<result column="TOPI020" property="topi020" />
+		<result column="TOPI021" property="topi021" />
+		<result column="TOPI022" property="topi022" />
+		<result column="TOPI023" property="topi023" />
+		<result column="TOPI024" property="topi024" />
+		<result column="TOPI025" property="topi025" />
+		<result column="TOPI026" property="topi026" />
+		<result column="TOPI027" property="topi027" />
+		<result column="TOPI028" property="topi028" />
+		<result column="TOPI029" property="topi029" />
+		<result column="TOPI030" property="topi030" />
+	</resultMap>
+	<select id="queryKnowledgeList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.TOPI003
+		FROM EXAM_T_TOPIC A 
+		INNER JOIN EXAM_T_USERRESOURCERELATION UR ON A.TOPI001=UR.URRE002 AND UR.URRE011=1
+		INNER JOIN HRSW_T_USERPURVIEW UP ON UR.URRE009=UP.UPUR002
+		
+		INNER JOIN exam_t_topicExamSyllabus B ON A.TOPI001 = B.TOSY002
+		INNER JOIN (
+			SELECT EXSY001 FROM HR_T_EXAMSYLLABUS
+			START WITH EXSY001 = #{exsy001}
+			CONNECT BY  EXSY003 = PRIOR EXSY001
+		) C ON B.TOSY003 = C.EXSY001
+		<where>
+			UP.UPUR009 = #{webUserManagerOrganID}
+			<if test="topi031 != null and topi031 != ''">
+				AND	A.topi031 = #{topi031}
+			</if>
+			<if test="topi032 != null and topi032 != ''">
+				AND	A.topi032 = #{topi032}
+			</if>
+		</where>
+		GROUP BY A.TOPI003
+	</select>
+	<select id="testPaperTopicCount" resultType="HashMap" parameterType="com.huarui.common.Req">
+		SELECT BA.BTX003 AS TOPI005, COUNT(*) TOPICCOUNT FROM EXAM_T_TOPIC A
+		INNER JOIN EXAM_T_BASETX BA ON BA.BTX001=A.TOPI004
+		INNER JOIN exam_t_topicExamSyllabus B ON A .TOPI001 = B.TOSY002
+		<!-- 2019-10-22 鉴定中心、鉴定站各自创建的试题分开统计 -->
+		INNER JOIN EXAM_T_USERRESOURCERELATION UR ON A.TOPI001=UR.URRE002 AND UR.URRE011=1
+		INNER JOIN HRSW_T_USERPURVIEW UP ON UR.URRE009=UP.UPUR002
+		<!-- 2019-10-22 -->
+		<if test="parameterMap.ttac016 != null and parameterMap.ttac016 != '' ">
+		    INNER JOIN (
+				SELECT EXSY001 FROM HR_T_EXAMSYLLABUS WHERE EXSY007 = #{parameterMap.orgaId}
+				START WITH EXSY001 = #{parameterMap.ttac016}
+				CONNECT BY  EXSY003 = PRIOR EXSY001
+			) C ON B.TOSY003 = C.EXSY001
+		</if>
+		<if test="parameterMap.lali001 != null and parameterMap.lali001 != '' ">
+		LEFT JOIN HR_T_TOPICLABELLIBRARY F ON A.TOPI001 = F.TOLL002
+		</if>
+ 		<where>
+ 			NVL(A.TOPI021, 1) = 1  AND NVL(A.TOPI019, ' ') = ' ' 
+ 			
+ 			<!-- 2019-10-22 -->
+ 			<if test="parameterMap.OGRA001 != null and parameterMap.OGRA001 != ''">
+			     AND UP.UPUR009 = #{parameterMap.OGRA001}
+			</if>
+ 			<if test="parameterMap.UPUR007 != null and parameterMap.UPUR007==1">
+			     AND UR.URRE009 = #{parameterMap.userid}
+			</if>
+			<!-- 2019-10-22 -->
+			
+			<if test="parameterMap.ttac004 != null and parameterMap.ttac004 != '' ">
+			     AND A.TOPI003 = #{parameterMap.ttac004}
+			</if>
+			<if test="parameterMap.ttac005 != null and parameterMap.ttac005 != 0 ">
+			     AND A.TOPI008 = #{parameterMap.ttac005}
+			</if>
+			<if test="parameterMap.topi031 != null and parameterMap.topi031 != ''">
+			     AND A.TOPI031 = #{parameterMap.topi031}
+			</if>
+			<if test="parameterMap.topi032 != null and parameterMap.topi032 != ''">
+			     AND A.TOPI032 = #{parameterMap.topi032}
+			</if>
+			<if test="parameterMap.lali001 != null and parameterMap.lali001 != '' ">
+           		AND F.TOLL003 = #{parameterMap.lali001}
+      		</if>
+ 		</where>
+		GROUP BY BA.BTX003
+	</select>
+	<update id="calcMark" parameterType="java.util.Map"
+		flushCache="true">
+		 <![CDATA[ CALL EXAM_PRO_CALCMARK(#{scoretype},#{pnum},#{score},#{examid})  ]]>
+	</update>
+</mapper>

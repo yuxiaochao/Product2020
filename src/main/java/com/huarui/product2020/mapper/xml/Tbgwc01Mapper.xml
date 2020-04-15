@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbgwc01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbgwc01">
+		<id column="GWC0101" property="gwc0101" />
+		<result column="GWC0102" property="gwc0102" />
+		<result column="GWC0103" property="gwc0103" />
+		<result column="GWC0104" property="gwc0104" />
+		<result column="GWC0105" property="gwc0105" />
+		<result column="GWC0106" property="gwc0106" />
+		<result column="GWC0107" property="gwc0107" />
+	</resultMap>
+
+	<select id="queryShoppingCartCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			TBGWC01 A
+		INNER JOIN 
+			(
+				SELECT
+					B1.GWC0208
+				FROM
+					TBGWC02 B1
+					INNER JOIN TBCMDY03 B2 ON B1.GWC0202 = B2.CMDY0301
+					INNER JOIN TBCMDY06 B3 ON B1.GWC0203 = B3.CMDY0601
+				WHERE
+					B1.GWC0204 IS NULL UNION ALL
+				SELECT
+					B1.GWC0208
+				FROM
+					TBGWC02 B1
+				INNER JOIN TBCMDY03 B2 ON B1.GWC0202 = B2.CMDY0301
+				INNER JOIN TBCMDY07 B5 ON B1.GWC0202 = B5.CMDY0706 
+				INNER JOIN TBCMDY06 B3 ON B5.CMDY0702 = B3.CMDY0601
+				AND B1.GWC0204 = B5.CMDY0701
+				INNER JOIN TBCMDY04 B4 ON B4.CMDY0401 = B5.CMDY0703 
+				WHERE B1.GWC0203 IS NULL
+			) B
+		ON
+			A.GWC0101 = B.GWC0208
+		WHERE 
+			A.GWC0105 = 1
+		AND 
+			A.GWC0107 = 0
+		AND
+			A.GWC0102 = #{userId}
+	</select>
+	
+</mapper>

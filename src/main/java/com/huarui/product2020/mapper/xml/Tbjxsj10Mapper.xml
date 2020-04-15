@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj10Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj10">
+		<id column="JXSJ1001" property="jxsj1001" />
+		<result column="JXSJ1002" property="jxsj1002" />
+		<result column="JXSJ1003" property="jxsj1003" />
+		<result column="JXSJ1004" property="jxsj1004" />
+		<result column="JXSJ1005" property="jxsj1005" />
+		<result column="JXSJ1006" property="jxsj1006" />
+		<result column="JXSJ1007" property="jxsj1007" />
+		<result column="JXSJ1008" property="jxsj1008" />
+		<result column="JXSJ1009" property="jxsj1009" />
+		<result column="JXSJ1010" property="jxsj1010" />
+		<result column="JXSJ1011" property="jxsj1011" />
+	</resultMap>
+	<select id="findByPage" resultType="com.huarui.product2020.entity.Tbjxsj10" parameterType="com.huarui.common.Req">
+	select JXSJ1001,JXSJ1002,JXSJ1003,JXSJ1004,JXSJ1005,JXSJ1006,JXSJ1007,JXSJ1008,JXSJ1009,JXSJ1010,JXSJ1011
+			,nvl(decode(JXSJ1012,1,cour010,2,PXB0211),'无') as cour010,decode(JXSJ1006,0,'个人',1,'小组') as jxsj1006n
+	from tbJXSJ10
+	left join xzxy_t_course
+	on cour001=jxsj1007
+	left join tbPXB02
+	on PXB0201=jxsj1007
+	<where>
+		JXSJ1002=#{parameterMap.jxsj1002}
+	</where>
+	</select>
+</mapper>

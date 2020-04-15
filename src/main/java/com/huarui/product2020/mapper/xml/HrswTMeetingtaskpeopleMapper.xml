@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMeetingtaskpeopleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMeetingtaskpeople">
+		<id column="METP001" property="metp001" />
+		<result column="METP002" property="metp002" />
+		<result column="METP003" property="metp003" />
+		<result column="METP004" property="metp004" />
+		<result column="METP005" property="metp005" />
+	</resultMap>
+
+</mapper>

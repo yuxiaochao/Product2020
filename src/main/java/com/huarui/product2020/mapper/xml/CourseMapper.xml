@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.CourseMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Course">
+		<id column="COUR001" property="cour001" />
+		<result column="COUR002" property="cour002" />
+		<result column="COUR003" property="cour003" />
+		<result column="COUR004" property="cour004" />
+		<result column="COUR005" property="cour005" />
+		<result column="COUR006" property="cour006" />
+		<result column="COUR007" property="cour007" />
+		<result column="COUR008" property="cour008" />
+		<result column="COUR009" property="cour009" />
+		<result column="COUR010" property="cour010" />
+		<result column="COUR011" property="cour011" />
+		<result column="COUR013" property="cour013" />
+		<result column="COUR012" property="cour012" />
+		<result column="COUR014" property="cour014" />
+		<result column="COUR015" property="cour015" />
+		<result column="COUR016" property="cour016" />
+		<result column="COUR017" property="cour017" />
+		<result column="COUR018" property="cour018" />
+	</resultMap>
+	
+	
+	<select id="findTrainingCourseList" resultType="com.huarui.product2020.entity.Course" parameterType="HashMap">
+		SELECT
+			A.COUR001,
+			A.COUR002,
+			A.COUR003,
+			A.COUR004,
+			A.COUR005,
+			A.COUR006,
+			A.COUR007,
+			A.COUR008,
+			A.COUR009,
+			A.COUR010,
+			A.COUR011,
+			A.COUR012,
+			A.COUR013,
+			A.COUR014,
+			A.COUR015,
+			A.COUR016,
+			A.COUR017,
+			A.COUR018
+		FROM
+			XZXY_T_COURSE A
+		<where>
+			<!-- 状态为正常 -->
+			<![CDATA[  AND A.COUR002 = 1 ]]> 
+			<if test="cour010 != null">
+                 <![CDATA[ AND A.COUR010 LIKE CONCAT(CONCAT('%',#{cour010}), '%') ]]> 
+            </if>
+            <if test="cour012 != null">
+                 <![CDATA[ AND A.COUR012 LIKE CONCAT(CONCAT('%',#{cour012}), '%') ]]> 
+            </if>
+		</where>
+		<choose>
+		    <when test="sortExpression != null">
+		      <![CDATA[ ORDER BY ${sortExpression} ]]>
+		    </when>
+		    <otherwise>
+		      <![CDATA[ ORDER BY A.COUR009 DESC ]]>
+		    </otherwise>
+		</choose>
+	</select>
+
+</mapper>

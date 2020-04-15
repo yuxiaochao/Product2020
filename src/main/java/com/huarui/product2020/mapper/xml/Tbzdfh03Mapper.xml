@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbzdfh03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbzdfh03">
+		<id column="ZDFH0301" property="zdfh0301" />
+		<result column="ZDFH0302" property="zdfh0302" />
+		<result column="ZDFH0303" property="zdfh0303" />
+		<result column="ZDFH0304" property="zdfh0304" />
+		<result column="ZDFH0305" property="zdfh0305" />
+		<result column="ZDFH0306" property="zdfh0306" />
+		<result column="ZDFH0307" property="zdfh0307" />
+		<result column="ZDFH0308" property="zdfh0308" />
+		<result column="ZDFH0309" property="zdfh0309" />
+		<result column="ZDFH0310" property="zdfh0310" />
+		<result column="ZDFH0311" property="zdfh0311" />
+	</resultMap>
+	
+	<select id="findBindCommodity" resultType="HashMap" parameterType="HashMap">
+		<![CDATA[ SELECT A.ZDFH0305 AS SELECTID,C.CMDY0302||B.CMDY0603||'（套包）' AS SELECTNAME,2 AS SELECTTYPE
+		FROM tbZDFH03 A
+		INNER JOIN tbCMDY06 B ON B.CMDY0601 = A.ZDFH0305
+		INNER JOIN tbCMDY03 C ON C.CMDY0301 = B.CMDY0602]]>
+		<where>
+			<if test="zdfh0301 != null">
+				<![CDATA[ A.ZDFH0301 = #{zdfh0301} ]]>
+			</if>
+		</where>
+		UNION
+		<![CDATA[SELECT A.ZDFH0306 AS SELECTID,D.CMDY0404 AS SELECTNAME,1 AS SELECTTYPE
+		FROM tbZDFH03 A
+		INNER JOIN tbCMDY07 C ON C.CMDY0701 = A.ZDFH0306
+		LEFT JOIN TBCMDY04 D ON D.CMDY0401 = C.CMDY0703]]>
+		<where>
+			<if test="zdfh0301 != null">
+				<![CDATA[ A.ZDFH0301 = #{zdfh0301} ]]>
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateActivation" parameterType="com.huarui.product2020.entity.Tbzdfh03" flushCache="true">
+		<![CDATA[  UPDATE tbZDFH03 ]]> 
+		<set>
+			<if test="zdfh0302 != null">
+			      <![CDATA[ ZDFH0302 = #{zdfh0302}, ]]>
+			</if>
+			<if test="zdfh0304 != null">
+			      <![CDATA[ ZDFH0304 = #{zdfh0304}, ]]>
+			</if>
+			<if test="zdfh0310 != null">
+			      <![CDATA[ ZDFH0310 = #{zdfh0310}, ]]>
+			</if>
+		    <![CDATA[ ZDFH0309 = SYSDATE ]]>
+		</set>
+		<![CDATA[  WHERE ZDFH0301 = #{zdfh0301} ]]> 
+	</update>
+
+</mapper>

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestactivityMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestactivity">
+		<id column="TACT001" property="tact001" />
+		<result column="TACT002" property="tact002" />
+		<result column="TACT003" property="tact003" />
+		<result column="TACT004" property="tact004" />
+		<result column="TACT005" property="tact005" />
+		<result column="TACT006" property="tact006" />
+		<result column="TACT007" property="tact007" />
+		<result column="TACT008" property="tact008" />
+		<result column="TACT009" property="tact009" />
+		<result column="TACT010" property="tact010" />
+		<result column="TACT011" property="tact011" />
+		<result column="TACT012" property="tact012" />
+		<result column="TACT013" property="tact013" />
+		<result column="TACT014" property="tact014" />
+		<result column="TACT015" property="tact015" />
+		<result column="TACT016" property="tact016" />
+		<result column="TACT017" property="tact017" />
+		<result column="TACT018" property="tact018" />
+		<result column="TACT019" property="tact019" />
+		<result column="TACT020" property="tact020" />
+		<result column="TACT021" property="tact021" />
+		<result column="TACT022" property="tact022" />
+		<result column="TACT023" property="tact023" />
+		<result column="TACT024" property="tact024" />
+		<result column="TACT025" property="tact025" />
+		<result column="TACT026" property="tact026" />
+		<result column="TACT027" property="tact027" />
+		<result column="TACT028" property="tact028" />
+		<result column="TACT029" property="tact029" />
+		<result column="TACT030" property="tact030" />
+		<result column="TACT031" property="tact031" />
+		<result column="TACT032" property="tact032" />
+		<result column="TACT033" property="tact033" />
+		<result column="TACT034" property="tact034" />
+		<result column="TACT035" property="tact035" />
+		<result column="TACT036" property="tact036" />
+		<result column="TACT037" property="tact037" />
+		<result column="TACT038" property="tact038" />
+		<result column="TACT039" property="tact039" />
+		<result column="TACT040" property="tact040" />
+		<result column="TACT041" property="tact041" />
+		<result column="TACT042" property="tact042" />
+		<result column="TACT043" property="tact043" />
+	</resultMap>
+	
+	<select id="selectExamHistoryPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+				SELECT A.TACT001,
+		       A.TACT004,
+		       A.TACT041,
+		       TO_CHAR(D.EGRA008, 'YYYY-MM-DD') EGRA008,
+		       D.TIMES,
+		       MAX(F.EGRA013) EGRA013
+		  FROM EXAM_T_TESTACTIVITY A
+		  LEFT JOIN EXAM_T_EXAMINEEGRADE B ON A.TACT001 = B.EGRA004
+		  LEFT JOIN (SELECT COUNT(EGRA004) TIMES, EGRA004, MAX(C.EGRA008) EGRA008
+		               FROM EXAM_T_EXAMINEEGRADE C
+		              GROUP BY EGRA004) D ON A.TACT001 = D.EGRA004
+		  LEFT JOIN (SELECT EGRA002, MAX(E.EGRA013) EGRA013, EGRA004
+		               FROM EXAM_T_EXAMINEEGRADE E
+		              GROUP BY EGRA004, EGRA002) F ON F.EGRA004 = A.TACT001
+		  LEFT JOIN EXAM_T_TESTUSER G ON G.TUSE003 = F.EGRA002
+		  LEFT JOIN HRSW_T_ORGAN O ON A.TACT003 = O.ORGA001
+		 WHERE B.EGRA007 IN (3, 4, 5)
+		   AND B.EGRA002 = #{user001}
+		 <if test="tact004 != ''">
+		   AND UPPER(A.TACT004) LIKE UPPER(CONCAT(CONCAT('%',#{tact004}), '%')) 
+		 </if>
+		 GROUP BY TACT001, A.TACT004, TIMES, A.TACT041, D.EGRA008
+		 ORDER BY EGRA008 DESC, TACT001 DESC
+
+	</select>
+	<select id="selectStudyHistoryPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+			 SELECT A.LEAC001,
+			       A.LEAC004,
+			       A.LEAC009,
+			       A.LEAC018,
+			       B.LERE006,
+			       TO_CHAR(B.LERE007, 'YYYY-MM-DD HH24:MI:SS') LERE007,
+			       B.LERE008 
+			  FROM STUDY_T_LEARNACTIVITY A
+			 INNER JOIN STUDY_T_LEARNRESULT B ON A.LEAC001 = B.LERE002
+			 WHERE B.LERE003 = #{user001}
+			 ORDER BY B.LERE007 DESC, A.LEAC012 DESC
+	</select>
+	
+	<select id="studyHistoryCourseInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[	SELECT A.LEAC001,
+			       A.LEAC004,
+			       A.LEAC009,
+			       A.LEAC018,
+			       B.LERE006,
+			       TO_CHAR(B.LERE007, 'YYYY/MM/DD HH24:MI:SS') LERE007,
+			       CASE B.LERE008
+			         WHEN 1 THEN
+			          CASE A.LEAC018
+			         WHEN 0 THEN
+			          '--'
+			         ELSE
+			          D.SN || ''
+			       END ELSE '--' END GRADERANK,
+			       ROUND(NVL(C.YXCOUR005, 0) / 60 / 45, 1) COMPLETETOTALHOURS,
+			       B.LERE008
+			  FROM STUDY_T_LEARNACTIVITY A
+			 INNER JOIN STUDY_T_LEARNRESULT B ON A.LEAC001 = B.LERE002
+			  LEFT JOIN (SELECT SUM(B2.COUR005) YXCOUR005, A2.LCWR002
+			               FROM STUDY_T_LEARNCWRSULT A2]]>
+			              INNER JOIN HRSW_T_COURSEWARE B2 ON A2.LCWR005 = B2.COUR001
+			                                             AND A2.LCWR010 = 1
+			                                             AND A2.LCWR003 =
+			                                                 #{user001}
+			              GROUP BY A2.LCWR002) C ON A.LEAC001 = C.LCWR002
+			  LEFT JOIN (SELECT A.LEAC001, ROW_NUMBER() OVER(ORDER BY B.LERE006 DESC) SN
+			               FROM study_t_learnActivity A
+			              INNER JOIN Study_t_learnResult B ON A.LEAC001 = B.LERE002
+			              WHERE B.LERE008 = 1
+			                AND (A.LEAC018 = 1 OR A.LEAC018 = 2)) D ON A.LEAC001 =
+			                                                           D.LEAC001
+			 WHERE B.LERE003 = #{user001}
+			 AND A.LEAC001 = #{leac001}
+			 ORDER BY B.LERE007 DESC, A.LEAC012 DESC
+	</select>
+	
+	<select id="courseStudyHistoryList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT C.COUR002,
+		       TO_CHAR(D.LCWR006, 'MM/DD/HH24:MI') LCWR006,
+		       TO_CHAR(D.LCWR009, 'MM/DD/HH24:MI') LCWR009,
+		       D.LCWR010,
+		       TRUNC(C.COUR005 / 86400) * 24 +
+		       SUBSTR(NUMTODSINTERVAL(C.COUR005, 'SECOND'), 12, 2) || ':' ||
+		       SUBSTR(NUMTODSINTERVAL(C.COUR005, 'SECOND'), 15, 5) COUR005TEXT
+		  FROM study_t_learnActivity A
+		  LEFT JOIN study_t_learncw B ON A.LEAC001 = B.LECW002
+		  LEFT JOIN hrsw_t_courseware C ON B.LECW006 = C.COUR001
+		  LEFT JOIN Study_t_learnCWRsult D ON D.LCWR002 = A.LEAC001
+		                                  AND C.COUR001 = D.LCWR005
+		 WHERE A.LEAC001 = #{leac001}
+		   AND D.LCWR003 = #{user001}
+		 ORDER BY B.LECW004, B.LECW005
+		
+	</select>
+	
+	<select id="selectExamHistoryInfo" parameterType="java.lang.String" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT B.TACT014, B.TACT004,NVL(F.JGTIMES, 0) PASSTIMES, NVL(H.EXAMTIMES, 0) EXAMTIMES,
+		       CASE
+		         WHEN H.EXAMTIMES > 0 THEN
+		          TRUNC((NVL(F.JGTIMES, 0) / NVL(H.EXAMTIMES, 0)), 1) * 100
+		         ELSE
+		          0
+		       END PASSRATE,
+		       TRUNC(MAX(A.EGRA013), 1) HIGHSCORE
+		  FROM EXAM_T_EXAMINEEGRADE A
+		  LEFT JOIN EXAM_T_TESTACTIVITY B ON A.EGRA004 = B.TACT001
+		  LEFT JOIN (SELECT E.TACT001, TO_NUMBER(COUNT(E.TACT001)) JGTIMES
+		               FROM EXAM_T_TESTACTIVITY E
+		               LEFT JOIN EXAM_T_EXAMINEEGRADE D ON E.TACT001 = D.EGRA004
+		              WHERE D.EGRA013 >= E.TACT021
+		              GROUP BY E.TACT001) F ON F.TACT001 = B.TACT001
+		  LEFT JOIN (SELECT G.EGRA004, TO_NUMBER(COUNT(G.EGRA006)) EXAMTIMES
+		               FROM EXAM_T_EXAMINEEGRADE G
+		              WHERE G.EGRA007 IN (3, 4, 5)
+		              GROUP BY G.EGRA004) H ON H.EGRA004 = A.EGRA004
+		  LEFT JOIN EXAM_T_TESTUSER C ON C.TUSE003 = A.EGRA002
+		  LEFT JOIN HRSW_T_ORGAN O ON B.TACT003 = O.ORGA001
+		 WHERE ROWNUM < 2
+		 AND A.EGRA007 IN (3, 4, 5)
+		  ]]>
+		   AND A.EGRA002 = #{arg0}
+		   AND B.TACT001 = #{arg1}
+		 GROUP BY A.EGRA001,
+		          F.JGTIMES,
+		          A.EGRA008,
+		          A.EGRA010,
+		          A.EGRA013,
+		          B.TACT014,
+		          H.EXAMTIMES,
+		          B.TACT004
+		 ORDER BY HIGHSCORE DESC 
+	</select>
+	<select id="selectExamHistoryDetailsPage" parameterType="java.lang.String" resultType="java.util.HashMap">
+			SELECT A.EGRA001,
+		       B.TACT001,
+		       TO_CHAR(A.EGRA008, 'YYYY-MM-DD HH24:MI') EGRA008,
+		       A.EGRA010,
+		       TRUNC(A.EGRA013, 1) EGRA013,
+		       B.TACT014
+		  FROM EXAM_T_EXAMINEEGRADE A
+		  LEFT JOIN EXAM_T_TESTACTIVITY B ON A.EGRA004 = B.TACT001
+		  LEFT JOIN EXAM_T_TESTUSER C ON C.TUSE003 = A.EGRA002
+		  LEFT JOIN HRSW_T_ORGAN O ON B.TACT003 = O.ORGA001
+		 WHERE A.EGRA007 IN (3, 4, 5)
+		   AND A.EGRA002 = #{arg1}
+		   AND B.TACT001 = #{arg2}
+		 ORDER BY EGRA008 DESC
+	</select>
+	<select id="findByPage" resultType="HashMap" parameterType="com.huarui.common.Req">
+		SELECT TACT001,TACT002,TACT003,TACT004,TACT005,TACT006,TACT007,TACT008,TACT009,TACT010,
+		TACT011,TACT012,TACT013,TACT014,TACT015,TACT016,TACT017,TACT018,TACT019,TACT020,TACT021,
+		TACT022,TACT023,TACT024,TACT025,TACT026,TACT027,TACT028,TACT029,TACT030,TACT031,TACT032,
+		TACT033,TACT034,TACT035,TACT036,TACT037,TACT038,TACT039,TACT040,TACT041,TACT042,
+		decode(TACT038,1,'组卷中',2,'已发布',3,'归档',4,'待发布') TACT038n,
+		B.ORGA012 AS ORGANNAME,D.USER005 AS MANAGER,C.URRE010,
+		to_char(C.URRE010,'YYYY-MM-DD HH24:MI') AS URRE010N
+		FROM EXAM_T_TESTACTIVITY A
+		LEFT JOIN HRSW_T_ORGAN B ON A.TACT003 = B.ORGA001
+		LEFT JOIN EXAM_T_USERRESOURCERELATION C ON A.TACT001=C.URRE004 AND C.URRE011=1
+		LEFT JOIN HRSW_T_USER D ON D.USER001=C.URRE009
+		<where>
+			<if test="parameterMap.tact001 != null">
+			     AND TACT001 = #{parameterMap.tact001}
+			</if>
+			<if test="parameterMap.tact002 != null and parameterMap.tact002 != '-1' and parameterMap.tact002 != '-2' and parameterMap.tact002 != '-11'">
+			     AND TACT002 = #{parameterMap.tact002}
+			</if>
+			<if test="parameterMap.UPUR007 != null and parameterMap.UPUR007==1">
+			     AND C.URRE009 = #{parameterMap.userId}
+			</if>
+			<if test="parameterMap.manager != null">
+			     <choose>
+					<when test="queryTypeMap.manager == 'IN'">
+						 AND D.USER001 IN
+					     <foreach collection="parameterMap.manager" index="index" item="item" open="(" separator="," close=")">
+							#{item}
+						 </foreach>
+					</when>
+					<otherwise>
+						AND D.USER005 LIKE CONCAT(CONCAT('%',#{parameterMap.manager}), '%')
+					</otherwise>
+				</choose>
+			</if>
+			<if test="parameterMap.tact004 != null">
+			     <![CDATA[ AND TACT004 LIKE CONCAT(CONCAT('%',#{parameterMap.tact004}), '%') ]]>
+			</if>
+			<if test="parameterMap.tact005 != null">
+			     AND TACT005 = #{parameterMap.tact005}
+			</if>
+			<if test="parameterMap.tact008 != null">
+			     AND TACT008 = #{parameterMap.tact008}
+			</if>
+			<if test="parameterMap.tact009 != null">
+			     AND TACT009 = #{parameterMap.tact009}
+			</if>
+			<if test="parameterMap.tact010 != null">
+			     AND TACT010 = #{parameterMap.tact010}
+			</if>
+			<if test="parameterMap.tact011 != null">
+			     AND TACT011 = #{parameterMap.tact011}
+			</if>
+			<if test="parameterMap.tact012 != null">
+			     AND TACT012 = #{parameterMap.tact012}
+			</if>
+			<if test="parameterMap.tact013 != null">
+			     AND TACT013 = #{parameterMap.tact013}
+			</if>
+			<if test="parameterMap.tact014 != null">
+			     AND TACT014 = #{parameterMap.tact014}
+			</if>
+			<if test="parameterMap.tact015 != null">
+			     AND TACT015 = #{parameterMap.tact015}
+			</if>
+			<if test="parameterMap.tact016 != null">
+			     AND TACT016 = #{parameterMap.tact016}
+			</if>
+			<if test="parameterMap.tact017 != null">
+			     AND TACT017 = #{parameterMap.tact017}
+			</if>
+			<if test="parameterMap.tact018 != null">
+			     AND TACT018 = #{parameterMap.tact018}
+			</if>
+			<if test="parameterMap.tact019 != null">
+			     AND TACT019 = #{parameterMap.tact019}
+			</if>
+			<if test="parameterMap.tact020 != null">
+			     AND TACT020 = #{parameterMap.tact020}
+			</if>
+			<if test="parameterMap.tact021 != null">
+			     AND TACT021 = #{parameterMap.tact021}
+			</if>
+			<if test="parameterMap.tact022 != null">
+			     AND TACT022 = #{parameterMap.tact022}
+			</if>
+			<if test="parameterMap.tact023 != null">
+			     AND TACT023 = #{parameterMap.tact023}
+			</if>
+			<if test="parameterMap.tact024 != null">
+			     AND TACT024 = #{parameterMap.tact024}
+			</if>
+			<if test="parameterMap.tact025 != null">
+			     AND TACT025 = #{parameterMap.tact025}
+			</if>
+			<if test="parameterMap.tact026 != null">
+			     AND TACT026 = #{parameterMap.tact026}
+			</if>
+			<if test="parameterMap.tact027 != null">
+			     AND TACT027 = #{parameterMap.tact027}
+			</if>
+			<if test="parameterMap.tact028 != null">
+			     AND TACT028 = #{parameterMap.tact028}
+			</if>
+			<if test="parameterMap.tact029 != null">
+			     AND TACT029 = #{parameterMap.tact029}
+			</if>
+			<if test="parameterMap.tact030 != null">
+			     AND TACT030 = #{parameterMap.tact030}
+			</if>
+			<if test="parameterMap.tact031 != null">
+			     AND TACT031 = #{parameterMap.tact031}
+			</if>
+			<if test="parameterMap.tact032 != null">
+			     AND TACT032 = #{parameterMap.tact032}
+			</if>
+			<if test="parameterMap.tact033 != null">
+			     AND TACT033 = #{parameterMap.tact033}
+			</if>
+			<if test="parameterMap.tact034 != null">
+			     AND TACT034 = #{parameterMap.tact034}
+			</if>
+			<if test="parameterMap.tact035 != null">
+			     AND TACT035 = #{parameterMap.tact035}
+			</if>
+			<if test="parameterMap.tact036 != null">
+			     AND TACT036 = #{parameterMap.tact036}
+			</if>
+			<if test="parameterMap.tact037 != null">
+			     AND TACT037 = #{parameterMap.tact037}
+			</if>
+			<if test="parameterMap.tact038 != null">
+			     AND TACT038 = #{parameterMap.tact038}
+			</if>
+			<if test="parameterMap.tact039 != null">
+			     AND TACT039 = #{parameterMap.tact039}
+			</if>
+			<if test="parameterMap.tact054 != null">
+			     AND TACT054 = #{parameterMap.tact054}
+			</if>
+		</where>
+		ORDER BY URRE010 DESC
+	</select>
+</mapper>

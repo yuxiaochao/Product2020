@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTopiccorrectionMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTopiccorrection">
+		<id column="TCOR001" property="tcor001" />
+		<result column="TCOR002" property="tcor002" />
+		<result column="TCOR003" property="tcor003" />
+		<result column="TCOR004" property="tcor004" />
+		<result column="TCOR005" property="tcor005" />
+		<result column="TCOR006" property="tcor006" />
+		<result column="TCOR007" property="tcor007" />
+		<result column="TCOR008" property="tcor008" />
+		<result column="TCOR009" property="tcor009" />
+		<result column="TCOR010" property="tcor010" />
+	</resultMap>
+
+</mapper>

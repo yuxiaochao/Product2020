@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTFriendrelatedsettingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTFriendrelatedsetting">
+		<id column="FRRS001" property="frrs001" />
+		<result column="FRRS002" property="frrs002" />
+		<result column="FRRS003" property="frrs003" />
+		<result column="FRRS004" property="frrs004" />
+		<result column="FRRS005" property="frrs005" />
+		<result column="FRRS006" property="frrs006" />
+		<result column="FRRS007" property="frrs007" />
+		<result column="FRRS008" property="frrs008" />
+		<result column="FRRS009" property="frrs009" />
+		<result column="FRRS010" property="frrs010" />
+		<result column="FRRS011" property="frrs011" />
+		<result column="FRRS012" property="frrs012" />
+		<result column="FRRS013" property="frrs013" />
+	</resultMap>
+
+</mapper>

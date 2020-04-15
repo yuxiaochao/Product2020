@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCwshareuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCwshareuser">
+		<id column="CWSU001" property="cwsu001" />
+		<result column="CWSU002" property="cwsu002" />
+		<result column="CWSU003" property="cwsu003" />
+		<result column="CWSU004" property="cwsu004" />
+		<result column="CWSU005" property="cwsu005" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb06Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb06">
+		<id column="PXB0601" property="pxb0601" />
+		<result column="PXB0602" property="pxb0602" />
+		<result column="PXB0603" property="pxb0603" />
+		<result column="PXB0604" property="pxb0604" />
+		<result column="PXB0605" property="pxb0605" />
+		<result column="PXB0606" property="pxb0606" />
+		<result column="PXB0607" property="pxb0607" />
+		<result column="PXB0608" property="pxb0608" />
+		<result column="PXB0609" property="pxb0609" />
+		<result column="PXB0610" property="pxb0610" />
+		<result column="PXB0611" property="pxb0611" />
+		<result column="PXB0612" property="pxb0612" />
+		<result column="PXB0613" property="pxb0613" />
+	</resultMap>
+	
+	<!-- 导出Excel -->
+	<select id="findToExcel" resultType="com.huarui.product2020.entity.Tbpxb06" parameterType="HashMap">
+		<![CDATA[
+			SELECT
+				A.PXB0601,
+				A.PXB0602,
+				A.PXB0603,
+				A.PXB0604,
+				A.PXB0605,
+				A.PXB0606,
+				B.ORGA005 AS PXB0607,
+				A.PXB0608,
+				A.PXB0609,
+				A.PXB0610,
+				A.PXB0611,
+				A.PXB0612,
+				A.PXB0613
+			FROM
+				tbPXB06 A
+			LEFT JOIN hrsw_t_organ B ON
+				A.PXB0607 = B.ORGA001
+			WHERE A.PXB0602 = #{pxb0602}
+		]]> 
+	</select>
+	<select id="findStudentByPage" parameterType="String" resultType="com.huarui.product2020.entity.Tbpxb06">
+		SELECT PXB0601,
+		       PXB0602,
+		       PXB0603,
+		       PXB0604,
+		       PXB0605,
+		       PXB0606,
+		       PXB0607,
+		       PXB0608,
+		       PXB0609,
+		       PXB0610,
+		       PXB0611,
+		       PXB0612,
+		       PXB0613
+		  FROM tbPXB06
+		 WHERE PXB0601 NOT IN (SELECT JXSJ0905 FROM tbJXSJ09 WHERE JXSJ0902 = #{id})
+		   AND PXB0602 = #{id}
+	</select>
+	
+	<select id="findNoAllocatedStudents" parameterType="String" resultType="HashMap">
+		SELECT PXB0601,
+		       PXB0602,
+		       PXB0603,
+		       PXB0604,
+		       PXB0605,
+		       PXB0606,
+		      ORGA005 as PXB0607,
+		       PXB0608,
+		       PXB0609,
+		       PXB0610,
+		       PXB0611,
+		       PXB0612,
+		       PXB0613,
+		       USER028
+		  FROM tbPXB06
+		  LEFT JOIN hrsw_t_organ
+		  on orga001=pxb0607
+		  LEFT JOIN hrsw_t_user
+		  ON USER001=PXB0613
+		 WHERE PXB0601 NOT IN (SELECT JXSJ0905 FROM tbJXSJ09 WHERE JXSJ0902 = #{id})
+		   AND PXB0602 = #{id}
+	</select>
+	
+	<select id="findCountByPxb0602" parameterType="com.huarui.common.Req" resultType="HashMap">
+		SELECT a.PXB0613 rs001,
+			   a.PXB0605 rs1,
+		       nvl(COUNT(CASE b.JXSJ0605
+		                   WHEN 1 THEN
+		                    1
+		                   ELSE
+		                    NULL
+		                 END) * 2,
+		           0) rs2,
+		       nvl(c.rs3, 0) AS rs3,
+		       nvl(COUNT(CASE b.JXSJ0605
+		                   WHEN 1 THEN
+		                    1
+		                   ELSE
+		                    NULL
+		                 END) * 2 - c.rs3,
+		           0) AS rs4,
+		       nvl(c.rs5, 0) AS rs5,
+		       nvl(c.rs6, 0) AS rs6
+		  FROM tbPXB06 a
+		  LEFT JOIN tbJXSJ06 b
+		    ON b.JXSJ0602 = a.PXB0602
+		  LEFT JOIN (SELECT c1.cst002,
+		                    c1.cst003,
+		                    COUNT(c1.cst001) rs3,
+		                    COUNT(CASE c1.cst008
+		                            WHEN 2 THEN
+		                             1
+		                            ELSE
+		                             NULL
+		                          END) rs5,
+		                    COUNT(CASE c1.cst008
+		                            WHEN 3 THEN
+		                             1
+		                            ELSE
+		                             NULL
+		                          END) rs6
+		               FROM hrsw_t_CourseTaskSignIn c1
+		              GROUP BY c1.cst002, c1.cst003) c
+		    ON c.cst002 = a.PXB0602
+		   AND a.PXB0613 = c.cst003
+		 <where>
+		  PXB0602 = #{parameterMap.pxb0602}
+		  <if test="parameterMap.rs1 !=null and parameterMap.rs1 !=''">
+		  and a.PXB0605 like concat('%',concat(#{parameterMap.rs1},'%'))
+		  </if>
+		 </where>
+		 GROUP BY PXB0601, PXB0605,PXB0613 ,c.rs3, c.rs5, c.rs6
+	</select>
+	
+	<select id="findTypeByPxb0602" parameterType="com.huarui.common.Req" resultType="HashMap">
+		SELECT CASE a.PXB0212
+		         WHEN 1 THEN
+		          b.cour010
+		         WHEN 2 THEN
+		          a.PXB0211
+		       END AS rs1,
+		       to_char(a.PXB0206, 'YYYY-MM-DD HH24:MI') || '-' ||
+		       to_char(a.PXB0207, 'YYYY-MM-DD HH24:MI') AS rs2,
+		       CASE c.cst008
+		         WHEN 0 THEN
+		          '正常'
+		         WHEN 1 THEN
+		          '早到'
+		         WHEN 2 THEN
+		          '迟到'
+		         WHEN 3 THEN
+		          '早退'
+		         ELSE
+		          '未签到'
+		       END AS rs3,
+		       to_char(c.cst005, 'YYYY-MM-DD HH24:MI') AS rs4,
+		       CASE d.cst008
+		         WHEN 0 THEN
+		          '正常'
+		         WHEN 1 THEN
+		          '早到'
+		         WHEN 2 THEN
+		          '迟到'
+		         WHEN 3 THEN
+		          '早退'
+		         ELSE
+		          '未签到'
+		       END AS rs5,
+		       to_char(d.cst005, 'YYYY-MM-DD HH24:MI') AS rs6
+		  FROM tbPXB02 a
+		  LEFT JOIN xzxy_t_course b
+		    ON b.cour001 = a.PXB0203
+		  LEFT JOIN hrsw_t_CourseTaskSignIn c
+		    ON c.cst014 = a.pxb0201
+		   AND c.cst004 = 1
+		   AND c.cst003 = #{parameterMap.cst003}
+		  LEFT JOIN hrsw_t_CourseTaskSignIn d
+		    ON d.cst014 = a.pxb0201
+		   AND d.cst004 = 2
+		   AND d.cst003 = #{parameterMap.cst003}
+		 <where>
+		   a.PXB0202 = #{parameterMap.pxb0602}
+		   <if test="parameterMap.rs1 != null and parameterMap.rs1 != ''">
+		   and (b.cour010 like concat('%',concat(#{parameterMap.rs1},'%')) or a.PXB0211 like concat('%',concat(#{parameterMap.rs1},'%')))
+		   </if>
+		 </where>
+	</select>
+	
+	<select id="findTraineeList" resultType="com.huarui.product2020.entity.Tbpxb06" parameterType="HashMap">
+		SELECT
+			A.PXB0601,
+			A.PXB0602,
+			A.PXB0603,
+			A.PXB0604,
+			A.PXB0605,
+			A.PXB0606,
+			A.PXB0607,
+			B.ORGA005 AS PXB0607N,
+			A.PXB0608,
+			A.PXB0609,
+			A.PXB0610,
+			A.PXB0611,
+			A.PXB0612,
+			A.PXB0613
+		FROM
+			TBPXB06 A
+		LEFT JOIN HRSW_T_ORGAN B ON
+			A.PXB0607 = B.ORGA001
+		<where>
+			<!-- 培训班ID -->
+			<![CDATA[ AND A.PXB0602 = #{pxb0602} ]]> 
+			<![CDATA[ 
+				AND NOT EXISTS(
+					SELECT
+						1
+					FROM
+						HR_T_TRAINEEARRANGE C
+					LEFT JOIN HR_T_ACCOMMODATIONARRANGE D ON
+						C.TRAR002 = D.HCAR001
+					WHERE
+						D.HCAR002 = #{pxb0602}
+						AND C.TRAR003 = A.PXB0601 )
+			]]> 
+			<if test="pxb0605 != null">
+				<![CDATA[ AND A.PXB0605 LIKE CONCAT(CONCAT('%',#{pxb0605}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.PXB0612 DESC]]>
+		</if>
+	</select>
+</mapper>

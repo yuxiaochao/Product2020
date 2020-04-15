@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCwtopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCwtopic">
+		<id column="CWTO001" property="cwto001" />
+		<result column="CWTO002" property="cwto002" />
+		<result column="CWTO003" property="cwto003" />
+		<result column="CWTO004" property="cwto004" />
+		<result column="CWTO005" property="cwto005" />
+		<result column="CWTO006" property="cwto006" />
+		<result column="CWTO007" property="cwto007" />
+		<result column="CWTO008" property="cwto008" />
+		<result column="CWTO009" property="cwto009" />
+		<result column="CWTO010" property="cwto010" />
+		<result column="CWTO011" property="cwto011" />
+		<result column="CWTO012" property="cwto012" />
+		<result column="CWTO013" property="cwto013" />
+		<result column="CWTO014" property="cwto014" />
+		<result column="CWTO015" property="cwto015" />
+		<result column="CWTO016" property="cwto016" />
+		<result column="CWTO017" property="cwto017" />
+		<result column="CWTO018" property="cwto018" />
+		<result column="CWTO019" property="cwto019" />
+		<result column="CWTO020" property="cwto020" />
+		<result column="CWTO021" property="cwto021" />
+		<result column="CWTO022" property="cwto022" />
+		<result column="CWTO023" property="cwto023" />
+		<result column="CWTO024" property="cwto024" />
+		<result column="CWTO025" property="cwto025" />
+		<result column="CWTO026" property="cwto026" />
+		<result column="CWTO027" property="cwto027" />
+		<result column="CWTO028" property="cwto028" />
+		<result column="CWTO029" property="cwto029" />
+		<result column="CWTO030" property="cwto030" />
+		<result column="CWTO031" property="cwto031" />
+		<result column="CWTO032" property="cwto032" />
+		<result column="CWTO033" property="cwto033" />
+		<result column="CWTO034" property="cwto034" />
+	</resultMap>
+
+</mapper>

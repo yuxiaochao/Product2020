@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNetmeetingrecordMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNetmeetingrecord">
+		<id column="NETR001" property="netr001" />
+		<result column="NETR002" property="netr002" />
+		<result column="NETR003" property="netr003" />
+		<result column="NETR004" property="netr004" />
+		<result column="NETR005" property="netr005" />
+	</resultMap>
+
+	<insert id="insertnetmeetingrecord"  parameterType="java.util.Map">
+     <![CDATA[INSERT INTO hrsw_t_netmeetingrecord (NETR001,NETR002,NETR003,NETR004,NETR005) VALUES(SYS_GUID(),#{netr002},#{netr003},to_date(#{netr004},'yyyy-mm-dd hh24:mi:ss') ,to_date(#{netr005},'yyyy-mm-dd hh24:mi:ss')) ]]>
+	</insert>
+
+</mapper>

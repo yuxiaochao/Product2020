@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTAttachmentMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTAttachment">
+		<id column="ATTA001" property="atta001" />
+		<result column="ATTA002" property="atta002" />
+		<result column="ATTA003" property="atta003" />
+		<result column="ATTA004" property="atta004" />
+		<result column="ATTA005" property="atta005" />
+		<result column="ATTA006" property="atta006" />
+		<result column="ATTA007" property="atta007" />
+		<result column="ATTA008" property="atta008" />
+		<result column="ATTA009" property="atta009" />
+		<result column="ATTA010" property="atta010" />
+		<result column="ATTA011" property="atta011" />
+		<result column="ATTA012" property="atta012" />
+		<result column="ATTA013" property="atta013" />
+		<result column="ATTA014" property="atta014" />
+		<result column="ATTA015" property="atta015" />
+		<result column="ATTA016" property="atta016" />
+		<result column="ATTA017" property="atta017" />
+		<result column="ATTA018" property="atta018" />
+	</resultMap>
+
+</mapper>

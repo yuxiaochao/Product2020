@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj12Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj12">
+		<id column="TBJXSJ1201" property="tbjxsj1201" />
+		<result column="TBJXSJ1202" property="tbjxsj1202" />
+		<result column="TBJXSJ1203" property="tbjxsj1203" />
+		<result column="TBJXSJ1204" property="tbjxsj1204" />
+		<result column="TBJXSJ1205" property="tbjxsj1205" />
+		<result column="TBJXSJ1206" property="tbjxsj1206" />
+		<result column="TBJXSJ1207" property="tbjxsj1207" />
+	</resultMap>
+
+</mapper>

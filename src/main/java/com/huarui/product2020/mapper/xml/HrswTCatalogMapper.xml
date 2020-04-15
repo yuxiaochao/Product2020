@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCatalogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCatalog">
+		<id column="CATA001" property="cata001" />
+		<result column="CATA002" property="cata002" />
+		<result column="CATA003" property="cata003" />
+		<result column="CATA004" property="cata004" />
+		<result column="CATA005" property="cata005" />
+		<result column="CATA006" property="cata006" />
+		<result column="CATA007" property="cata007" />
+		<result column="CATA008" property="cata008" />
+		<result column="CATA009" property="cata009" />
+		<result column="CATA010" property="cata010" />
+		<result column="CATA011" property="cata011" />
+		<result column="CATA012" property="cata012" />
+		<result column="CATA013" property="cata013" />
+		<result column="CATA014" property="cata014" />
+		<result column="CATA015" property="cata015" />
+		<result column="CATA016" property="cata016" />
+	</resultMap>
+
+</mapper>

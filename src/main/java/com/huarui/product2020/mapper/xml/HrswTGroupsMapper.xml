@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTGroupsMapper">
+
+	<sql id="groupsColumns">
+		   A.GROU001,
+	       A.GROU002,
+	       A.GROU003,
+	       A.GROU004,
+	       A.GROU005,
+	       A.GROU006,
+	       A.GROU007,
+	       A.GROU008,
+	       A.GROU009,
+	       A.GROU010,
+	       A.GROU011,
+	       A.GROU012
+	</sql>
+	
+	<select id="findGroupsById" resultType="HrswTGroups">
+		SELECT 
+		<include refid="groupsColumns"/>
+		FROM HRSW_T_GROUPS A
+		WHERE A.GROU001=#{grou001}
+	</select>
+	
+	<insert id="insertGroups">
+	 	INSERT INTO 
+	 	HRSW_T_GROUPS(GROU001,GROU002,GROU003,GROU004,GROU005,GROU006,GROU007,GROU008,GROU009,GROU010,GROU011,GROU012)
+	 	VALUES(#{grou001},#{grou002},#{grou003},#{grou004},SYSDATE,SYSDATE,#{grou007},#{grou008},#{grou009},#{grou010},#{grou011},#{grou012})
+	</insert>
+	
+	<update id="updateGroupsById">
+		UPDATE HRSW_T_GROUPS SET 
+		GROU002=#{grou002},
+		GROU003=#{grou003},
+		GROU005=SYSDATE,
+		GROU009=#{grou009},
+		GROU010=#{grou010},
+		GROU011=#{grou011}
+		WHERE GROU001=#{grou001}
+	</update>
+
+	<insert  id="insertUserToGroup" parameterType="java.util.List">
+		INSERT INTO HRSW_T_USERGROUP(USGR001,USGR002,USGR003,USGR004,USGR005,USGR006)
+         	(
+	        <foreach collection="list" index="" item="item"
+	             separator="union all">
+	             select
+	            	#{item.usgr001},#{item.usgr002},#{item.usgr003},#{item.usgr004},SYSDATE,#{item.usgr006}
+	             from dual
+	         </foreach>
+	         )
+	</insert>
+</mapper>
+
+
+
+

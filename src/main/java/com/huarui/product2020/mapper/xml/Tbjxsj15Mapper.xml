@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj15Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj15">
+		<result column="TBJXSJ1501" property="tbjxsj1501" />
+		<result column="TBJXSJ1502" property="tbjxsj1502" />
+		<result column="TBJXSJ1503" property="tbjxsj1503" />
+		<result column="TBJXSJ1504" property="tbjxsj1504" />
+	</resultMap>
+	<insert id="insertBatch" parameterType="list">
+		insert into TBJXSJ15
+		(TBJXSJ1501,TBJXSJ1502,TBJXSJ1503,TBJXSJ1504)
+		<foreach collection="list" item="item" separator="union all">
+			(select 
+			#{item.tbjxsj1501},#{item.tbjxsj1502},#{item.tbjxsj1503},#{item.tbjxsj1504}
+			from dual)
+		</foreach>
+	</insert>
+</mapper>

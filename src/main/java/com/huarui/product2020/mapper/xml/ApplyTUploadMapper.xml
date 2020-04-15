@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ApplyTUploadMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ApplyTUpload">
+		<id column="UPLO001" property="uplo001" />
+		<result column="UPLO002" property="uplo002" />
+		<result column="UPLO003" property="uplo003" />
+		<result column="UPLO004" property="uplo004" />
+		<result column="UPLO005" property="uplo005" />
+		<result column="UPLO006" property="uplo006" />
+		<result column="UPLO007" property="uplo007" />
+		<result column="UPLO008" property="uplo008" />
+	</resultMap>
+
+</mapper>

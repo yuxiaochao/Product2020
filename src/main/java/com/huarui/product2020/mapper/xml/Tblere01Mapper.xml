@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tblere01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tblere01">
+		<id column="LERE0101" property="lere0101" />
+		<result column="LERE0102" property="lere0102" />
+		<result column="LERE0103" property="lere0103" />
+		<result column="LERE0104" property="lere0104" />
+		<result column="LERE0105" property="lere0105" />
+		<result column="LERE0106" property="lere0106" />
+		<result column="LERE0107" property="lere0107" />
+		<result column="LERE0108" property="lere0108" />
+		<result column="LERE0109" property="lere0109" />
+	</resultMap>
+
+	
+</mapper>

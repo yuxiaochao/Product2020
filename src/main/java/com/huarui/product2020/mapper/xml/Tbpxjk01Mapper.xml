@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxjk01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxjk01">
+		<result column="PXJK0101" property="pxjk0101" />
+		<result column="PXJK0102" property="pxjk0102" />
+		<result column="PXJK0103" property="pxjk0103" />
+		<result column="PXJK0104" property="pxjk0104" />
+		<result column="PXJK0105" property="pxjk0105" />
+	</resultMap>
+	<insert id="insertBatch" parameterType="com.huarui.common.Req">  
+	    <![CDATA[ INSERT INTO tbPXJK01(
+	    PXJK0101,
+	    PXJK0102,
+	    PXJK0103,
+	    PXJK0104,
+	    PXJK0105
+		)
+	 	]]> 
+		<foreach collection="parameterMap.list" item="item" index="index" separator="union all">
+			(select 
+			    sys_guid(),1,0,#{parameterMap.pxjk0104},#{item}
+			from dual)
+		</foreach>
+    </insert>  
+</mapper>

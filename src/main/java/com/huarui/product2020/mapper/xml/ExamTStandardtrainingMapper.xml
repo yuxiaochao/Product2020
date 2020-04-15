@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTStandardtrainingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTStandardtraining">
+	    <id column="EST001" property="est001" />
+		<result column="EST002" property="est002" />
+		<result column="EST003" property="est003" />
+		<result column="EST004" property="est004" /> 
+		<result column="EST005" property="est005" />
+		<result column="EST006" property="est006" />
+		<result column="EST007" property="est007" />
+		<result column="EST008" property="est008" />
+		<result column="EST009" property="est009" />
+		<result column="EST010" property="est010" />
+		<result column="EST011" property="est011" />
+		<result column="EST012" property="est012" />
+		<result column="EST013" property="est013" />
+		<result column="EST014" property="est014" />
+		<result column="EST015" property="est015" />
+		<result column="EST016" property="est016" />
+		<result column="EST017" property="est017" />
+		<result column="EST018" property="est018" />
+		<result column="EST019" property="est019" />
+		
+		<result column="ORGANNAME" property="organname" />
+		<result column="EST017STR" property="est017str" />
+		<result column="EXTG007" property="extg007" />
+		<result column="EXTG007STR" property="extg007str" />
+	</resultMap>
+	
+	<select id="findList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+	    SELECT A.EST001,A.EST004,A.EST005,A.EST006,
+		B.ORGA005 ORGANNAME,
+		D.USER005 EST017STR,
+		NVL(E.EXTG007,0) EXTG007,
+		DECODE(NVL(E.EXTG007,0),0,'未达标',1,'已达标') EXTG007STR,
+		A.EST010
+		FROM EXAM_T_STANDARDTRAINING	A
+		INNER JOIN HRSW_T_ORGAN B
+		ON A.EST003 = B.ORGA001
+		INNER JOIN STANDARD_V_TRAINUSER C
+		ON A.EST001 = C.EXTU002
+		AND C.USER001 = #{user001}
+		INNER JOIN HRSW_T_USER D
+		ON A.EST017 = D.USER001
+		LEFT JOIN (
+			SELECT * FROM (
+				SELECT *
+				FROM EXAM_T_TRAINGRADE
+				WHERE EXTG003 = #{user001}
+				ORDER BY EXTG005 DESC
+			) WHERE ROWNUM = 1
+		) E
+		ON A.EST001 = E.EXTG002
+		<where>
+		    <if test="keyword != null and keyword != ''">
+		        AND A.EST004 LIKE '%'||#{keyword}||'%'
+		    </if>
+		</where>
+	</select>
+
+	<select id="findTxByExamId" resultType="com.huarui.product2020.entity.ExamTTrainsubject" parameterType="java.lang.String">
+		 <![CDATA[ SELECT EXTS001,EXTS002,B.BTX003 AS EXTS006,B.BTX002 AS EXTS007,EXTS008,EXTS009,EXTS003 
+		 FROM EXAM_T_TRAINSUBJECT A
+		 INNER JOIN EXAM_T_BASETX B ON A.EXTS003=B.BTX001
+		 WHERE EXTS002= #{est001}
+		 ORDER BY EXTS008 ASC]]> 
+	</select>
+	
+	<select id="findTopicByExamId" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT T.ETOP001 ID,
+			   T.ETOP003 TPID,
+		       T.ETOP006 TOPICID,		 
+		       T.ETOP010 BTXTITLE,
+		       T.ETOP011 TOPIC,
+		       T.ETOP016 TOPICMARK,
+		       T.ETOP017 TOPICCOUNT,
+		       T.ETOP018 TOPICOPTION,
+		       T.ETOP020 TOPICK,
+		       UPPER(T.ETOP022) TOPICKEY,
+		       T.ETOP023 TOPREMARK,
+		       T.ETOP024 PARENTID,
+		       B.BTX003 AS BASETYPE,
+		       ROW_NUMBER() OVER (ORDER BY ETOP027 ASC) SN
+		  FROM EXAM_T_TRAINTOPIC T
+		  JOIN EXAM_T_BASETX B ON T.ETOP009=B.BTX001
+		 	<where>
+			AND ETOP003 = #{est001}
+			<if test="type != null">
+				<choose>
+			     <when test="type == 'topic'">
+			     <![CDATA[ AND NVL(ETOP024,'0')='0' ]]> 
+				</when>
+			     <when test="type == 'child'">
+			     <![CDATA[ AND NVL(ETOP024,'0')<>'0' ]]> 
+				</when>
+				</choose>
+			</if>
+			<if test="serialno != null">
+			     AND ETOP004 = #{serialno}
+			</if>
+			<if test="subjective != null">
+			     AND B.BTX003 IN (0,4)
+			</if>	
+		</where>
+		ORDER BY ETOP027 ASC
+	</select>
+</mapper>

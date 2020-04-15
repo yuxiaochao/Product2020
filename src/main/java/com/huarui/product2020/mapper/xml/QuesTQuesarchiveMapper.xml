@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuesarchiveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuesarchive">
+		<id column="QUES001" property="ques001" />
+		<result column="QUES003" property="ques003" />
+		<result column="QUES015" property="ques015" />
+		<result column="QUES004" property="ques004" />
+		<result column="ORGA001" property="orga001" />
+		<result column="ORGA006" property="orga006" />
+		<result column="USER005" property="user005" />
+		<result column="QUESNUM" property="quesnum" />
+		<result column="JOINNUM" property="joinnum" />
+		<result column="JOINRATE" property="joinrate" />
+		<result column="ARCHIVEDATE" property="archivedate" />
+		<result column="ARCHIVEUSERID" property="archiveuserid" />
+	</resultMap>
+
+</mapper>

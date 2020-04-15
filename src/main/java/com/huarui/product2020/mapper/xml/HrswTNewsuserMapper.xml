@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNewsuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNewsuser">
+		<id column="NEUS001" property="neus001" />
+		<result column="NEUS002" property="neus002" />
+		<result column="NEUS003" property="neus003" />
+		<result column="NEUS004" property="neus004" />
+		<result column="NEUS005" property="neus005" />
+		<result column="NEUS006" property="neus006" />
+		<result column="NEUS007" property="neus007" />
+	</resultMap>
+
+</mapper>

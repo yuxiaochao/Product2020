@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTExammonitorMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTExammonitor">
+		<id column="EMON001" property="emon001" />
+		<result column="EMON011" property="emon011" />
+		<result column="EMON012" property="emon012" />
+		<result column="EMON002" property="emon002" />
+		<result column="EMON003" property="emon003" />
+		<result column="EMON004" property="emon004" />
+		<result column="EMON005" property="emon005" />
+		<result column="EMON006" property="emon006" />
+		<result column="EMON007" property="emon007" />
+		<result column="EMON008" property="emon008" />
+		<result column="EMON009" property="emon009" />
+		<result column="EMON010" property="emon010" />
+	</resultMap>
+
+</mapper>

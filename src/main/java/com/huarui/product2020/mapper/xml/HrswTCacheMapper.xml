@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCacheMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCache">
+		<id column="CACH001" property="cach001" />
+		<result column="CACH002" property="cach002" />
+		<result column="CACH003" property="cach003" />
+		<result column="CACH004" property="cach004" />
+		<result column="CACH005" property="cach005" />
+		<result column="CACH006" property="cach006" />
+		<result column="CACH007" property="cach007" />
+	</resultMap>
+
+</mapper>

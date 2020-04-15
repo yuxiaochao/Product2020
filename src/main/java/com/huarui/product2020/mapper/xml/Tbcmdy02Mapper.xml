@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy02">
+		<id column="CMDY0201" property="cmdy0201" />
+		<result column="CMDY0202" property="cmdy0202" />
+		<result column="CMDY0203" property="cmdy0203" />
+		<result column="CMDY0204" property="cmdy0204" />
+		<result column="CMDY0205" property="cmdy0205" />
+		<result column="CMDY0206" property="cmdy0206" />
+		<result column="CMDY0207" property="cmdy0207" />
+		<result column="CMDY0208" property="cmdy0208" />
+	</resultMap>
+
+</mapper>

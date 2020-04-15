@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNewscatalogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNewscatalog">
+		<id column="NCAT001" property="ncat001" />
+		<result column="NCAT002" property="ncat002" />
+		<result column="NCAT003" property="ncat003" />
+		<result column="NCAT004" property="ncat004" />
+		<result column="NCAT005" property="ncat005" />
+		<result column="NCAT006" property="ncat006" />
+		<result column="NCAT007" property="ncat007" />
+		<result column="NCAT008" property="ncat008" />
+		<result column="NCAT009" property="ncat009" />
+		<result column="NCAT010" property="ncat010" />
+		<result column="NCAT011" property="ncat011" />
+		<result column="NCAT012" property="ncat012" />
+		<result column="NCAT013" property="ncat013" />
+		<result column="NCAT014" property="ncat014" />
+		<result column="NCAT015" property="ncat015" />
+	</resultMap>
+
+</mapper>

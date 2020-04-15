@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbclassaskquestions01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbclassaskquestions01">
+		<id column="CLAQ0101" property="claq0101" />
+		<result column="CLAQ0102" property="claq0102" />
+		<result column="CLAQ0103" property="claq0103" />
+		<result column="CLAQ0104" property="claq0104" />
+		<result column="CLAQ0105" property="claq0105" />
+		<result column="CLAQ0106" property="claq0106" />
+		<result column="CLAQ0107" property="claq0107" />
+		<result column="CLAQ0108" property="claq0108" />
+		<result column="CLAQ0109" property="claq0109" />
+		<result column="CLAQ0110" property="claq0110" />
+		<result column="CLAQ0111" property="claq0111" />
+		<result column="CLAQ0112" property="claq0112" />
+	</resultMap>
+
+</mapper>

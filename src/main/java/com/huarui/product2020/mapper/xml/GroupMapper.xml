@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.GroupMapper">
+
+
+    <select id="findPeopleStstu" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT 
+		DD.*,
+		ROWNUM 
+		FROM(
+		SELECT
+		aa.USER005,
+		BB.ORGA012,
+		nvl(cc.usst003,0) styleNum
+		FROM hrsw_t_user aa 
+		INNER JOIN hrsw_t_organ bb ON BB.ORGA001=AA.USER002
+		LEFT JOIN hrsw_t_UserStatus cc ON cc.usst002 =aa.USER001
+		WHERE USER001=#{user001} ORDER BY cc.usst005 desc) dd WHERE ROWNUM=1
+		        
+    </select>
+
+	<select id="findGroupList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.GROU001,A.GROU002,A.GROU003,A.GROU004,A.GROU005,
+		A.GROU006,A.GROU007,A.GROU008, A.GROU009,C.USERNUM
+		FROM HRSW_T_GROUPS A
+		INNER JOIN
+		HRSW_T_USERGROUP B
+		ON A.GROU001 = B.USGR002
+		INNER JOIN (SELECT COUNT(USGR003) USERNUM,USGR002 
+    	FROM HRSW_T_USERGROUP a inner join hrsw_t_user b on a.USGR003 = b.user001 GROUP BY USGR002) C 
+    	ON C.USGR002 = A.GROU001
+		<!-- <where>
+		A.GROU003 = #{group003}
+		</where> -->
+		AND B.USGR004 = 1
+		AND B.USGR003= #{usgr003}
+	</select>
+	
+	<select id="findGroupList02" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.GROU001,A.GROU002,A.GROU003,A.GROU004,A.GROU005,
+		A.GROU006,A.GROU007,A.GROU008, A.GROU009,C.USERNUM
+		FROM HRSW_T_GROUPS A
+		INNER JOIN
+		HRSW_T_USERGROUP B
+		ON A.GROU001 = B.USGR002
+		INNER JOIN (SELECT COUNT(USGR003) USERNUM,USGR002 
+    	FROM HRSW_T_USERGROUP a inner join hrsw_t_user b on a.USGR003 = b.user001 GROUP BY USGR002) C 
+    	ON C.USGR002 = A.GROU001
+		<!-- <where>
+		A.GROU003 = #{group003}
+		</where> -->
+		AND B.USGR004 = 1
+		AND B.USGR003= #{usgr003}
+	</select>
+
+	<select id="findUserGroupById" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.GROU001,
+		A.GROU002,
+		A.GROU003,
+		A.GROU004,
+		TO_CHAR(A.GROU006,
+		'YYYY-MM-DD HH24:MI:SS') GROU006,
+		B.USGR001,
+		C.USER001,
+		C.USER004,
+		C.USER005,
+		C.USER006,
+		UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(C.USER005),1,1))USER023,
+		UPPER(F_TRANS_PINYIN_CAPITAL(C.USER005))USER024,
+		D.ATTA006,
+		D.ATTA007
+		FROM HRSW_T_GROUPS A
+		INNER JOIN HRSW_T_USERGROUP B ON A.GROU001 =
+		B.USGR002
+		INNER JOIN HRSW_T_USER C ON B.USGR003 = C.USER001
+		LEFT JOIN
+		HRSW_T_ATTACHMENT D
+		ON C.USER001=D.ATTA002 AND ATTA004=1
+		<where>
+			A.GROU001=#{grou001}
+		</where>
+	</select>
+
+	<!-- 删除群组人员 -->
+	<delete id="deleteMemberToMyGroup" parameterType="java.util.Map">
+		DELETE FROM HRSW_T_USERGROUP
+		WHERE USGR003 IN
+		<foreach item="item" index="index" collection="user001s" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		AND USGR002 = #{group001}
+	</delete>
+
+	<!-- 通过群ID删除群组成员 -->
+	<delete id="deleteGroupMemberById" parameterType="java.util.Map">
+		DELETE FROM HRSW_T_USERGROUP
+		<where>
+			USGR002 = #{grou001}
+		</where>
+	</delete>
+
+	<!-- 通过群ID删除群 -->
+	<delete id="deleteGroupById" parameterType="java.util.Map">
+		DELETE FROM HRSW_T_GROUPS
+		<where>
+			GROU001 = #{grou001}
+		</where>
+	</delete>
+
+	<!-- 查询群成员信息 -->
+	<select id="queryGroupMemberInfo" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.USGR001,A.USGR002,A.USGR003,A.USGR004,
+		B.user001,B.user005,B.USER006,C.ATTA007,
+		to_char(A.USGR005,'yyyy-mm-dd hh24:mi:ss')USGR005,
+		<!-- 用户备注或用户别名或用户名称 -->
+		case when e.FRRS004 is not null then e.FRRS004 when f.USPS003 is not null then f.USPS003 else B.USER005 end firstName
+		FROM HRSW_T_USERGROUP A
+		inner JOIN HRSW_T_USER B ON A.USGR003 = B.USER001
+		LEFT JOIN HRSW_T_ATTACHMENT C ON A.USGR003=C.ATTA002 AND C.ATTA004=1
+		
+		left join hrsw_t_FriendRelatedSetting e
+			    on e.FRRS002 = #{userid} and e.FRRS003 = B.USER001
+			  left join hrsw_t_UserPreferenceSetting f
+			    on f.USPS002 = B.USER001
+		<where>
+			A.USGR002 = #{grou001}
+		</where>
+		ORDER BY A.USGR005 DESC
+	</select>
+
+	<!-- 查询群信息 -->
+	<select id="queryGroupInfo" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select A.GROU001,
+		A.GROU007,
+		B.user005,
+		t2.membercount,
+		C.USGR001,
+		NVL(A.GROU008, '') GROU008,
+		A.GROU002,
+		A.GROU003,
+		TO_CHAR(A.GROU005, 'YYYY-MM-DD HH24:MI:SS') GROU005,
+		A.GROU004
+		FROM HRSW_T_GROUPS A
+		LEFT JOIN (select USGR002, count(USGR003) membercount
+		from HRSW_T_USERGROUP a inner join hrsw_t_user b on a.USGR003 = b.user001
+		group by USGR002) T2 ON A.GROU001 = T2.USGR002
+		LEFT JOIN HRSW_T_USER B ON A.GROU007 = B.USER001
+		LEFT JOIN HRSW_T_USERGROUP C ON C.USGR002 = A.GROU001
+		and C.USGR003 = #{userid}
+		<where>
+			A.GROU001 = #{grou001}
+		</where>
+	</select>
+
+	<!-- 查询我的所有群 -->
+	<select id="queryAllMyGroupMap" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.GROU001,A.GROU008,A.GROU002,A.GROU003,A.GROU004,
+		TO_CHAR(A.GROU005, 'YYYY-MM-DD HH24:MI:SS') GROU005
+		from HRSW_T_GROUPS A
+		LEFT JOIN HRSW_T_USERGROUP B ON A.GROU001 = B.USGR002
+		<where>
+			B.USGR003 = #{userid} AND B.USGR002 =#{grou001}
+		</where>
+		order by A.GROU005 desc
+	</select>
+
+	<!-- 查询不在当前群中的好友 -->
+	<select id="queryMemberNotInGroup" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT T.CONT001,
+		U.USER001,
+		U.USER005,
+		UPPER(F_TRANS_PINYIN_CAPITAL(NVL(U.USER004, U.USER005))) PYTZM,
+		UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(NVL(U.USER004, U.USER005)),
+		1,
+		1)) HEADLETTER,
+		D.ATTA007
+		FROM VIEW_MY_FRIEND_RELATIONSHIP T
+		LEFT JOIN HRSW_T_USER U ON T.CONT003 = U.USER001
+		LEFT JOIN HRSW_T_ATTACHMENT D ON u.user001 =D.ATTA002 AND ATTA004=1
+		WHERE
+		T.CONT002 = #{userid}
+		AND T.CONT004 = 1
+		AND U.USER001 != #{userid}
+		AND U.USER001 NOT IN
+		(SELECT GD.USGR003
+		FROM HRSW_T_USERGROUP GD
+		LEFT JOIN HRSW_T_USER T1 ON T1.USER001 = GD.USGR003
+		WHERE GD.USGR002 = #{not002})
+		ORDER BY F_TRANS_PINYIN_CAPITAL(NVL(U.USER004, U.USER005)) ASC
+	</select>
+	
+	<!-- 查询不在当前群中的科室人员 -->
+	<select id="queryDepartmentNotInGroup" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+
+		SELECT T2.ATTA007,
+			   T.USER001,
+			   T.USER004,
+		       T.USER005,
+		       T.USER006,
+		       t.USER023,
+		       T3.USST003,
+		       CASE T3.USST003
+		         WHEN 1 THEN
+		          '工作'
+		         WHEN 2 THEN
+		          '会议'
+		         WHEN 3 THEN
+		          '下班'
+		         WHEN 4 THEN
+		          '休假'
+		         WHEN 5 THEN
+		          '出差'
+		       END USST003N
+		  FROM HRSW_T_USER T
+		  LEFT JOIN (SELECT I.ATTA007, I.ATTA002
+		               FROM HRSW_T_ATTACHMENT I
+		              WHERE (I.ATTA002, I.ATTA008) IN
+		                    (SELECT TT.ATTA002, MAX(ATTA008)
+		                       FROM HRSW_T_ATTACHMENT TT
+		                      WHERE TT.ATTA004 = 1
+		                        AND TT.ATTA002 IS NOT NULL
+		                      GROUP BY TT.ATTA002)
+		             
+		             ) T2
+		    ON T.USER001 = T2.ATTA002
+		  LEFT JOIN (SELECT TT2.USST002, TT2.USST003
+		               FROM HRSW_T_USERSTATUS TT2
+		              WHERE (TT2.USST002, TT2.USST005) IN
+		                    (SELECT TT.USST002, MAX(USST005)
+		                       FROM HRSW_T_USERSTATUS TT
+		                      GROUP BY TT.USST002)) T3
+		    ON T3.USST002 = T.USER001
+		  
+		<where>
+			<![CDATA[  AND t.user002 = #{orga001} ]]> 
+			<![CDATA[  AND T.USER001 NOT IN (
+			SELECT GD.USGR003 FROM HRSW_T_USERGROUP GD 
+			LEFT JOIN HRSW_T_USER T1 
+			ON T1.USER001 = GD.USGR003 
+			WHERE GD.USGR002 = #{not002})]]>
+		</where>
+		
+	</select>
+
+	<!-- 查询群公告 -->
+	<select id="queryNoticeList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.NOT001, A.NOT002, A.NOT003, A.NOT004, B.User005,
+		TO_CHAR(A.NOT006, 'YYYY-MM-DD HH24:MI:SS') NOT006,
+		TO_CHAR(A.NOT007, 'YYYY-MM-DD HH24:MI:SS') NOT007
+		from HRSW_T_NOTICE A
+		LEFT JOIN HRSW_T_USER B ON A.NOT005 = B.USER001
+		<where>
+			A.NOT002 = #{not002}
+		</where>
+		ORDER BY A.NOT007 DESC NULLS LAST,NOT006 DESC NULLS LAST
+	</select>
+
+	<!-- 发布群公告 -->
+	<insert id="publishGroupNotice" parameterType="java.util.Map">
+		<![CDATA[ INSERT INTO HRSW_T_NOTICE(
+	   			 NOT001,NOT002,NOT003,NOT004,NOT005,NOT006
+				)VALUES(
+	    		#{not001,jdbcType=VARCHAR},
+	   		 	#{not002,jdbcType=VARCHAR},
+	    		#{not003,jdbcType=VARCHAR},
+	    		#{not004,jdbcType=VARCHAR},
+	    		#{not005,jdbcType=VARCHAR},
+	    		 SYSDATE
+			) ]]>
+	</insert>
+
+	<!-- 修改群公告 -->
+	<update id="editGroupNotice" parameterType="java.util.Map">
+		UPDATE HRSW_T_NOTICE
+		<set>
+			not003 = #{not003},
+			not004 = #{not004},
+			NOT006 = SYSDATE
+		</set>
+		WHERE not001 = #{not001}
+	</update>
+
+	<!-- 删除群公告 -->
+	<delete id="deleteGroupNotice" parameterType="java.util.Map">
+		DELETE HRSW_T_NOTICE
+		<where>
+			not001 = #{not001}
+		</where>
+	</delete>
+
+	<!-- 群公告置顶 -->
+	<update id="supportNotice" parameterType="java.util.Map">
+		UPDATE HRSW_T_NOTICE
+		<set>
+			NOT007 = SYSDATE
+		</set>
+		WHERE not001 = #{not001}
+	</update>
+
+	<!-- 查询群公告 -->
+	<select id="queryNoticeDetails" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.NOT001, A.NOT002, A.NOT003, A.NOT004,B.USER005,
+		TO_CHAR(A.NOT006, 'YYYY-MM-DD HH24:MI:SS') NOT006,
+		TO_CHAR(A.NOT007, 'YYYY-MM-DD HH24:MI:SS') NOT007
+		FROM HRSW_T_NOTICE A
+		LEFT JOIN HRSW_T_USER B ON A.NOT005 = B.USER001
+		<where>
+			A.NOT001 = #{not001}
+		</where>
+	</select>
+
+	<!-- 查询用户表中环信注册信息 -->
+	<select id="registeredHuanXin" resultType="java.util.HashMap">
+		SELECT USER001,USER005 FROM HRSW_T_USER U
+		<where>
+			U.USER023 = 0
+		</where>
+	</select>
+
+	<!-- 已注册环信 -->
+	<update id="updateTbuserHuanXin" parameterType="java.util.Map">
+		UPDATE HRSW_T_USER
+		<set>
+			user023 = '1'
+		</set>
+		WHERE USER001 = #{userid}
+	</update>
+
+	<select id="queryMyFriends" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.USER001,A.USER005,A.USER006,
+		A.USER014,'0' ISGROUP,
+		B.ATTA007, UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(NVL(A.USER005, '--')), 1, 1))
+		ALIASTZM
+		FROM HRSW_T_USER A
+		LEFT JOIN HRSW_T_ATTACHMENT B ON A.user001 = B.ATTA002 AND B.ATTA004 = 1
+		<where>
+			A.USER005 like upper(CONCAT(CONCAT('%',#{keyword}), '%'))
+			or A.user005 like lower(CONCAT(CONCAT('%',#{keyword}), '%'))
+			AND A.USER001 != #{keyword}
+		</where>
+		ORDER BY A.USER005 ASC
+	</select>
+
+	<select id="queryMyGroups" resultType="java.util.HashMap" 
+		parameterType="java.util.Map">
+		<!-- SELECT T.GROU001,T.GROU002,T.GROU002 TITLE,T.GROU003,
+		T.GROU004,NVL(T.GROU008,'')GROU008,T.GROU007,'1' ISGROUP
+		FROM
+		HRSW_T_GROUPS T
+		<where>
+			(t.GROU002 like upper(CONCAT(CONCAT('%',#{keyword}), '%'))
+			or t.GROU002 like lower(CONCAT(CONCAT('%',#{keyword}), '%'))
+			or upper(SUBSTR(F_TRANS_PINYIN_CAPITAL(nvl(t.GROU002, '')), 1, 1))
+			like
+			upper(CONCAT(CONCAT('%',#{keyword}), '%')))
+		</where>
+		order by t.GROU001 ASC -->
+		
+		SELECT A.GROU001,A.GROU002,A.GROU003,A.GROU004,A.GROU005,
+		A.GROU006,A.GROU007,A.GROU008, A.GROU009
+		FROM HRSW_T_GROUPS A
+		INNER JOIN
+		HRSW_T_USERGROUP B
+		ON A.GROU001 = B.USGR002 AND B.USGR004 = 1 AND B.USGR003= #{userid}
+		<where>
+			(A.GROU002 like upper(CONCAT(CONCAT('%',#{keyword}), '%'))
+			or A.GROU002 like lower(CONCAT(CONCAT('%',#{keyword}), '%'))
+			or upper(SUBSTR(F_TRANS_PINYIN_CAPITAL(nvl(A.GROU002, '--')), 1, 1))
+			like
+			upper(CONCAT(CONCAT('%',#{keyword}), '%')))
+		</where>
+		order by A.GROU002 ASC
+	</select>
+
+</mapper>

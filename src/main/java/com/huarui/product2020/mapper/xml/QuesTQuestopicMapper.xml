@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuestopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuestopic">
+		<id column="QTOP001" property="qtop001" />
+		<result column="QTOP002" property="qtop002" />
+		<result column="QTOP003" property="qtop003" />
+		<result column="QTOP004" property="qtop004" />
+		<result column="QTOP005" property="qtop005" />
+		<result column="QTOP006" property="qtop006" />
+		<result column="QTOP007" property="qtop007" />
+		<result column="QTOP008" property="qtop008" />
+		<result column="QTOP009" property="qtop009" />
+		<result column="QTOP010" property="qtop010" />
+		<result column="QTOP011" property="qtop011" />
+		<result column="QTOP012" property="qtop012" />
+		<result column="QTOP013" property="qtop013" />
+		<result column="QTOP014" property="qtop014" />
+		<result column="QTOP015" property="qtop015" />
+		<result column="QTOP016" property="qtop016" />
+		<result column="QTOP017" property="qtop017" />
+		<result column="QTOP018" property="qtop018" />
+	</resultMap>
+
+</mapper>

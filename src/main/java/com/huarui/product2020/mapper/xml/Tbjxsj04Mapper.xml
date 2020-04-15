@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj04Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj04">
+		<id column="JXSJ0401" property="jxsj0401" />
+		<result column="JXSJ0402" property="jxsj0402" />
+		<result column="JXSJ0403" property="jxsj0403" />
+		<result column="JXSJ0404" property="jxsj0404" />
+		<result column="JXSJ0405" property="jxsj0405" />
+		<result column="JXSJ0406" property="jxsj0406" />
+		<result column="JXSJ0407" property="jxsj0407" />
+		<result column="JXSJ0408" property="jxsj0408" />
+		<result column="JXSJ0409" property="jxsj0409" />
+	</resultMap>
+	<select id="findByPage" resultType="HashMap" parameterType="com.huarui.common.Req">
+	select JXSJ0401,JXSJ0402,JXSJ0403,JXSJ0404,JXSJ0405,JXSJ0406,JXSJ0407,JXSJ0408,JXSJ0409,JXSJ0410
+			,user005,to_char(JXSJ0409,'YYYY-MM-DD HH24:MI') jxsj0409n,to_char(JXSJ0405,'fm9990.0000')||'M' as jxsj0405n,
+			decode(JXSJ0403,'','',JXSJ0403||'_'||JXSJ0410) as relatedcourse
+	from tbJXSJ04
+	left join hrsw_t_user
+	on user001=JXSJ0408
+	<where>
+		JXSJ0402=#{ids}
+	</where>
+	</select>
+</mapper>

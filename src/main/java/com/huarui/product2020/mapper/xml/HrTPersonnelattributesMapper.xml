@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrTPersonnelattributesMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrTPersonnelattributes">
+		<id column="REAT001" property="reat001" />
+		<result column="REAT002" property="reat002" />
+		<result column="REAT003" property="reat003" />
+		<result column="REAT004" property="reat004" />
+		<result column="REAT005" property="reat005" />
+		<result column="REAT006" property="reat006" />
+		<result column="REAT007" property="reat007" />
+		<result column="REAT008" property="reat008" />
+		<result column="REAT009" property="reat009" />
+		<result column="REAT010" property="reat010" />
+		<result column="REAT011" property="reat011" />
+		<result column="REAT012" property="reat012" />
+		<result column="REAT013" property="reat013" />
+		<result column="REAT014" property="reat014" />
+		<result column="REAT015" property="reat015" />
+		<result column="REAT016" property="reat016" />
+		<result column="REAT017" property="reat017" />
+		<result column="REAT018" property="reat018" />
+		<result column="REAT019" property="reat019" />
+	</resultMap>
+
+	<select id="findByCriteria" resultMap="BaseResultMap" parameterType="com.huarui.product2020.entity.HrTPersonnelattributes">
+		<![CDATA[ SELECT REAT001,REAT002,t2.CATA002 reat002n,REAT003,REAT004,REAT005,REAT006,REAT007,REAT008,REAT009,REAT010,REAT011,REAT012,REAT013,REAT014,REAT015,REAT016,REAT017,REAT018,REAT019 
+		 			FROM hr_t_PersonnelAttributes t
+		 			inner join hrsw_t_catalog t2 on t2.CATA001 = t.Reat002 and t2.CATA005 = '0001-20190314-195'
+		 ]]>
+		<where>
+			<if test="reat002n != null">
+				<![CDATA[ AND t2.CATA002 like CONCAT(CONCAT('%',#{reat002n}), '%') ]]>
+			</if>
+			<if test="reat001 != null">
+				<![CDATA[ AND REAT001 = #{reat001} ]]>
+			</if>
+			<if test="reat002 != null">
+				<![CDATA[ AND REAT002 = #{reat002} ]]>
+			</if>
+			<if test="reat003 != null">
+				<![CDATA[ AND REAT003 = #{reat003} ]]>
+			</if>
+			<if test="reat004 != null">
+				<![CDATA[ AND REAT004 = #{reat004} ]]>
+			</if>
+			<if test="reat005 != null">
+				<![CDATA[ AND REAT005 = #{reat005} ]]>
+			</if>
+			<if test="reat006 != null">
+				<![CDATA[ AND REAT006 = #{reat006} ]]>
+			</if>
+			<if test="reat007 != null">
+				<![CDATA[ AND REAT007 = #{reat007} ]]>
+			</if>
+			<if test="reat008 != null">
+				<![CDATA[ AND REAT008 = #{reat008} ]]>
+			</if>
+			<if test="reat009 != null">
+				<![CDATA[ AND REAT009 = #{reat009} ]]>
+			</if>
+			<if test="reat010 != null">
+				<![CDATA[ AND REAT010 = #{reat010} ]]>
+			</if>
+			<if test="reat011 != null">
+				<![CDATA[ AND REAT011 = #{reat011} ]]>
+			</if>
+			<if test="reat012 != null">
+				<![CDATA[ AND REAT012 = #{reat012} ]]>
+			</if>
+			<if test="reat013 != null">
+				<![CDATA[ AND REAT013 = #{reat013} ]]>
+			</if>
+			<if test="reat014 != null">
+				<![CDATA[ AND REAT014 = #{reat014} ]]>
+			</if>
+			<if test="reat015 != null">
+				<![CDATA[ AND REAT015 = #{reat015} ]]>
+			</if>
+			<if test="reat016 != null">
+				<![CDATA[ AND REAT016 = #{reat016} ]]>
+			</if>
+			<if test="reat017 != null">
+				<![CDATA[ AND REAT017 = #{reat017} ]]>
+			</if>
+			<if test="reat018 != null">
+				<![CDATA[ AND REAT018 = #{reat018} ]]>
+			</if>
+			<if test="reat019 != null">
+				<![CDATA[ AND REAT019 = #{reat019} ]]>
+			</if>
+		</where>
+
+	</select>
+
+</mapper>

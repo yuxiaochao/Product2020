@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTWeblogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTWeblog">
+		<id column="WLOG001" property="wlog001" />
+		<result column="WLOG002" property="wlog002" />
+		<result column="WLOG003" property="wlog003" />
+		<result column="WLOG004" property="wlog004" />
+		<result column="WLOG005" property="wlog005" />
+		<result column="WLOG006" property="wlog006" />
+		<result column="WLOG007" property="wlog007" />
+		<result column="WLOG008" property="wlog008" />
+		<result column="WLOG009" property="wlog009" />
+		<result column="WLOG010" property="wlog010" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbxxkgl07Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbxxkgl07">
+		<id column="XXKGL0701" property="xxkgl0701" />
+		<result column="XXKGL0702" property="xxkgl0702" />
+		<result column="XXKGL0703" property="xxkgl0703" />
+		<result column="XXKGL0704" property="xxkgl0704" />
+		<result column="XXKGL0705" property="xxkgl0705" />
+		<result column="XXKGL0706" property="xxkgl0706" />
+		<result column="XXKGL0707" property="xxkgl0707" />
+		<result column="XXKGL0708" property="xxkgl0708" />
+	</resultMap>
+	
+	<select id="queryActivationRecordList" resultType="HashMap" parameterType="HashMap">
+		<![CDATA[ SELECT A.XXKGL0701,XXKGL0702,XXKGL0703,XXKGL0704,XXKGL0705,XXKGL0706,XXKGL0707,XXKGL0708,
+		B.XXKGL0303,G.BINDCOMMODITY,
+		TO_CHAR(XXKGL0706,'YYYY-MM-DD') XXKGL0706N,
+		TO_CHAR(C.XXKGL0112,'YYYY-MM-DD') XXKGL0112N
+		FROM tbXXKGL07 A
+		LEFT JOIN tbXXKGL03 B ON B.XXKGL0301 = A.XXKGL0703
+		LEFT JOIN tbXXKGL01 C ON C.XXKGL0101 = B.XXKGL0302
+		LEFT JOIN (
+			SELECT A2.XXKGL0701,LISTAGG (B2.CMDY0603||D2.CMDY0404, '') WITHIN GROUP (ORDER BY A2.XXKGL0706) BINDCOMMODITY
+			FROM tbXXKGL07 A2
+			LEFT JOIN tbCMDY06 B2 ON B2.CMDY0601 = A2.XXKGL0707
+			LEFT JOIN tbCMDY07 C2 ON C2.CMDY0701 = A2.XXKGL0708
+			LEFT JOIN tbCMDY04 D2 ON D2.CMDY0401 = C2.CMDY0703
+			GROUP BY A2.XXKGL0701
+		) G ON G.XXKGL0701 = A.XXKGL0701]]>
+		<where>
+			<if test="user001 != null">
+                 <![CDATA[ AND A.XXKGL0705 = #{user001} ]]> 
+            </if>
+		</where>
+		<choose>
+		    <when test="sortExpression != null">
+		      <![CDATA[ ORDER BY ${sortExpression} ]]>
+		    </when>
+		    <otherwise>
+		      <![CDATA[ ORDER BY A.XXKGL0706 DESC ]]>
+		    </otherwise>
+		</choose>
+	</select>
+	
+	<select id="findActivationRecordList" resultType="HashMap" parameterType="HashMap">
+		<![CDATA[ SELECT A.XXKGL0701,XXKGL0704,
+		B.XXKGL0303,G.BINDCOMMODITY,
+		TO_CHAR(XXKGL0706,'YYYY-MM-DD') XXKGL0706N,
+		TO_CHAR(C.XXKGL0112,'YYYY-MM-DD') XXKGL0112N,
+		CASE WHEN XXKGL0704 = 0 THEN '未激活'
+			 WHEN XXKGL0704 = 1 THEN '已激活' END XXKGL0704N
+			 
+		FROM tbXXKGL07 A
+		LEFT JOIN tbXXKGL03 B ON B.XXKGL0301 = A.XXKGL0703
+		LEFT JOIN tbXXKGL01 C ON C.XXKGL0101 = B.XXKGL0302
+		LEFT JOIN (
+			SELECT A2.XXKGL0701,LISTAGG (B2.CMDY0603||D2.CMDY0404, '') WITHIN GROUP (ORDER BY A2.XXKGL0706) BINDCOMMODITY
+			FROM tbXXKGL07 A2
+			LEFT JOIN tbCMDY06 B2 ON B2.CMDY0601 = A2.XXKGL0707
+			LEFT JOIN tbCMDY07 C2 ON C2.CMDY0701 = A2.XXKGL0708
+			LEFT JOIN tbCMDY04 D2 ON D2.CMDY0401 = C2.CMDY0703
+			GROUP BY A2.XXKGL0701
+		) G ON G.XXKGL0701 = A.XXKGL0701]]>
+		<where>
+			<![CDATA[ AND A.XXKGL0705 = #{user001} ]]> 
+		</where>
+		<choose>
+		    <when test="sortExpression != null">
+		      <![CDATA[ ORDER BY ${sortExpression} ]]>
+		    </when>
+		    <otherwise>
+		      <![CDATA[ ORDER BY A.XXKGL0706 DESC ]]>
+		    </otherwise>
+		</choose>
+	</select>
+	
+	<update id="updateActivation" parameterType="com.huarui.product2020.entity.Tbxxkgl07" flushCache="true">
+		<![CDATA[  UPDATE tbXXKGL07 ]]> 
+		<set>
+			<if test="xxkgl0704 != null">
+			      <![CDATA[ XXKGL0704 = #{xxkgl0704}, ]]>
+			</if>
+			<if test="xxkgl0705 != null">
+			      <![CDATA[ XXKGL0705 = #{xxkgl0705}, ]]>
+			</if>
+			
+		    <![CDATA[ XXKGL0706 = SYSDATE, ]]>
+		    
+			<if test="xxkgl0707 != null">
+			      <![CDATA[ XXKGL0707 = #{xxkgl0707}, ]]>
+			</if>
+			<if test="xxkgl0708 != null">
+			      <![CDATA[ XXKGL0708 = #{xxkgl0708} ]]>
+			</if>
+		</set>
+		<![CDATA[  WHERE XXKGL0703 = #{xxkgl0703} ]]> 
+	</update>
+	
+	<select id="addCoursePackage" statementType="CALLABLE" parameterType="Map" >
+    	<![CDATA[ CALL pro_ActivateTheLearningCard(#{cmdy0301}, #{cmdy0601}, #{cmdy0401}, #{userId}, #{param01}, #{dd0101}, #{param07}, #{param08})  ]]>
+    </select>
+</mapper>

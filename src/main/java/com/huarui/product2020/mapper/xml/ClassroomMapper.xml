@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ClassroomMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Classroom">
+		<id column="CLAS001" property="clas001" />
+		<result column="CLAS002" property="clas002" />
+		<result column="CLAS003" property="clas003" />
+		<result column="CLAS004" property="clas004" />
+		<result column="CLAS005" property="clas005" />
+		<result column="CLAS006" property="clas006" />
+		<result column="CLAS007" property="clas007" />
+		<result column="CLAS008" property="clas008" />
+		<result column="CLAS009" property="clas009" />
+		<result column="CLAS010" property="clas010" />
+		<result column="CLAS011" property="clas011" />
+		<result column="CLAS012" property="clas012" />
+		<result column="CLAS013" property="clas013" />
+		<result column="CLAS014" property="clas014" />
+		<result column="CLAS015" property="clas015" />
+		<result column="CLAS016" property="clas016" />
+		<result column="CLAS017" property="clas017" />
+		<result column="CLAS018" property="clas018" />
+		<result column="CLAS019" property="clas019" />
+		<result column="CLAS020" property="clas020" />
+		<result column="CLAS021" property="clas021" />
+	</resultMap>
+	
+	
+	<!-- 查询教室信息列表并分页 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Classroom" parameterType="HashMap">
+		SELECT
+			A.CLAS001,
+			A.CLAS002,
+			A.CLAS003,
+			A.CLAS004,
+			A.CLAS005,
+			C.CATA002 AS CLAS005N,
+			A.CLAS006,
+			A.CLAS007,
+			A.CLAS008,
+			A.CLAS009,
+			A.CLAS010,
+			A.CLAS011,
+			A.CLAS012,
+			A.CLAS013,
+			A.CLAS014,
+			A.CLAS015,
+			A.CLAS016,
+			A.CLAS017,
+			B.ACAD002 AS CLAS017N,
+			A.CLAS018,
+			A.CLAS019,
+			A.CLAS020,
+			A.CLAS021
+		FROM
+			HR_T_CLASSROOM A
+		LEFT JOIN HR_T_ACADEMICBUILDING B ON
+			A.CLAS017 = B.ACAD001
+		LEFT JOIN HRSW_T_CATALOG C ON
+			A.CLAS005 = C.CATA001
+		<where>
+			<if test="clas002 != null">
+				<![CDATA[ AND A.CLAS002 LIKE CONCAT(CONCAT('%',#{clas002}), '%') ]]> 
+			</if>
+			<if test="clas003 != null">
+				<![CDATA[ AND A.CLAS003 = #{clas003} ]]> 
+			</if>
+			<if test="clas005 != null">
+				<![CDATA[ AND A.CLAS005 = #{clas005} ]]> 
+			</if>
+			<if test="clas017 != null">
+				<![CDATA[ AND A.CLAS017 = #{clas017} ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.CLAS015 DESC]]>
+		</if>
+	</select>
+	
+	
+	<select id="findDetailById"  resultType="com.huarui.product2020.entity.Classroom">
+		SELECT
+			A.CLAS001,
+			A.CLAS002,
+			A.CLAS003,
+			A.CLAS004,
+			A.CLAS005,
+			C.CATA002 AS CLAS005N,
+			A.CLAS006,
+			A.CLAS007,
+			A.CLAS008,
+			A.CLAS009,
+			A.CLAS010,
+			A.CLAS011,
+			A.CLAS012,
+			A.CLAS013,
+			A.CLAS014,
+			A.CLAS015,
+			A.CLAS016,
+			A.CLAS017,
+			B.ACAD002 AS CLAS017N,
+			A.CLAS018,
+			A.CLAS019,
+			A.CLAS020,
+			A.CLAS021
+		FROM
+			HR_T_CLASSROOM A
+		LEFT JOIN HR_T_ACADEMICBUILDING B ON
+			A.CLAS017 = B.ACAD001
+		LEFT JOIN HRSW_T_CATALOG C ON
+			A.CLAS005 = C.CATA001
+		WHERE
+			A.CLAS001 = #{clas001}
+	</select>
+	
+	
+	<select id="findClassroomList" resultType="com.huarui.product2020.entity.Classroom" parameterType="HashMap">
+		SELECT
+			A.CLAS001,
+			A.CLAS002,
+			A.CLAS003,
+			A.CLAS004,
+			A.CLAS005,
+			C.CATA002 AS CLAS005N,
+			A.CLAS006,
+			A.CLAS007,
+			A.CLAS008,
+			A.CLAS009,
+			A.CLAS010,
+			A.CLAS011,
+			A.CLAS012,
+			A.CLAS013,
+			A.CLAS014,
+			A.CLAS015,
+			A.CLAS016,
+			A.CLAS017,
+			B.ACAD002 AS CLAS017N,
+			A.CLAS018,
+			A.CLAS019,
+			A.CLAS020,
+			A.CLAS021
+		FROM
+			HR_T_CLASSROOM A
+		LEFT JOIN HR_T_ACADEMICBUILDING B ON
+			A.CLAS017 = B.ACAD001
+		LEFT JOIN HRSW_T_CATALOG C ON
+			A.CLAS005 = C.CATA001
+		<where>
+			<if test="clas002 != null">
+				<![CDATA[ AND A.CLAS002 LIKE CONCAT(CONCAT('%',#{clas002}), '%') ]]> 
+			</if>
+			<if test="clas003 != null">
+				<![CDATA[ AND A.CLAS003 = #{clas003} ]]> 
+			</if>
+			<if test="clas005 != null">
+				<![CDATA[ AND A.CLAS005 = #{clas005} ]]> 
+			</if>
+			<if test="clas017 != null">
+				<![CDATA[ AND A.CLAS017 = #{clas017} ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.CLAS015 DESC]]>
+		</if>
+	</select>
+</mapper>

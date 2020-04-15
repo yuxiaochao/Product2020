@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTStatMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTStat">
+		<id column="STAT001" property="stat001" />
+		<result column="STAT002" property="stat002" />
+		<result column="STAT003" property="stat003" />
+		<result column="STAT004" property="stat004" />
+	</resultMap>
+
+	<insert id="addPraiseCount" parameterType="java.util.Map">
+		<![CDATA[ 
+		   MERGE INTO study_t_stat L 
+			USING(SELECT * FROM DUAL)P
+			ON (L.STAT002 = #{stat002}) 
+			WHEN MATCHED THEN 
+    			UPDATE 
+    				SET L.STAT003 = L.STAT003+1       
+			WHEN NOT MATCHED THEN 
+    			INSERT(STAT001,STAT002,STAT003) VALUES (#{stat001},#{stat002},1)
+		 ]]>
+	</insert>
+	
+	<insert id="cancelPraiseCount" parameterType="java.util.Map">
+		<![CDATA[ 
+		   MERGE INTO study_t_stat L 
+			USING(SELECT * FROM DUAL)P
+			ON (L.STAT002 = #{stat002}) 
+			WHEN MATCHED THEN 
+    			UPDATE 
+    				SET L.STAT003 = L.STAT003-1       
+		 ]]>
+	</insert>
+	
+	<insert id="collectionCount" parameterType="java.util.Map">
+		<![CDATA[
+		   MERGE INTO STUDY_T_STAT L 
+			USING(SELECT * FROM DUAL)P
+			ON (L.STAT002 = #{stat002}) 
+			WHEN MATCHED THEN 
+    			UPDATE 
+    				SET L.STAT004 = L.STAT004+1       
+			WHEN NOT MATCHED THEN 
+    			INSERT(STAT001,STAT002,STAT004) VALUES (#{stat001},#{stat002},1)
+		 ]]>
+	</insert>
+	<insert id="cancelCollectionCount" parameterType="java.util.Map">
+		<![CDATA[ 
+		   MERGE INTO STUDY_T_STAT L 
+			USING(SELECT * FROM DUAL)P
+			ON (L.STAT002 = #{stat002}) 
+			WHEN MATCHED THEN 
+    			UPDATE 
+    				SET L.STAT004 = L.STAT004-1       
+		 ]]>
+	</insert>
+</mapper>

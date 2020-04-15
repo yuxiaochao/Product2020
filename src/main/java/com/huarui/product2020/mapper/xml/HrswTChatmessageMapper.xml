@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTChatmessageMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTChatmessage">
+		<id column="CHME001" property="chme001" />
+		<result column="CHME002" property="chme002" />
+		<result column="CHME003" property="chme003" />
+		<result column="CHME004" property="chme004" />
+		<result column="CHME005" property="chme005" />
+		<result column="CHME006" property="chme006" />
+		<result column="CHME007" property="chme007" />
+		<result column="CHME008" property="chme008" />
+		<result column="CHME009" property="chme009" />
+		<result column="CHME010" property="chme010" />
+		<result column="CHME011" property="chme011" />
+	</resultMap>
+	
+	
+	<select id="checkUnsentMsg" resultMap="BaseResultMap" parameterType="java.util.Map">
+	 <![CDATA[
+		select t.*
+		  from hrsw_t_chatMessage t
+		  left join hrux_t_ConfirmationSending t2
+		    on t.chme001 = t2.cose002
+		 where t2.cose001 is null
+		 and t.chme005 <= (sysdate - 1/24/3600*20)
+		order by t.chme005 asc
+		]]>
+	</select>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb09Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb09">
+		<id column="PXB0901" property="pxb0901" />
+		<result column="PXB0902" property="pxb0902" />
+		<result column="PXB0903" property="pxb0903" />
+		<result column="PXB0904" property="pxb0904" />
+	</resultMap>
+
+</mapper>

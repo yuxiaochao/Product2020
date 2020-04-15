@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.DinnerinformationMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Dinnerinformation">
+		<id column="DINN001" property="dinn001" />
+		<result column="DINN002" property="dinn002" />
+		<result column="DINN003" property="dinn003" />
+		<result column="DINN004" property="dinn004" />
+		<result column="DINN005" property="dinn005" />
+		<result column="DINN006" property="dinn006" />
+		<result column="DINN007" property="dinn007" />
+		<result column="DINN008" property="dinn008" />
+		<result column="DINN009" property="dinn009" />
+		<result column="DINN010" property="dinn010" />
+	</resultMap>
+	
+	
+	<!-- 查询就餐信息列表并分页 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Dinnerinformation" parameterType="HashMap">
+		SELECT
+			A.DINN001,
+			A.DINN002,
+			A.DINN003,
+			C.CATA002 AS DINN003N,
+			A.DINN004,
+			A.DINN005,
+			A.DINN006,
+			A.DINN007,
+			A.DINN008,
+			A.DINN009,
+			A.DINN010,
+			B.CANT003,
+			B.CANT004
+		FROM
+			HR_T_DINNERINFORMATION  A
+		LEFT JOIN HR_T_CANTEEN B ON
+			A.DINN002 = B.CANT001
+		LEFT JOIN HRSW_T_CATALOG C ON
+			A.DINN003 = C.CATA001
+		<where>
+			<!-- 关联条件 -->
+			<![CDATA[ AND A.DINN002 = #{dinn002} ]]> 
+			<if test="dinn006 != null">
+				<![CDATA[ AND A.DINN006 LIKE CONCAT(CONCAT('%',#{dinn006}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.DINN009 DESC]]>
+		</if>
+	</select>
+
+</mapper>

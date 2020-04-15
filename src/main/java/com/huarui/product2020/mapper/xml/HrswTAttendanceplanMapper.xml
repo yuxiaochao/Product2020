@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTAttendanceplanMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTAttendanceplan">
+		<id column="ATPL001" property="atpl001" />
+		<result column="ATPL002" property="atpl002" />
+		<result column="ATPL003" property="atpl003" />
+		<result column="ATPL004" property="atpl004" />
+		<result column="ATPL005" property="atpl005" />
+		<result column="ATPL006" property="atpl006" />
+		<result column="ATPL007" property="atpl007" />
+		<result column="ATPL008" property="atpl008" />
+		<result column="ATPL009" property="atpl009" />
+		<result column="ATPL010" property="atpl010" />
+		<result column="ATPL011" property="atpl011" />
+		<result column="ATPL012" property="atpl012" />
+		<result column="ATPL013" property="atpl013" />
+		<result column="ATPL014" property="atpl014" />
+		<result column="ATPL015" property="atpl015" />
+		<result column="ATPL016" property="atpl016" />
+		<result column="ATPL017" property="atpl017" />
+	</resultMap>
+
+	<select id="selectAttendanceplan" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		SELECT * FROM GBJXKH_V_ATTENDANCEPLAN
+		WHERE USERID = #{user001}
+		order by atpl021 desc
+	</select>
+
+	<select id="selectTime" parameterType="java.util.Map"
+		resultType="java.lang.String">
+		SELECT *
+		FROM HRSW_T_MEETINGTASKSIGNIN AA
+		WHERE MTSI002 =#{mtsi002}
+		AND MTSI003 IN (3,4)
+		AND MTSI004 = #{mtsi004}
+		AND <![CDATA[TRUNC(SYSDATE) = TRUNC(AA.MTSI005)]]>
+		ORDER BY MTSI003
+	</select>
+
+	<select id="onWorkInfo" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		SELECT *
+		FROM HRSW_T_MEETINGTASKSIGNIN AA
+		WHERE MTSI002 =#{mtsi002}
+		AND MTSI003 = 3
+		AND MTSI004 = #{mtsi004}
+		AND <![CDATA[TRUNC(#{thisTime}) = TRUNC(AA.MTSI005)]]>
+		ORDER BY MTSI003
+	</select>
+
+	<select id="offWorkInfo" resultType="java.util.Map"
+		parameterType="java.util.Map">
+		SELECT *
+		FROM HRSW_T_MEETINGTASKSIGNIN AA
+		WHERE MTSI002 =#{mtsi002}
+		AND MTSI003 = 4
+		AND MTSI004 = #{mtsi004}
+		AND <![CDATA[TRUNC(#{thisTime}) = TRUNC(AA.MTSI005)]]>
+		ORDER BY MTSI003
+	</select>
+
+	<select id="getAllSign" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+
+ 		SELECT A.FDATE,
+       COUNT(B.mtsi001) FNUM,
+       COUNT(CASE B.MTSI008 WHEN 2 THEN 1 WHEN 3 THEN 1 END) ISUNUSUAL,
+       COUNT(CASE B.MTSI008 WHEN 4 THEN 1 END) ISNORMAL
+  FROM (SELECT FDATE FROM (SELECT TRUNC(to_date(#{thisTime},'YYYY-MM-DD'), 'MONTH') + LEVEL - 1 AS FDATE 
+  FROM DUAL CONNECT BY LEVEL <= 31) T WHERE TO_CHAR(FDATE, 'MM') = TO_CHAR(to_date(#{thisTime},'YYYY-MM-DD'), 'MM')) A
+  LEFT JOIN (SELECT mtsi001,
+                    mtsi005,
+                    mtsi008
+               FROM hrsw_t_MeetingTaskSignIn
+              WHERE mtsi004 =  #{user001} and mtsi003 in(3,4) and mtsi002 =#{mtsi002}) B
+    ON TRUNC(B.mtsi005) = TRUNC(A.FDATE)
+ GROUP BY A.FDATE
+ ORDER BY A.FDATE
+ 		
+   		]]>
+	</select>
+
+</mapper>

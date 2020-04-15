@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj01">
+		<id column="JXSJ0101" property="jxsj0101" />
+		<result column="JXSJ0102" property="jxsj0102" />
+		<result column="JXSJ0103" property="jxsj0103" />
+		<result column="JXSJ0104" property="jxsj0104" />
+	</resultMap>
+	<insert id="insertBatch" parameterType="list">
+		insert into tbJXSJ01
+		(JXSJ0101,JXSJ0102,JXSJ0103,JXSJ0104)
+		<foreach collection="list" item="item" separator="union All">
+		(
+		select #{item.jxsj0101},#{item.jxsj0102},#{item.jxsj0103},#{item.jxsj0104}
+		from dual
+		)
+		</foreach>
+	</insert>
+	<select id="findAllSelect" parameterType="com.huarui.common.Req" resultType="String">
+		select JXSJ0103
+		from tbJXSJ01
+		where JXSJ0102=#{parameterMap.jxsj0102}
+	</select>
+</mapper>

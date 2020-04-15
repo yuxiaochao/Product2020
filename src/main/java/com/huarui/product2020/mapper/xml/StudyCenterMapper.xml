@@ -1,0 +1,952 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyCenterMapper">
+
+  <select id="querySelectCourseList" resultType="HashMap" parameterType="java.util.Map">
+		 <![CDATA[ 
+			SELECT A.LEAC001,A.LEAC004,A.LEAC018,A.LEAC009,NVL(TO_CHAR(A.LEAC007, 'YYYY-MM-DD HH24:MI'), '--') LEAC007,  NVL(A.LEAC010,'--') LEAC010,NVL(B2.TEAC002,'--')COUR008TEXT,
+			ROUND(COUR005/60/45,2) HOURS,
+			NVL(C.XKRS,0) XKRS,NVL(D.SECO006,1) SECO006,NVL(E.PLRS,0) PLRS
+			FROM STUDY_T_LEARNACTIVITY A
+			INNER JOIN 
+			(
+			  SELECT C.LECW002, SUM(D.COUR005) COUR005
+			  FROM STUDY_T_LEARNCW C
+			  INNER JOIN HRSW_T_COURSEWARE D ON C.LECW006=D.COUR001
+			  GROUP BY C.LECW002
+			) B ON A.LEAC001=B.LECW002
+			LEFT JOIN 
+			(
+			  SELECT SECO002, COUNT(SECO003) XKRS
+			  FROM STUDY_T_SELECTCOURSE
+			  WHERE NVL(SECO005,0)=0 AND NVL(SECO006,0)=0
+			  GROUP BY SECO002
+			) C ON A.LEAC001=C.SECO002
+			LEFT JOIN 
+			(
+			  SELECT SECO002, SECO006
+			  FROM STUDY_T_SELECTCOURSE
+			  WHERE NVL(SECO005,0)=0 AND SECO003= #{user001}
+			) D ON A.LEAC001=D.SECO002
+			LEFT JOIN 
+			(
+			  SELECT UMES002, COUNT(*) PLRS
+			  FROM STUDY_T_USERMESSAGE
+			  WHERE NVL(UMES005,0)=0
+			  GROUP BY UMES002
+			) E ON A.LEAC001=E.UMES002 
+			
+			INNER JOIN (
+		     SELECT DISTINCT B1.LECW002,
+                    WM_CONCAT(C1.TEAC002) TEAC002,
+                    MAX(NVL(C1.TEAC001,0)) TEAC001
+               FROM HRSW_T_COURSEWARE A1
+              INNER JOIN STUDY_T_LEARNCW B1 ON A1.COUR001 = B1.LECW006
+               LEFT JOIN HRSW_T_TEACHER C1 ON A1.COUR008 = C1.TEAC001
+              GROUP BY B1.LECW002
+		    )B2  ON A.LEAC001 = B2.LECW002
+		]]>
+		<where>
+			NVL(A.LEAC005,0)=0 AND A.LEAC006=1 AND A.LEAC019 IN (1,2)
+			<!-- <if test="parameterMap.leac019 != null and parameterMap.leac019 != ''">
+			 	AND A.LEAC019=#{parameterMap.leac019}
+			</if>-->
+			<if test="leac004 !=''">
+				<![CDATA[ AND UPPER(A.LEAC004) LIKE UPPER(CONCAT(CONCAT('%',#{leac004}), '%')) ]]>
+			</if>
+			<if test="teac001 !=''">
+				AND B2.TEAC001 = #{teac001}
+			</if>
+			<if test="cata001 != ''">
+				AND EXISTS
+			     (
+			       SELECT 1 FROM STUDY_T_LEARNTHEME A1
+			       INNER JOIN HRSW_T_LEVELRELATION B1
+			       ON A1.LTHE003 = B1.LREL002
+			       AND B1.LREL004 = #{cata001}
+			       INNER JOIN HRSW_T_CATALOG C1
+			       ON B1.LREL004 = C1.CATA001
+			       AND C1.CATA008 = 13
+			       AND C1.CATA012 = 1
+			       WHERE LTHE002 = A.LEAC001
+			     )
+			</if> 
+			AND EXISTS (SELECT 1 FROM STUDY_V_LEARNCENTERUSER WHERE LEUS002=A.LEAC001 AND USER001= #{user001})
+		</where>
+		AND TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI') BETWEEN TO_CHAR(A.LEAC007,'YYYY-MM-DD HH24:MI')
+        AND TO_CHAR(A.LEAC008,'YYYY-MM-DD HH24:MI')
+		<if test="serialNumber == null or serialNumber == '' or serialNumber == '0'">
+			ORDER BY A.LEAC012 DESC 
+		</if>
+		<if test="serialNumber == '1'">
+			ORDER BY A.LEAC030 DESC 
+		</if>
+		<if test="serialNumber == '2'">
+			ORDER BY NVL(C.XKRS,0) DESC 
+		</if>
+		<if test="serialNumber == '3'">
+			ORDER BY NVL(E.PLRS,0) DESC 
+		</if>
+		<if test="serialNumber == 4">
+			ORDER BY NVL(E.PLRS,0) ASC 
+		</if>
+	</select>
+	
+	<select id="queryLecturerList" resultType="HashMap">
+		SELECT A.TEAC001, A.TEAC002
+		  FROM HRSW_T_TEACHER A
+		 INNER JOIN HRSW_T_COURSEWARE B ON B.COUR008 = A.TEAC001
+		 INNER JOIN STUDY_T_LEARNCW C ON B.COUR001 = C.LECW006
+		  LEFT JOIN study_t_learnActivity D ON C.LECW002 = D.LEAC001
+		 WHERE NVL(D.LEAC005, 0) = 0
+		   AND D.LEAC006 = 1
+		   AND D.LEAC019 IN (1, 2)
+		   AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') BETWEEN
+		       TO_CHAR(D.LEAC007, 'YYYY-MM-DD HH24:MI') AND
+		       TO_CHAR(D.LEAC008, 'YYYY-MM-DD HH24:MI')
+		   <if test="cata001 != ''">
+				AND EXISTS
+			     (
+			       SELECT 1 FROM STUDY_T_LEARNTHEME A1
+			       INNER JOIN HRSW_T_LEVELRELATION B1
+			       ON A1.LTHE003 = B1.LREL002
+			       AND B1.LREL004 = #{cata001}
+			       INNER JOIN HRSW_T_CATALOG C1
+			       ON B1.LREL004 = C1.CATA001
+			       AND C1.CATA008 = 13
+			       AND C1.CATA012 = 1
+			       WHERE LTHE002 = A.LEAC001
+			     )
+			</if> 
+		 GROUP BY A.TEAC001, A.TEAC002
+	</select>	
+	
+	<select id="queryOnlineStudyList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.LEAC001,A.LEAC004,A.LEAC009,A.LEAC018,DECODE(A.LEAC005, 0, '选修', '必修') LEAC005,
+		       NVL(B.TEAC002, '--') COUR008,NVL(TO_CHAR(E.LERE007, 'YYYY-MM-DD HH24:MI'), '--') LERE007,
+		       CASE
+		         WHEN NVL(E.LERE008, 0) = 0 THEN
+		          NVL(E.LERE005, 0)
+		         ELSE
+		          100
+		       END LERE005
+		  FROM STUDY_T_LEARNACTIVITY A
+		 INNER JOIN (SELECT B1.LECW002, WM_CONCAT(DISTINCT C1.TEAC002) TEAC002
+		               FROM HRSW_T_COURSEWARE A1
+		              INNER JOIN STUDY_T_LEARNCW B1 ON A1.COUR001 = B1.LECW006
+		               LEFT JOIN HRSW_T_TEACHER C1 ON A1.COUR008 = C1.TEAC001
+		              GROUP BY B1.LECW002) B ON A.LEAC001 = B.LECW002
+		 INNER JOIN STUDY_V_LEARNUSER02 ON A.LEAC001 = LEUS002
+		                               AND USER001 = #{user001}
+		  LEFT JOIN (SELECT MAX(LCWR009) LCWR009, LCWR002, LCWR003
+		               FROM STUDY_T_LEARNCWRSULT
+		              WHERE LCWR003 = #{user001}
+		              GROUP BY LCWR002, LCWR003) D ON A.LEAC001 = D.LCWR002
+		  LEFT JOIN (SELECT LERE008, LERE005, LERE002, LERE003,LERE007
+		               FROM STUDY_T_LEARNRESULT
+		              WHERE LERE003 = #{user001}) E ON A.LEAC001 = E.LERE002
+		 WHERE A.LEAC006 = 1
+		 	<if test="leac004 != ''">
+			     AND A.LEAC004 LIKE CONCAT(CONCAT('%',#{leac004}), '%')
+			</if>
+		   AND NOT EXISTS (SELECT 1
+		          FROM STUDY_T_LEARNRESULT
+		         WHERE LERE002 = A.LEAC001
+		       <![CDATA[  AND LERE008 != 0]]>
+		           AND LERE003 = #{user001})
+		 ORDER BY E.LERE007 DESC, A.LEAC012 DESC
+
+	</select>	
+	
+	<select id="queryCourseResultMap" resultType="HashMap" parameterType="java.util.Map">
+		SELECT NVL(D.LERE008, 0) LERE008,
+		       NVL(A.LEAC018, 0) LEAC018,
+		       NVL(B.COURSEWARETOTAL, 0) COURSEWARETOTAL,
+		       NVL(C.COMPLETECOURSEWARETOTAL, 0) COMPLETECOURSEWARETOTAL
+		  FROM STUDY_T_LEARNACTIVITY A
+		  LEFT JOIN (SELECT COUNT(1) COURSEWARETOTAL, LECW002
+		               FROM STUDY_T_LEARNCW
+		              WHERE LECW002 = #{leac001}
+		              GROUP BY LECW002) B ON A.LEAC001 = B.LECW002
+		  LEFT JOIN (SELECT COUNT(1) COMPLETECOURSEWARETOTAL, LCWR002
+		               FROM STUDY_T_LEARNCWRSULT
+		              WHERE LCWR002 = #{leac001}
+		                AND LCWR003 = #{user001}
+		                AND LCWR010 = 1
+		              GROUP BY LCWR002) C ON A.LEAC001 = C.LCWR002
+		  LEFT JOIN STUDY_T_LEARNRESULT D ON A.LEAC001 = D.LERE002
+		                                 AND D.LERE003 = #{user001}
+		 WHERE A.LEAC001 = #{leac001}
+	</select>	
+	
+	<select id="queryStudyFinalExamList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT C.TACT001, C.TACT004, C.TACT008, C.TACT009, C.TACT012,
+		       NVL(D.EGRA013, -1) EGRA013,
+		       B.LEEX002,
+		       CASE
+		         WHEN NVL(D.EGRA013, 0) >= C.TACT021 THEN
+		          '通过'
+		         ELSE
+		          '未通过'
+		       END EXAMRESULT
+		  FROM STUDY_T_LEARNACTIVITY A
+		 INNER JOIN STUDY_T_LEARNEXAM B ON A.LEAC001 = B.LEEX002
+		                               AND B.LEEX004 = 1
+		 INNER JOIN EXAM_T_TESTACTIVITY C ON B.LEEX003 = C.TACT001
+		  LEFT JOIN (SELECT MAX(B1.EGRA013) EGRA013,
+		                    A1.LEEX002,
+		                    COUNT(1) HTTFREQUENCY
+		               FROM STUDY_T_LEARNEXAM A1
+		              INNER JOIN EXAM_T_EXAMINEEGRADE B1 ON A1.LEEX003 = B1.EGRA004
+		                                                AND A1.LEEX004 = 1
+		              WHERE A1.LEEX002 = #{leac001}
+		                AND B1.EGRA002 = #{user001}
+		              GROUP BY A1.LEEX002) D ON A.LEAC001 = D.LEEX002
+		 WHERE A.LEAC001 = #{leac001}
+	</select>	
+	
+	<select id="getCoursewareList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.LEAC001, A.LEAC004, C.COUR001,C.COUR002,C.COUR003, C.COUR006,
+		       C.COUR005,
+		       NVL(B.LECW008, 0) LECW008,
+		       NVL(B.LECW009, 0) LECW009,
+		       NVL(D.LEAC000, 0) LEAC000,
+		       B.LECW006,
+		       NVL(E.LCWR010, 0) LCWR010
+		  FROM STUDY_T_LEARNACTIVITY A
+		 INNER JOIN STUDY_T_LEARNCW B ON A.LEAC001 = B.LECW002
+		 INNER JOIN HRSW_T_COURSEWARE C ON B.LECW006 = C.COUR001
+		  LEFT JOIN (SELECT A1.LECW002,
+		                    CAST((SUM(COUR005)) AS NUMERIC(19, 1)) LEAC000
+		               FROM STUDY_T_LEARNCW A1
+		              INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LECW006 = B1.COUR001
+		              GROUP BY A1.LECW002) D ON A.LEAC001 = D.LECW002
+		  LEFT JOIN STUDY_T_LEARNCWRSULT E ON B.LECW006 = E.LCWR005
+		                                  AND B.LECW002 = E.LCWR002
+		                                  AND E.LCWR003 = #{user001}
+		 WHERE A.LEAC001 = #{leac001}
+		 <if test="cour001 != ''">
+			     AND C.COUR001 = #{cour001}
+		</if>
+		 ORDER BY LECW005 ASC
+	</select>
+	
+	<select id="findLearnCwResultList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.LECW006 LCWR005, NVL(B.LCWR010, 0) LCWR010
+	 	 FROM STUDY_T_LEARNCW A
+	  	LEFT JOIN STUDY_T_LEARNCWRSULT B ON A.LECW006 = B.LCWR005
+	                                  AND A.LECW002 = B.LCWR002
+	                                  AND B.LCWR003 = #{user001}
+		 WHERE A.LECW002 = #{leac001}
+	</select>	
+	
+	<select id="getExamInformation" resultType="HashMap" parameterType="java.util.Map">
+		SELECT NVL(C.TACT021, 0) TACT021,
+	       NVL(D.EGRA013, -1) EGRA013,
+	       NVL(A.LEAC018, 0) LEAC018,
+	       B.LEEX003 TACT001
+	  FROM STUDY_T_LEARNACTIVITY A
+	 INNER JOIN STUDY_T_LEARNEXAM B ON A.LEAC001 = B.LEEX002
+	                               AND B.LEEX004 = 1
+	 INNER JOIN EXAM_T_TESTACTIVITY C ON B.LEEX003 = C.TACT001
+	  LEFT JOIN (SELECT MAX(EGRA013) EGRA013, EGRA004
+	               FROM EXAM_T_EXAMINEEGRADE
+	              WHERE EGRA002 = #{user001}
+	              GROUP BY EGRA004) D ON C.TACT001 = D.EGRA004
+	 WHERE A.LEAC001 = #{leac001}
+
+	</select>	
+	
+	<select id="findPlayWhichCourseware" resultType="HashMap" parameterType="java.util.Map">
+		SELECT *
+		  FROM (SELECT A.LEAC001,
+		               A.LEAC004,
+		               C.COUR001,
+		               C.COUR003,
+		               C.COUR006,
+		               C.COUR005,
+		               NVL(B.LECW008, 0) LECW008,
+		               NVL(B.LECW009, 0) LECW009,
+		               NVL(D.LCWR010, 0) LCWR010,
+		               NVL(E.LEAC000, 0) LEAC000
+		          FROM STUDY_T_LEARNACTIVITY A
+		         INNER JOIN STUDY_T_LEARNCW B ON A.LEAC001 = B.LECW002
+		         INNER JOIN HRSW_T_COURSEWARE C ON B.LECW006 = C.COUR001
+		         INNER JOIN STUDY_T_LEARNCWRSULT D ON C.COUR001 = D.LCWR005
+		                                          AND D.LCWR003 = #{user001}
+		          LEFT JOIN (SELECT A1.LECW002,
+		                           CAST((SUM(COUR005)) AS NUMERIC(19, 1)) LEAC000
+		                      FROM STUDY_T_LEARNCW A1
+		                     INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LECW006 =
+		                                                        B1.COUR001
+		                     GROUP BY A1.LECW002) E ON A.LEAC001 = E.LECW002
+		         WHERE A.LEAC001 = #{leac001}
+		         ORDER BY D.LCWR009 DESC)
+		 WHERE ROWNUM = 1
+
+	</select>	
+	
+	<select id="findOrganByUPCode" resultType="java.util.HashMap" parameterType="java.util.Map">
+		SELECT A.ORGA001, A.ORGA006, A.ORGA010
+		  FROM HRSW_T_ORGAN A
+		  INNER JOIN hrsw_v_user B ON A.ORGA001 = B.USER002
+		  WHERE B.USER001 = #{user001}
+		<!--  INNER JOIN (SELECT C.UPUR007, C.UPUR009
+		               FROM HRSW_T_USERPURVIEW C
+		              WHERE C.UPUR002 = #{user001}
+		              GROUP BY C.UPUR007, C.UPUR009) B ON A.ORGA001 = B.UPUR009 -->
+		 ORDER BY A.ORGA010, A.ORGA008 
+	</select>	
+	
+	<select id="queryFirstLevelDirectory" resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[ SELECT CATA001,CATA002,CATA006,CATA016
+		 FROM HRSW_T_CATALOG A
+		 LEFT JOIN (
+			 SELECT LREL002 
+			 FROM HRSW_T_LEVELRELATION 
+			 WHERE LREL007=1 AND LREL004= #{ORGA001}
+		 ) D ON A.CATA009=D.LREL002
+		 ]]> 
+		 <where>
+		 	AND NVL(A.CATA011,1)=1
+		 	AND NVL(A.CATA012,1)=1
+			AND CATA008=#{cata008}
+		 	<if test="UPUR007 != null and UPUR007==1">
+			     AND CATA013 = #{user001}
+			</if>
+		 	<if test="cata002 != ''">
+		 		AND CATA002=#{cata002}
+		 	</if>
+		 </where>
+		 <if test="sortExpression == null">
+		 <![CDATA[  ORDER BY A.CATA006 ASC ]]>
+		</if>
+	</select>	
+	
+	<select id="querySecondLevelDirectory" resultType="HashMap" parameterType="java.util.Map">
+		SELECT *
+			  FROM (SELECT A.CATA001, A.CATA002, A.CATA006
+			          FROM HRSW_T_CATALOG A
+			         WHERE A.CATA008 = 13
+			           AND A.CATA011 = 2
+			           AND A.CATA012 = 1
+			           AND A.CATA004 = #{cata001}
+			        UNION
+			        SELECT #{cata001} CATA001, '全部' CATA002, 0 CATA006 FROM DUAL)
+			 ORDER BY CATA006
+	</select>	
+	
+	<select id="queryStudyCenterPage" resultType="java.util.HashMap" parameterType="java.lang.String">
+		SELECT *
+			  FROM (SELECT A.CATA001, A.CATA002, A.CATA006
+			          FROM HRSW_T_CATALOG A
+			         WHERE A.CATA008 = 13
+			           AND A.CATA011 = 2
+			           AND A.CATA012 = 1
+			           AND A.CATA004 = #{cata001}
+			        UNION
+			        SELECT '-1' CATA001, '全部' CATA002, 0 CATA006 FROM DUAL)
+			 ORDER BY CATA006
+	</select>	
+
+	 <select id="findCatalogByUser" resultType="HashMap" parameterType="java.util.Map">
+		 <![CDATA[ SELECT CATA001,CATA002,CATA003,CATA004,CATA005,CATA006,CATA008,CATA009,CATA010,CATA011,CATA012,CATA013,CATA014,CATA015,CATA016	 
+		 FROM HRSW_T_CATALOG A
+		 INNER JOIN (
+			 SELECT LREL002 
+			 FROM HRSW_T_LEVELRELATION 
+			 WHERE LREL007=1 AND LREL004= #{ORGA001}
+		 ) D ON A.CATA009=D.LREL002
+		 ]]> 
+		 <where>
+		 	NVL(A.CATA012,1)=1
+		 	<if test="cata008 != null">
+		 		<choose>
+					<when test="cata008 == 8 ">
+						AND CATA008 IN (8,9)
+					</when>
+					<otherwise>
+						AND CATA008=#{cata008}
+					</otherwise>
+				</choose>
+		 	</if>
+		 	<if test="UPUR007 != null and UPUR007==1">
+			     AND CATA013 = #{userId}
+			</if>
+			<if test="cata004 != null">
+		 		AND CATA004=#{cata004}
+		 	</if>
+		 </where>
+		 <if test="sortExpression == null">
+		 <![CDATA[  ORDER BY A.CATA006 ASC ]]>
+		</if>
+	</select>
+	
+	
+	<update id="selectCource" parameterType="java.util.Map" flushCache="true">
+		<![CDATA[  MERGE INTO STUDY_T_SELECTCOURSE A
+		USING(
+		  SELECT #{seco002} AS SECO002,#{seco003} AS SECO003,#{seco006} AS SECO006 
+		  FROM DUAL
+		) B 
+		ON (A.SECO002=B.SECO002 AND A.SECO003=B.SECO003)
+		WHEN MATCHED THEN
+		UPDATE SET A.SECO006=B.SECO006
+		WHEN NOT MATCHED THEN
+		INSERT(A.SECO001,A.SECO002,A.SECO003,A.SECO004,A.SECO005,A.SECO006)
+		VALUES(LOWER(SYS_GUID()),B.SECO002,B.SECO003,SYSDATE,0,B.SECO006) ]]> 
+	</update>
+	
+
+	<select id="queryStudyCourseWareList" resultType="HashMap" parameterType="java.util.Map">
+		<![CDATA[
+				SELECT A.LEAC001,
+				       A.LEAC004,
+				       C.COUR001,
+				       C.COUR002,
+				       C.COUR003,
+				       CASE C.COUR003
+				         WHEN 0 THEN
+				          '文档'
+				         WHEN 1 THEN
+				          '视频'
+				         WHEN 2 THEN
+				          '标准'
+				         WHEN 3 THEN
+				          'H5'
+				         WHEN 4 THEN
+				          '自建'
+				       END COUR003TEXT,
+				       C.COUR006,
+				       C.COUR005,
+				       TRUNC(C.COUR005 / 86400) * 24 +
+				       SUBSTR(NUMTODSINTERVAL(C.COUR005, 'SECOND'), 12, 2) || ':' ||
+				       SUBSTR(NUMTODSINTERVAL(C.COUR005, 'SECOND'), 15, 5) COUR005TEXT,
+				       D.LEAC000,
+				       NVL(E.LCWR007,0) LCWR007,
+				       DECODE(B.LECW007, 0, '选学', '必学') LECW007,
+				       NVL(E.LCWR011,0) LCWR011,
+				       CASE NVL(E.LCWR010,0)
+				         WHEN 0 THEN
+				         NVL(E.LCWR008,0)
+				         WHEN 1 THEN
+				          100
+				       END LCWR008,
+				       b.LECW001,
+               		   b.LECW003,
+				       NVL(B.LECW008, 0) LECW008,   
+				       NVL(B.LECW009, 0) LECW009,
+				       NVL(C.COUR019, 0) COUR019
+				  FROM STUDY_T_LEARNACTIVITY A
+				 INNER JOIN STUDY_T_LEARNCW B ON A.LEAC001 = B.LECW002
+				 INNER JOIN HRSW_T_COURSEWARE C ON B.LECW006 = C.COUR001
+				  LEFT JOIN (SELECT A1.LECW002,
+				                    CAST((SUM(COUR005)) AS NUMERIC(19, 1)) LEAC000
+				               FROM STUDY_T_LEARNCW A1
+				              INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LECW006 = B1.COUR001
+				              GROUP BY A1.LECW002) D ON A.LEAC001 = D.LECW002
+				 LEFT JOIN STUDY_T_LEARNCWRSULT E ON E.LCWR002 = B.LECW002
+				                                  AND E.LCWR005 = B.LECW006
+				                                  AND E.LCWR003 = #{user001}
+				 ]]>
+				 <where>
+					 and A.LEAC001 = #{leac001}
+				 </where>
+
+				 ORDER BY LECW005 ASC
+	</select>
+	<select id="queryStudyCourseInfo" resultType="HashMap" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT A.LEAC004,
+		       DECODE(A.LEAC005, 0, '选修', '必修') LEAC005,
+		       TO_CHAR(A.LEAC007, 'YYYY-MM-DD HH24:MI') LEAC007,
+		       TO_CHAR(A.LEAC008, 'YYYY-MM-DD HH24:MI') LEAC008,
+		       NVL(A.LEAC010, '--') LEAC010,
+		       NVL(C.LEARNINGPEOPLE, 0) LEARNINGPEOPLE,
+		       CASE
+		         WHEN NVL(C.LEARNINGPEOPLE, 0) > 0 THEN
+		          ROUND(NVL(D.PRAISENUMBER, 0) / NVL(C.LEARNINGPEOPLE, 0), 2) * 100 || '%'
+		         ELSE
+		          '0%'
+		       END FAVORABLERATE,
+		       D.RANKING
+		       ]]>
+		  FROM STUDY_T_LEARNACTIVITY A
+		  LEFT JOIN (SELECT COUNT(1) LEARNINGPEOPLE, LEUS002
+		               FROM STUDY_V_LEARNUSER02
+		              WHERE LEUS002 = #{leac001}
+		              GROUP BY LEUS002) C ON A.LEAC001 = C.LEUS002
+		  LEFT JOIN (SELECT COUNT(1) PRAISENUMBER,
+		                    UMES002,
+		                    DENSE_RANK() OVER(ORDER BY COUNT(1) DESC) RANKING
+		               FROM STUDY_T_USERMESSAGE
+		              WHERE UMES005 = 0
+		              GROUP BY UMES002) D ON A.LEAC001 = D.UMES002
+		 WHERE A.LEAC001 = #{leac001}
+	</select>
+	
+	<select id="queryCourseSpeakerList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT C.COUR008, A.UINF0103 USER005, E.TEAC012, B.ATTA007
+		  FROM hrsw_v_user A
+		 INNER JOIN HRSW_T_ATTACHMENT B ON A.USER001 = B.ATTA002
+		  LEFT JOIN HRSW_T_COURSEWARE C ON A.USER001 = C.COUR008
+		  LEFT JOIN STUDY_T_LEARNCW D ON D.LECW006 = C.COUR001
+		 INNER JOIN HRSW_T_TEACHER E ON C.COUR008 = E.TEAC001
+		 WHERE B.ATTA004 = 1
+		   AND D.LECW002 = #{leac001}
+		 ORDER BY D.LECW005 ASC
+	</select>
+	
+	<select id="queryEvaluationNumMap" resultType="HashMap" parameterType="java.util.Map">
+		SELECT PRAISE, RATING, BAD, ICOMMENT, NVL(PRAISE + RATING + BAD, 0) GENERAL
+		  FROM (SELECT DISTINCT NVL(B.PRAISE, 0) PRAISE,
+		                        NVL(C.RATING, 0) RATING,
+		                        NVL(D.BAD, 0) BAD,
+		                        NVL(E.ICOMMENT, 0) ICOMMENT
+		          FROM STUDY_T_USERMESSAGE A
+		          LEFT JOIN (SELECT COUNT(1) PRAISE, UMES002
+		                      FROM STUDY_T_USERMESSAGE
+		                     WHERE UMES002 = #{leac001}
+		                       AND UMES005 = 0
+		                     GROUP BY UMES002) B ON A.UMES002 = B.UMES002
+		          LEFT JOIN (SELECT COUNT(1) RATING, UMES002
+		                      FROM STUDY_T_USERMESSAGE
+		                     WHERE UMES002 = #{leac001}
+		                       AND UMES005 = 1
+		                     GROUP BY UMES002) C ON A.UMES002 = C.UMES002
+		          LEFT JOIN (SELECT COUNT(1) BAD, UMES002
+		                      FROM STUDY_T_USERMESSAGE
+		                     WHERE UMES002 = #{leac001}
+		                       AND UMES005 = 2
+		                     GROUP BY UMES002) D ON A.UMES002 = D.UMES002
+		          LEFT JOIN (SELECT COUNT(1) ICOMMENT, UMES002
+		                      FROM STUDY_T_USERMESSAGE
+		                     WHERE UMES002 = #{leac001}
+		                       AND UMES003 = #{user001}
+		                     GROUP BY UMES002) E ON A.UMES002 = E.UMES002
+		         WHERE A.UMES002 = #{leac001})
+	</select>
+	
+	<select id="queryCourseEvaluationList" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.UMES001, A.UMES002,A.UMES003, A.UMES004, B.UINF0114 ATTA007,CASE A.UMES005
+		         WHEN 0 THEN
+		          '好评'
+		         WHEN 1 THEN
+		          '中评'
+		         WHEN 2 THEN
+		          '差评'
+		       END UMES005TEXT,
+		       A.UMES005,A.UMES006,A.UMES007,A.UMES008,
+		       TO_CHAR(A.UMES007, 'YYYY-MM-DD HH24:MI') UMES007TEXT,B.UINF0103 USER005,
+		       NVL(C.FABULOUSTOTAL, 0) FABULOUSTOTAL,
+		       NVL(D.UMRE004, 1) MEUMRE004
+		  FROM STUDY_T_USERMESSAGE A
+		 INNER JOIN hrsw_v_user B ON A.UMES003 = B.USER001
+		  LEFT JOIN (SELECT COUNT(1) FABULOUSTOTAL, UMRE002
+		               FROM STUDY_T_USERMESSAGEREPLY
+		              WHERE NVL(UMRE004, 0) = 0
+		              GROUP BY UMRE002) C ON A.UMES001 = C.UMRE002
+		  LEFT JOIN STUDY_T_USERMESSAGEREPLY D ON A.UMES001 = D.UMRE002
+		                                      AND D.UMRE003 = #{user001}
+		 WHERE A.UMES002 = #{leac001}
+
+		 	<if test="umes005 != ''">
+		 		<choose>
+					<when test="umes005 == -2 ">
+						AND A.UMES003 = #{user001}
+					</when>
+					<otherwise>
+						AND A.UMES005 = #{umes005}
+					</otherwise>
+				</choose>
+		 	</if>
+		 	<if test="queryDate != null and queryDate != ''">
+				<![CDATA[ AND A.UMES007 <= to_date(#{queryDate}, 'yyyy-mm-dd hh24:mi:ss') ]]>
+			</if>
+		 ORDER BY A.UMES007 DESC, A.UMES001 DESC
+	</select>
+	
+	<insert id="exitViewUpdateCwProgress" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_LEARNCWRSULT A 
+		     USING(SELECT 1 FROM DUAL)P
+		     ON(A.LCWR002 = #{leac001} AND A.LCWR003 = #{user001} AND A.LCWR005 =#{cour001})
+		     WHEN MATCHED THEN  
+		     UPDATE 
+		     SET 
+		     A.LCWR007 = #{lcwr007},
+		     A.LCWR008 = #{lcwr008},
+		     A.LCWR009 = SYSDATE,
+		     A.LCWR010 = #{lcwr010},
+		     A.LCWR011 = #{lcwr011}
+		     WHEN NOT MATCHED THEN
+		     INSERT(A.LCWR001,A.LCWR002,A.LCWR003,A.LCWR004,A.LCWR005,A.LCWR006,A.LCWR007,A.LCWR008,A.LCWR009,A.LCWR010,A.LCWR011)
+		     VALUES(#{lcwr001},#{leac001},#{user001},#{lcwr004},#{cour001},SYSDATE,#{lcwr007},#{lcwr008},SYSDATE,#{lcwr010},#{lcwr011} )
+	</insert>
+	
+	<insert id="insertLearnResult" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_LEARNRESULT A 
+		     USING(SELECT 1 FROM DUAL)P
+		     ON(A.LERE002 = #{leac001} AND A.LERE003 = #{user001})
+		     WHEN NOT MATCHED THEN
+		     INSERT(A.LERE001,A.LERE002,A.LERE003,A.LERE004,A.LERE005,A.LERE006,A.LERE007,A.LERE008)
+		     VALUES(#{lere001},#{leac001},#{user001},SYSDATE,#{lere005},#{lere006},SYSDATE,#{lere008})
+	</insert>
+	
+	<insert id="insertLearnCwResult" parameterType="java.util.Map">
+		MERGE INTO Study_t_learnCWRsult A 
+		     USING(SELECT 1 FROM DUAL)P
+		     ON(A.LCWR002 = #{leac001} AND A.LCWR003 = #{user001} AND A.LCWR005 = #{cour001})
+		     WHEN NOT MATCHED THEN
+		     INSERT(A.LCWR001,A.LCWR002,A.LCWR003,A.LCWR004,A.LCWR005,A.LCWR006,A.LCWR007,A.LCWR008,A.LCWR009,A.LCWR010)
+		     VALUES(#{lcwr001},#{leac001},#{user001},#{lcwr004},#{cour001},SYSDATE,#{lcwr007},#{lcwr008},SYSDATE,#{lcwr0010} )
+	</insert>
+	
+	<insert id="exitViewUpdateLRProgress" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_LEARNRESULT A
+			USING (SELECT #{leac001} LERE002,
+			              #{user001} LERE003,
+			              CASE
+			                WHEN NVL(C1.COMPLECWTOTAL, 0) = NVL(B1.COURSEWARETOTAL, 0) THEN
+			                 100
+			                ELSE
+			                #{lere005}
+			              END LERE005
+			         FROM STUDY_T_LEARNACTIVITY A1
+			         LEFT JOIN (SELECT COUNT(1) COURSEWARETOTAL, LECW002
+			                     FROM STUDY_T_LEARNCW
+			                    WHERE LECW002 = #{leac001}
+			                    GROUP BY LECW002) B1 ON A1.LEAC001 = B1.LECW002
+			         LEFT JOIN (SELECT COUNT(1) COMPLECWTOTAL, LCWR002
+			                     FROM STUDY_T_LEARNCWRSULT
+			                    WHERE LCWR002 = #{leac001}
+			                      AND LCWR003 = #{user001}
+			                      AND LCWR010 = 1
+			                    GROUP BY LCWR002) C1 ON A1.LEAC001 = C1.LCWR002
+			        WHERE A1.LEAC001 = #{leac001}) P
+			ON (A.LERE002 = P.LERE002 AND A.LERE003 = P.LERE003)
+			WHEN MATCHED THEN
+			  UPDATE SET A.LERE005 = P.LERE005, A.LERE007 = SYSDATE
+			  WHEN NOT MATCHED THEN
+		     INSERT(A.LERE001,A.LERE002,A.LERE003,A.LERE004,A.LERE005,A.LERE006,A.LERE007,A.LERE008)
+		     VALUES(#{lere001},#{leac001},#{user001},SYSDATE,P.LERE005,#{lere006},SYSDATE,#{lere008})
+	</insert>
+	
+	<insert id="updateLearnCWRsult" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_LEARNCWRSULT A
+			USING (SELECT #{leac001} LCWR002, #{user001} LCWR003, #{cour001} LCWR005 FROM DUAL) P
+			ON (A.LCWR002 = P.LCWR002 AND A.LCWR003 = P.LCWR003 AND A.LCWR005 = P.LCWR005)
+			WHEN MATCHED THEN
+			  UPDATE
+			     SET A.LCWR007 = #{lcwr007},
+			         A.LCWR008 = #{lcwr008},
+			         A.LCWR009 = SYSDATE,
+			         A.LCWR010 = #{lcwr010}
+	</insert>
+	
+	<insert id="updateLearnResult" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_LEARNRESULT A
+			USING (SELECT #{leac001} LERE002,
+			              #{user001} LERE003,
+			              NVL((SELECT B1.EGRA013
+			                    FROM STUDY_T_LEARNEXAM A1
+			                   INNER JOIN (SELECT MAX(EGRA013) EGRA013, EGRA004
+			                                FROM EXAM_T_EXAMINEEGRADE
+			                               WHERE EGRA002 = #{user001}
+			                               GROUP BY EGRA004) B1 ON A1.LEEX003 =
+			                                                       B1.EGRA004
+			                                                   AND A1.LEEX002 = #{leac001}
+			                                                   AND A1.LEEX004 = 1),
+			                  0) EGRA013
+			         FROM DUAL) P
+			ON (A.LERE002 = P.LERE002 AND A.LERE003 = P.LERE003)
+			WHEN MATCHED THEN
+			  UPDATE
+			     SET A.LERE005 = 100,
+			         A.LERE006 = P.EGRA013,
+			         A.LERE007 = SYSDATE,
+			         A.LERE008 = 1
+	</insert>
+	
+	<insert id="updateCAllUserHours" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_USERHOURS A
+			USING (SELECT A1.LEAC001,
+			              C1.COUR001,
+			              #{user001} UHOU003,
+			              ROUND(NVL(C1.COUR005, 0) / 60 / 45, 1) COURHOURS,
+			              DECODE(B1.LECW007, 0, 2, 1, 1) LECW007
+			         FROM STUDY_T_LEARNACTIVITY A1
+			        INNER JOIN STUDY_T_LEARNCW B1 ON A1.LEAC001 = B1.LECW002
+			        INNER JOIN HRSW_T_COURSEWARE C1 ON B1.LECW006 = C1.COUR001
+			        WHERE A1.LEAC001 = #{leac001}) P
+			ON (A.UHOU003 = P.UHOU003 AND A.UHOU004 = P.LEAC001 AND A.UHOU009 = P.COUR001)
+			WHEN NOT MATCHED THEN
+			  INSERT
+			    (UHOU001, UHOU002, UHOU003,UHOU004,UHOU005,UHOU006,UHOU007,UHOU008,UHOU009)
+			  VALUES
+			    (#{uhou001}, 1,P.UHOU003, P.LEAC001,#{uhou005}, P.COURHOURS,P.LECW007,SYSDATE,P.COUR001)
+	</insert>
+	
+	<insert id="updateUserHours" parameterType="java.util.Map">
+		MERGE INTO STUDY_T_USERHOURS A
+			USING (SELECT A1.LCWR002,
+			              A1.LCWR003,
+			              A1.LCWR005,
+			              ROUND(NVL(B1.COUR005, 0) / 60 / 45, 1) COURHOURS,
+			              DECODE(C1.LECW007, 0, 2, 1, 1) LECW007
+			         FROM STUDY_T_LEARNCWRSULT A1
+			        INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LCWR005 = B1.COUR001
+			                                       AND A1.LCWR010 = 1
+			        INNER JOIN STUDY_T_LEARNCW C1 ON A1.LCWR002 = C1.LECW002
+			                                     AND A1.LCWR005 = C1.LECW006
+			        WHERE A1.LCWR002 = #{leac001}
+			          AND A1.LCWR003 = #{user001}) P
+			ON (A.UHOU003 = P.LCWR003 AND A.UHOU004 = P.LCWR002 AND A.UHOU009 = P.LCWR005)
+			WHEN NOT MATCHED THEN
+			  INSERT
+			    (UHOU001,UHOU002,UHOU003,UHOU004,UHOU005,UHOU006,UHOU007,UHOU008,UHOU009)
+			  VALUES
+			    (#{uhou001}, 1, P.LCWR003, P.LCWR002,#{uhou005},P.COURHOURS, P.LECW007, SYSDATE, P.LCWR005)
+	</insert>
+	<insert id="spotFabulous" parameterType="java.util.Map">
+		<![CDATA[ 
+		    MERGE INTO STUDY_T_USERMESSAGEREPLY L
+			USING(SELECT * FROM DUAL)P
+			ON(L.UMRE002 = #{umre002} AND L.UMRE003= #{user001} AND L.UMRE004 = 0)
+			WHEN NOT MATCHED THEN
+	 		INSERT(UMRE001,UMRE002,UMRE003,UMRE004)
+			VALUES(#{umre001},#{umre002},#{user001},0)
+		 ]]> 
+	</insert>
+	
+	<select id="queryStudyNoteList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT h.COUR002 ccwe003, d.ccwe003 ccwe003p,b.cour010,u.UINF0103 user005,
+		TO_CHAR(A.UNOT008, 'YYYY-MM-DD HH24:MI:SS') UNOT008,
+		A.UNOT001, A.UNOT005, A.UNOT006,a.UNOT007,a.UNOT010,a.UNOT009,
+		u.UINF0114 ATTA007,nvl(f.UNOFBN003,0) likenum,
+		case when nvl(g.num,0)>0 then 1 else 0 end unofb004
+		  FROM STUDY_T_USERNOTE A
+		inner JOIN xzxy_t_course B
+		ON A.UNOT002 = B.cour001
+		inner JOIN course_t_courseware C
+		ON B.cour001 = C.ccwe002
+		AND C.ccwe001 = A.UNOT005
+		left join course_t_courseware d
+		on c.ccwe010 = d.ccwe001
+		left join hrsw_v_user u on a.UNOT003 = u.user001
+		left join Study_t_userNoteFabulousNum f on f.UNOFBN002 = a.UNOT001
+		left join (select count(*) num,UNOFB002 from Study_t_userNoteFabulous where UNOFB003 =  #{user001} group by UNOFB002) g on g.UNOFB002 = a.UNOT001
+		left join hrsw_t_courseware h on h.COUR001 = c.ccwe006
+		]]>
+		<where>
+			 <!-- 0.我的笔记  1.共享笔记  2.共享笔记 + 我的笔记  3.我点赞的笔记 -->
+			<if test="unot009 == 0" >
+		 		AND A.UNOT003 = #{user001}
+		 	</if>
+		 	<if test="unot009 == 1" >
+		 		AND A.UNOT009 = '1'
+		 	</if>
+			 <if test="unot009 == 2" >
+				 and (A.UNOT003 = #{user001}  or    A.UNOT009 = '1' )
+			 </if>
+			 <if test="unot009 == 3" >
+				 and exists (
+					 select 1 from Study_t_userNoteFabulous x
+					 where x.UNOFB002 = a.unot001
+					 and x.UNOFB003 = #{user001}
+				 )
+			 </if>
+		 	AND A.UNOT002 = #{unot002}
+		 	AND A.UNOT005 = #{unot005}
+		 </where>
+		 ORDER BY A.UNOT008 DESC
+	</select>
+
+	<select id="queryCourseEvaluationNum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select SUM(case when UMES005 is not null then 1 else 0 end) num0,
+			   SUM(case when UMES005 = 0 then 1 else 0 end)         num1,
+			   SUM(case when UMES005 = 1 then 1 else 0 end)         num2,
+			   SUM(case when UMES005 = 2 then 1 else 0 end)         num3
+		from Study_t_userMessage
+		where UMES002 = #{leac001}
+	</select>
+
+	<select id="queryHoursCompletionStatus" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT LEAC018,LEAC027,LEAC028, LEAC029,COMPLETETOTALHOURS,COMPLETEBXHOURS,
+		       BXCN, COMPLECN,NVL(COMPLETETOTALHOURS - COMPLETEBXHOURS, 0) COMPLETEXXHOURS 
+		  FROM (SELECT NVL(A.LEAC018, 0) LEAC018,
+		               NVL(A.LEAC027, 0) LEAC027,
+		               NVL(A.LEAC028, 0) LEAC028,
+		               NVL(A.LEAC029, 0) LEAC029,
+		               ROUND(NVL(C.YXCOUR005, 0) / 60 / 45, 1) COMPLETETOTALHOURS,
+		               ROUND(NVL(D.BXCOUR005, 0) / 60 / 45, 1) COMPLETEBXHOURS,
+		               NVL(B.BXCN, 0) BXCN,
+		               NVL(D.COMPLECN, 0) COMPLECN
+		          FROM STUDY_T_LEARNACTIVITY A
+		          LEFT JOIN (SELECT A1.LECW002, COUNT(1) BXCN
+		                      FROM STUDY_T_LEARNCW A1
+		                     INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LECW006 = B1.COUR001
+		                                                    AND A1.LECW007 = 1
+		                                                    AND A1.LECW002 = #{leac001}
+		                     GROUP BY A1.LECW002) B ON A.LEAC001 = B.LECW002
+		          LEFT JOIN (SELECT SUM(B2.COUR005) YXCOUR005, A2.LCWR002
+		                      FROM STUDY_T_LEARNCWRSULT A2
+		                     INNER JOIN HRSW_T_COURSEWARE B2 ON A2.LCWR005 = B2.COUR001
+		                                                    AND A2.LCWR010 = 1
+		                                                    AND A2.LCWR003 = #{user001}
+		                                                    AND A2.LCWR002 = #{leac001}
+		                     GROUP BY A2.LCWR002) C ON A.LEAC001 = C.LCWR002
+		          LEFT JOIN (SELECT COUNT(1) COMPLECN,
+		                           A3.LCWR002,
+		                           SUM(C3.COUR005) BXCOUR005
+		                      FROM STUDY_T_LEARNCWRSULT A3
+		                     INNER JOIN STUDY_T_LEARNCW B3 ON A3.LCWR005 = B3.LECW006
+		                                                  AND A3.LCWR002 = B3.LECW002
+		                                                  AND B3.LECW007 = 1
+		                     INNER JOIN HRSW_T_COURSEWARE C3 ON A3.LCWR005 = C3.COUR001
+		                     WHERE A3.LCWR002 = #{leac001}
+		                       AND A3.LCWR003 = #{user001}
+		                       AND A3.LCWR010 = 1
+		                     GROUP BY A3.LCWR002) D ON A.LEAC001 = D.LCWR002
+		         WHERE A.LEAC001 = #{leac001})
+	</select>
+	<select id="queryExamCompletionStatus" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT NVL(C.TACT021, 0) TACT021,
+		       NVL(D.EGRA013, -1) EGRA013,
+		       NVL(A.LEAC018, 0) LEAC018,
+		       B.LEEX003 TACT001
+		  FROM STUDY_T_LEARNACTIVITY A
+		 INNER JOIN STUDY_T_LEARNEXAM B ON A.LEAC001 = B.LEEX002
+		                               AND B.LEEX004 = 1
+		 INNER JOIN EXAM_T_TESTACTIVITY C ON B.LEEX003 = C.TACT001
+		  LEFT JOIN (SELECT MAX(EGRA013) EGRA013, EGRA004
+		               FROM EXAM_T_EXAMINEEGRADE
+		              WHERE EGRA002 = #{user001}
+		              GROUP BY EGRA004) D ON C.TACT001 = D.EGRA004
+		 WHERE A.LEAC001 = #{leac001}
+	</select>
+	<select id="queryHoursAndExamCompletionStatus" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT LEAC018, LEAC027,LEAC028, LEAC029, COMPLETETOTALHOURS, COMPLETEBXHOURS,BXCN,
+	       COMPLECN, NVL(COMPLETETOTALHOURS - COMPLETEBXHOURS, 0) COMPLETEXXHOURS
+	  FROM (SELECT NVL(A.LEAC018, 0) LEAC018,
+	               NVL(A.LEAC027, 0) LEAC027,
+	               NVL(A.LEAC028, 0) LEAC028,
+	               NVL(A.LEAC029, 0) LEAC029,
+	               ROUND(NVL(C.YXCOUR005, 0) / 60 / 45, 1) COMPLETETOTALHOURS,
+	               ROUND(NVL(D.BXCOUR005, 0) / 60 / 45, 1) COMPLETEBXHOURS,
+	               NVL(B.BXCN, 0) BXCN,
+	               NVL(D.COMPLECN, 0) COMPLECN
+	          FROM STUDY_T_LEARNACTIVITY A
+	          LEFT JOIN (SELECT A1.LECW002, COUNT(1) BXCN
+	                      FROM STUDY_T_LEARNCW A1
+	                     INNER JOIN HRSW_T_COURSEWARE B1 ON A1.LECW006 =B1.COUR001
+	                                                    AND A1.LECW007 = 1
+	                                                    AND A1.LECW002 =
+	                                                       #{leac001}
+	                     GROUP BY A1.LECW002) B ON A.LEAC001 = B.LECW002
+	          LEFT JOIN (SELECT SUM(B2.COUR005) YXCOUR005, A2.LCWR002
+	                      FROM STUDY_T_LEARNCWRSULT A2
+	                     INNER JOIN HRSW_T_COURSEWARE B2 ON A2.LCWR005 =
+	                                                        B2.COUR001
+	                                                    AND A2.LCWR010 = 1
+	                                                    AND A2.LCWR003 =
+	                                                       #{user001}
+	                                                    AND A2.LCWR002 =
+	                                                        #{leac001}
+	                     GROUP BY A2.LCWR002) C ON A.LEAC001 = C.LCWR002
+	          LEFT JOIN (SELECT COUNT(1) COMPLECN,
+	                           A3.LCWR002,
+	                           SUM(C3.COUR005) BXCOUR005
+	                      FROM STUDY_T_LEARNCWRSULT A3
+	                     INNER JOIN STUDY_T_LEARNCW B3 ON A3.LCWR005 =
+	                                                      B3.LECW006
+	                                                  AND A3.LCWR002 =
+	                                                      B3.LECW002
+	                                                  AND B3.LECW007 = 1
+	                     INNER JOIN HRSW_T_COURSEWARE C3 ON A3.LCWR005 =
+	                                                        C3.COUR001
+	                     WHERE A3.LCWR002 = #{leac001}
+	                       AND A3.LCWR003 =#{user001}
+	                       AND A3.LCWR010 = 1
+	                     GROUP BY A3.LCWR002) D ON A.LEAC001 = D.LCWR002
+	         WHERE A.LEAC001 = #{leac001})
+	</select>
+	
+	<select id="queryStudyTimesAndPraiseNum" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT DISTINCT A.LEAC001,
+		       NVL(B.STUDYTIMES, 0) STUDYTIMES,
+		       NVL(C.PRAISENUM, 0) PRAISENUM,
+		       E.XKRS,
+		       G.LERE008,
+		       CASE
+		         WHEN D.SECO001 IS NULL THEN
+		          0
+		         WHEN D.SECO001 IS NOT NULL THEN
+		          1
+		       END ISSELECT,
+		       A.LEAC018,
+		       CASE A.LEAC018
+		         WHEN 0 THEN
+		          '达到标准学时'
+		         WHEN 1 THEN
+		          '通过结业考试'
+		         WHEN 2 THEN
+		          '达到标准学时,通过结业考试'
+		       END LEAC018TEXT
+		  FROM STUDY_T_LEARNACTIVITY A
+		  LEFT JOIN (SELECT COUNT(1) STUDYTIMES, LEUS002
+		               FROM STUDY_V_LEARNUSER02
+		              WHERE LEUS002 = #{leac001}
+		              GROUP BY LEUS002) B ON A.LEAC001 = B.LEUS002
+		  LEFT JOIN (SELECT COUNT(1) PRAISENUM, UMES002
+		               FROM STUDY_T_USERMESSAGE
+		              WHERE UMES002 = #{leac001}
+		                AND UMES005 = 0
+		              GROUP BY UMES002) C ON A.LEAC001 = C.UMES002
+		  LEFT JOIN STUDY_T_SELECTCOURSE D ON A.LEAC001 = D.SECO002
+		                                  AND NVL(D.SECO006, 1) = 0
+		                                  AND D.SECO003 = #{user001}
+		  LEFT JOIN (SELECT SECO002, COUNT(SECO003) XKRS
+		               FROM STUDY_T_SELECTCOURSE
+		              WHERE NVL(SECO005, 0) = 0
+		                AND NVL(SECO006, 0) = 0
+		              GROUP BY SECO002) E ON A.LEAC001 = E.SECO002
+		  LEFT JOIN study_t_learncw F ON A.LEAC001 = F.LECW002
+		  LEFT JOIN Study_t_learnResult G ON A.LEAC001 = G.LERE002
+		 WHERE A.LEAC001 = #{leac001}
+	</select>
+
+	<insert id="StudyNoteFabulous" parameterType="java.util.Map">
+		MERGE INTO Study_t_userNoteFabulous A
+		USING (SELECT *
+			   FROM DUAL) P
+		ON (A.UNOFB002 = #{UNOFB002} AND A.UNOFB003 = #{UNOFB003})
+		WHEN NOT MATCHED THEN
+			INSERT (UNOFB001, UNOFB002, UNOFB003, UNOFB004)
+			VALUES (sys_guid(), #{UNOFB002}, #{UNOFB003}, sysdate)
+	</insert>
+
+
+	<insert id="upStudyNoteFabulous" parameterType="java.util.Map">
+
+		merge into Study_t_userNoteFabulousNum A
+		USING (SELECT * FROM DUAL)P
+		ON(A.unofbn002=#{UNOFB002})
+		when matched then
+		update SET
+		<if test="FabulousType == 1">
+			A.unofbn003 = A.unofbn003-1
+		</if>
+		<if test="FabulousType == 0">
+			A.unofbn003 = A.unofbn003+1
+		</if>, unofbn006 = sysdate where A.unofbn002=#{UNOFB002}
+		when not matched then
+		insert(A.unofbn001,A.unofbn002,A.unofbn003,A.unofbn006) values(sys_guid(),#{UNOFB002},1,sysdate)
+	</insert>
+	<delete id="deStudyNoteFabulous" parameterType="java.util.Map">
+		delete
+		from Study_t_userNoteFabulous A
+		where A.UNOFB002 = #{UNOFB002}
+		  AND A.UNOFB003 = #{UNOFB003}
+	</delete>
+</mapper>

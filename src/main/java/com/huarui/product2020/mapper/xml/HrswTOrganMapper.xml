@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTOrganMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="OrganMapper" type="com.huarui.product2020.entity.HrswTOrgan">
+		<id column="ORGA001" property="orga001" />
+		<result column="ORGA002" property="orga002" />
+		<result column="ORGA003" property="orga003" />
+		<result column="ORGA004" property="orga004" />
+		<result column="ORGA005" property="orga005" />
+		<result column="ORGA006" property="orga006" />
+		<result column="ORGA007" property="orga007" />
+		<result column="ORGA008" property="orga008" />
+		<result column="ORGA009" property="orga009" />
+		<result column="ORGA010" property="orga010" />
+		<result column="ORGA011" property="orga011" />
+		<result column="ORGA012" property="orga012" />
+		<result column="ORGA013" property="orga013" />
+		<result column="ORGA014" property="orga014" />
+		<result column="ORGA015" property="orga015" />
+		<result column="ORGA016" property="orga016" />
+		<result column="ORGA017" property="orga017" />
+		<result column="ORGA018" property="orga018" />
+		<result column="ORGA019" property="orga019" />
+		<result column="ORGA020" property="orga020" />
+		<result column="ORGA021" property="orga021" />
+		<result column="ORGA022" property="orga022" />
+		<result column="ORGA023" property="orga023" />
+	</resultMap>
+	<select id="findHrswTOrganById" resultType="com.huarui.product2020.entity.HrswTOrgan">
+		SELECT
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,
+		ORGA011,ORGA012,ORGA013,ORGA014,ORGA015,ORGA016,ORGA017,ORGA018,ORGA019,ORGA020,
+		ORGA021,ORGA022,ORGA023,ORGA026,B.SELECTJOBID SELECTJOBID,B.SELECTJOBNAME SELECTJOBNAME,MEST003
+		FROM HRSW_T_ORGAN A
+		LEFT JOIN (SELECT TO_CHAR(WM_CONCAT(A.CDOM005)) SELECTJOBID,TO_CHAR(WM_CONCAT(B.CATA002)) SELECTJOBNAME,A.CDOM003 FROM HRSW_T_CATALOGDOMAIN A
+			INNER JOIN HRSW_T_CATALOG B ON A.CDOM005 = B.CATA001
+			GROUP BY A.CDOM003
+		)B ON A.ORGA001 = B.CDOM003
+		LEFT JOIN hr_t_MenuStatus C ON A.ORGA001 = C.Mest002
+		WHERE ORGA001 = #{orga001}
+	</select>
+	<select id="findUserOrgStatus" parameterType="java.lang.String" resultType="int" >
+		<!-- SELECT SUM(ORGA013) NUM FROM HRSW_T_ORGAN START WITH ORGA001 =#{value} CONNECT BY ORGA001 = PRIOR ORGA002 -->
+		SELECT ORGA013 FROM HRSW_T_ORGAN where ORGA001 =#{value} 
+	</select>
+	
+	<!-- 认证机构 -->
+	<select id="authenticaOrganTree" resultMap="OrganMapper" parameterType="java.util.Map">
+		SELECT
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA005 ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,ORGA012,
+		(SELECT COUNT(*) FROM HRSW_T_ORGAN WHERE ORGA002=A.ORGA001) CHILDCOUNT
+		FROM HRSW_T_ORGAN A
+		<if test="isRemovePurview != null and isRemovePurview != 1">
+			INNER JOIN (
+			  SELECT C.DDOM002,C.DDOM003,E.UPUR002
+			  FROM HRSW_T_USERPURVIEW E
+			  INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+			  INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+	      	  INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+			  WHERE E.UPUR002=#{userId} 
+			  GROUP BY C.DDOM002,C.DDOM003,E.UPUR002
+			) F ON A.ORGA001=F.DDOM003
+		</if>
+		<where>
+			A.ORGA013 = 1
+			<if test="keyWord == null or keyWord == '' ">
+				<if test="orga002 != null and orga002 != '' and orga002 != '-1'">
+					AND A.ORGA002 = #{orga002}
+				</if>
+				<if test="orga002 != null and (orga002 == '' or orga002 == '-1') and orga010 == null and isRemovePurview != 0">
+					AND A.ORGA010 = 1   <!-- 如果父id传了‘-1’，查询层级是二级的 -->
+				</if>
+				<if test="orga010 != null and orga010 != ''">
+					AND A.ORGA010 = #{orga010}
+				</if>
+			</if>
+			<if test="orga026 != null and orga026.size() >= 1">
+				AND A.ORGA026 IN
+				<foreach collection="orga026" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="keyWord != null and keyWord != '' ">
+				AND EXISTS (
+					SELECT 1 FROM HRSW_T_ORGAN T
+					INNER JOIN HRSW_T_LEVELRELATION T2 ON T.ORGA001 = T2.LREL002
+					WHERE T2.LREL004 = A.ORGA001
+					AND T.ORGA005 LIKE CONCAT(CONCAT('%',#{keyWord}), '%')
+				)
+			</if>
+			AND A.ORGA020 = 1  <!-- 单位类型  1认证机构 2报名单位 3授权服务单位 -->
+		</where>
+		ORDER BY ORGA008
+	</select>
+	
+	<select id="registrationOrganTree" resultMap="OrganMapper" parameterType="java.util.Map">
+		SELECT
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA005 ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,ORGA012,
+		(SELECT COUNT(*) FROM HRSW_T_ORGAN WHERE ORGA002=A.ORGA001) CHILDCOUNT
+		FROM HRSW_T_ORGAN A
+		<if test="isRemovePurview != null and isRemovePurview != 1 and orga002 == '-1'">
+			INNER JOIN (
+			  SELECT C.DDOM002,C.DDOM003,E.UPUR002
+			  FROM HRSW_T_USERPURVIEW E
+			  INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+			  INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+	      	  INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+			  WHERE E.UPUR002=#{userId} 
+			  GROUP BY C.DDOM002,C.DDOM003,E.UPUR002
+			) F ON A.ORGA001=F.DDOM003
+		</if>
+		<where>
+			A.ORGA013 = 1
+			<if test="keyWord == null or keyWord == '' ">
+				<if test="orga002 != null and orga002 != '-1'">
+					AND A.ORGA002 = #{orga002}
+				</if>
+				<if test="orga002 != null and orga002 == '-1'">
+					AND A.ORGA010 = 1   <!-- 如果父id传了‘-1’，查询层级是二级的 -->
+				</if>
+			</if>
+			<if test="keyWord != null and keyWord != '' ">
+				AND EXISTS (
+					SELECT 1 FROM HRSW_T_ORGAN T
+					INNER JOIN HRSW_T_LEVELRELATION T2 ON T.ORGA001 = T2.LREL002
+					WHERE T2.LREL004 = A.ORGA001
+					AND T.ORGA005 LIKE CONCAT(CONCAT('%',#{keyWord}), '%')
+				)
+			</if>
+			AND A.ORGA020 = 2  <!-- 单位类型  1认证机构 2报名单位 3授权服务单位 -->
+		</where>
+		ORDER BY ORGA008
+	</select>
+	
+	<select id="operationOrganTree" resultMap="OrganMapper" parameterType="java.util.Map">
+		SELECT
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA005 ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,ORGA012,
+		(SELECT COUNT(*) FROM HRSW_T_ORGAN WHERE ORGA002=A.ORGA001) CHILDCOUNT
+		FROM HRSW_T_ORGAN A
+		<!-- <if test="orga002 != null and orga002 == '-1'">
+		INNER JOIN (
+		  SELECT C.DDOM002,C.DDOM003,E.UPUR002
+		  FROM HRSW_T_USERPURVIEW E
+		  INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+		  INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+      	  INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+		  WHERE E.UPUR002=#{userId} 
+		  GROUP BY C.DDOM002,C.DDOM003,E.UPUR002
+		) F ON A.ORGA001=F.DDOM003
+		</if> -->
+		<where>
+			A.ORGA013 = 1
+			<if test="keyWord == null or keyWord == '' ">
+				<if test="orga002 != null and orga002 != '-1'">
+					AND A.ORGA002 = #{orga002}
+				</if>
+				<if test="orga002 != null and orga002 == '-1'">
+					AND A.ORGA010 = 1   <!-- 如果父id传了‘-1’，查询层级是二级的 -->
+				</if>
+			</if>
+			<if test="keyWord != null and keyWord != '' ">
+				AND EXISTS (
+					SELECT 1 FROM HRSW_T_ORGAN T
+					INNER JOIN HRSW_T_LEVELRELATION T2 ON T.ORGA001 = T2.LREL002
+					WHERE T2.LREL004 = A.ORGA001
+					AND T.ORGA005 LIKE CONCAT(CONCAT('%',#{keyWord}), '%')
+				)
+			</if>
+			AND A.ORGA020 = 3  <!-- 单位类型  1认证机构 2报名单位 3运维单位 -->
+		</where>
+		ORDER BY ORGA008
+	</select>
+	
+	<select id="findOrganTree" resultType="HashMap"
+		parameterType="java.util.Map">
+		SELECT  
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA005 ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,ORGA012,ORGA020,
+		(SELECT COUNT(*) FROM HRSW_T_ORGAN WHERE ORGA002=A.ORGA001) CHILDCOUNT
+		FROM HRSW_T_ORGAN A
+		<if test="orga002 != null and orga002 == '-1' and userName != 'admin'">
+		INNER JOIN (
+		  SELECT C.DDOM002,C.DDOM003,E.UPUR002
+		  FROM HRSW_T_USERPURVIEW E
+		  INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+		  INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+      	  INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+		  WHERE E.UPUR002=#{userId} 
+		  <if test="organId != null and organId != ''">
+		  	AND E.UPUR009=#{organId}
+		  </if>
+		  GROUP BY C.DDOM002,C.DDOM003,E.UPUR002
+		) F ON A.ORGA001=F.DDOM003
+		</if>
+		<where>
+			A.ORGA013 = 1
+			<if test="keyWord == null or keyWord == '' ">
+				<if test="orga002 != null and orga002 == '-1' and userName == 'admin'">
+					AND A.ORGA010 = 1
+				</if>
+				<if test="orga002 != null and orga002 != '-1'">
+					AND A.ORGA002 = #{orga002}
+				</if>
+			</if>
+			<!-- 用来判断是否是报名机构根节点,如果是报名机构根节点，则通过后台自己创建报名节点 -->
+			<if test="enroll">
+                AND A.ORGA020 != 2
+            </if>
+            <if test="keyWord != null and keyWord != '' ">
+				AND EXISTS (
+					SELECT 1 FROM HRSW_T_ORGAN T
+					INNER JOIN HRSW_T_LEVELRELATION T2 ON T.ORGA001 = T2.LREL002
+					WHERE T2.LREL004 = A.ORGA001
+					AND T.ORGA005 LIKE CONCAT(CONCAT('%',#{keyWord}), '%')
+				)
+			</if>
+		</where>
+		<!-- ORDER BY ORGA008 -->
+		ORDER BY ORGA003 ASC <!-- 中海国际按机构编码排序 -->
+	</select>
+	<select id="findById" resultType="com.huarui.product2020.entity.HrswTOrgan">
+		SELECT
+		ORGA001,ORGA002,ORGA003,ORGA004,ORGA005,ORGA006,ORGA007,ORGA008,ORGA009,ORGA010,
+		ORGA011,ORGA012,ORGA013,ORGA014,ORGA015,ORGA016,ORGA017,ORGA018,ORGA019,ORGA020,
+		ORGA021,ORGA022,ORGA023,ORGA026,B.SELECTJOBID SELECTJOBID,B.SELECTJOBNAME SELECTJOBNAME,MEST003
+		FROM HRSW_T_ORGAN A
+		LEFT JOIN (SELECT TO_CHAR(WM_CONCAT(A.CDOM005)) SELECTJOBID,TO_CHAR(WM_CONCAT(B.CATA002)) SELECTJOBNAME,A.CDOM003 FROM HRSW_T_CATALOGDOMAIN A
+			INNER JOIN HRSW_T_CATALOG B ON A.CDOM005 = B.CATA001
+			GROUP BY A.CDOM003
+		)B ON A.ORGA001 = B.CDOM003
+		LEFT JOIN hr_t_MenuStatus C ON A.ORGA001 = C.Mest002
+		WHERE ORGA001 = #{orga001}
+	</select>
+</mapper>

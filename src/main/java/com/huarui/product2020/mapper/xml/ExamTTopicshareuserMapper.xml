@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTopicshareuserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTopicshareuser">
+		<id column="TSUS001" property="tsus001" />
+		<result column="TSUS002" property="tsus002" />
+		<result column="TSUS003" property="tsus003" />
+		<result column="TSUS004" property="tsus004" />
+		<result column="TSUS005" property="tsus005" />
+	</resultMap>
+
+</mapper>

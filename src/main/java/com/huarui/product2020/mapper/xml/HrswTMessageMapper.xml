@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMessageMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMessage">
+		<id column="MESS001" property="mess001" />
+		<result column="MESS002" property="mess002" />
+		<result column="MESS003" property="mess003" />
+		<result column="MESS004" property="mess004" />
+		<result column="MESS005" property="mess005" />
+		<result column="MESS006" property="mess006" />
+		<result column="MESS007" property="mess007" />
+		<result column="MESS008" property="mess008" />
+	</resultMap>
+
+	<select id="selectMessageNum" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT COUNT(1) MESSAGENUM
+  			FROM (SELECT MESS001, MESS002 FROM HRSW_T_MESSAGE) A
+ 			INNER JOIN HRSW_T_MESSAGERECEIVE C 
+ 				ON A.MESS001 = C.MREC002
+                AND MREC003 = #{user001}                                  
+  		LEFT JOIN (SELECT MREA003, MREA002, COUNT(*) READ
+               FROM HRSW_T_MESSAGEREADER
+              WHERE MREA003 = #{user001}       
+              GROUP BY MREA003, MREA002) B 
+              ON A.MESS001 = B.MREA002
+ 		WHERE NVL(B.READ, 0) = 0
+   			AND A.MESS002 IN (1, 2, 3)
+	</select>
+</mapper>

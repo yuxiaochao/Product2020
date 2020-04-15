@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb01">
+		<id column="PXB0101" property="pxb0101" />
+		<result column="PXB0102" property="pxb0102" />
+		<result column="PXB0103" property="pxb0103" />
+		<result column="PXB0104" property="pxb0104" />
+		<result column="PXB0105" property="pxb0105" />
+		<result column="PXB0106" property="pxb0106" />
+		<result column="PXB0107" property="pxb0107" />
+		<result column="PXB0108" property="pxb0108" />
+		<result column="PXB0109" property="pxb0109" />
+		<result column="PXB0110" property="pxb0110" />
+		<result column="PXB0111" property="pxb0111" />
+		<result column="PXB0112" property="pxb0112" />
+		<result column="PXB0113" property="pxb0113" />
+		<result column="PXB0114" property="pxb0114" />
+		<result column="PXB0115" property="pxb0115" />
+		<result column="PXB0116" property="pxb0116" />
+		<result column="PXB0117" property="pxb0117" />
+		<result column="PXB0118" property="pxb0118" />
+		<result column="PXB0119" property="pxb0119" />
+		<result column="PXB0120" property="pxb0120" />
+		<result column="PXB0121" property="pxb0121" />
+		<result column="PXB0122" property="pxb0122" />
+	</resultMap>
+	
+	<select id="queryTranList" resultType="java.util.HashMap" parameterType="java.util.Map">
+		<![CDATA[ SELECT a.pxb0101,a.pxb0102,a.pxb0103,a.pxb0108,a.pxb0118,a.pxb0105,a.pxb0106,a.pxb0109,a.pxb0110,a.pxb0121,a.pxb0122,a.pxb0123,
+						 decode(a.pxb0103,0,'线上',1,'面授',2,'混和') as pxb0103n,
+						 to_char(a.PXB0105,'YYYY-MM-DD') as pxb0105n,
+						 to_char(a.PXB0106,'YYYY-MM-DD') as pxb0106n,
+						 d.ORGA005 as pxb0109n,
+						 e.ORGA005 as pxb0110n,
+						 decode(a.pxb0123,0,'未发布',1,'已发布') as pxb0123n,
+						 nvl(c.user005,'--') user005
+		FROM tbPXB01 a
+		left join tbPXB03 b
+		 on b.PXB0302=a.PXB0101
+		  and b.PXB0303=0
+		left join hrsw_t_user c
+		 on c.USER001=b.PXB0304
+		left join hrsw_t_organ d
+		 on d.ORGA001=a.PXB0109
+		left join hrsw_t_organ e
+		 on e.ORGA001=a.PXB0109
+        ]]>
+        <where>
+                <if test="pxb0123 != null and pxb0123!=''">
+				     <![CDATA[ AND pxb0123 = #{pxb0123} ]]>
+				</if>
+				 <if test="pxb0102 != null and pxb0102 !=''">
+				     <![CDATA[ AND pxb0102 like concat(concat('%',#{pxb0102}),'%') ]]>
+				</if>
+				<if test="user005 != null and user005 !=''">
+				     <![CDATA[ AND c.user005 like concat(concat('%',#{pxb0123}),'%') ]]>
+				</if>
+				<if test="pxb0109 != null and pxb0109 !=''"> 
+				     <![CDATA[ AND pxb0109  like concat(concat('%',#{pxb0109}),'%') ]]>
+				</if>
+				<if test="pxb0110 != null and pxb0110 !=''"> 
+				     <![CDATA[ AND pxb0110  like concat(concat('%',#{pxb0110}),'%') ]]>
+				</if>
+				<if test="pxb0105 != null and pxb0105 !=''"> 
+				     <![CDATA[ AND pxb0105>= to_date(substr(#{pxb0105},1,10),'YYYY-MM-DD') ]]>
+				</if>
+				<if test="pxb0106 != null and pxb0106 !=''"> 
+				     <![CDATA[ AND pxb0106<= to_date(substr(#{pxb0106},1,10),'YYYY-MM-DD') ]]>
+				</if>
+        </where>
+    </select>
+    
+    
+    <select id="findBasicInfoById" resultType="com.huarui.product2020.entity.Tbpxb01">
+		 <![CDATA[
+		 	SELECT
+				A.PXB0101,
+				A.PXB0102,
+				A.PXB0103,
+				A.PXB0104,
+				A.PXB0105,
+				A.PXB0106,
+				A.PXB0107,
+				A.PXB0108,
+				A.PXB0109,
+				A.PXB0110,
+				A.PXB0111,
+				A.PXB0112,
+				A.PXB0113,
+				A.PXB0114,
+				A.PXB0115,
+				A.PXB0116,
+				A.PXB0117,
+				A.PXB0118,
+				A.PXB0119,
+				A.PXB0120,
+				A.PXB0121,
+				A.PXB0122,
+				A.PXB0123,
+				B.ORGA005 AS PXB0109N,
+				C.ORGA005 AS PXB0110N
+			FROM
+				tbPXB01 A
+			LEFT JOIN HRSW_T_ORGAN B ON
+				A.PXB0109 = B.ORGA001
+			LEFT JOIN HRSW_T_ORGAN C ON
+				A.PXB0110 = C.ORGA001
+			WHERE A.PXB0101 = #{pxb0101}
+		 ]]> 
+	</select>
+	
+	<select id="findByPxb0123" parameterType="com.huarui.common.Req" resultType="HashMap">
+		SELECT a.PXB0101 AS rs001,
+			   a.PXB0102 AS rs1,
+		       c.USER005 AS rs2,
+		       to_char(a.PXB0105, 'YYYY-MM-DD HH24:MI') AS rs3,
+		       to_char(a.PXB0106, 'YYYY-MM-DD HH24:MI') AS rs4,
+		       nvl(f.totalNum, 0) AS rs5,
+		       nvl(f.totalNum, 0) AS rs6,
+		       d.ORGA005 AS rs7,
+		       e.ORGA005 AS rs8
+		  FROM tbPXB01 a
+		  LEFT JOIN tbPXB03 b
+		    ON b.PXB0302 = a.PXB0101
+		   AND b.PXB0303 = 0
+		  LEFT JOIN hrsw_t_user c
+		    ON c.user001 = b.PXB0304
+		  LEFT JOIN hrsw_t_organ d
+		    ON d.orga001 = a.PXB0109
+		  LEFT JOIN hrsw_t_organ e
+		    ON e.orga001 = a.PXB0110
+		  LEFT JOIN (SELECT f1.PXB0602, COUNT(f1.PXB0602) totalNum
+		               FROM tbPXB06 f1
+		              INNER JOIN tbPXB01 f2
+		                 ON f1.PXB0602 = f2.pxb0101
+		              GROUP BY f1.PXB0602) f
+		    ON f.PXB0602 = a.pxb0101
+		 WHERE a.PXB0123 = 1
+		 <if test="parameterMap.rs1!='' and parameterMap.rs1!=null">
+		 	and a.PXB0102 like concat('%',concat(#{parameterMap.rs1},'%'))
+		 </if>
+		 <if test="parameterMap.rs2!='' and parameterMap.rs2!=null">
+		 	and c.USER005 like concat('%',concat(#{parameterMap.rs2},'%'))
+		 </if>
+		 <if test="parameterMap.rs3!='' and parameterMap.rs3!=null">
+		 	and a.PXB0105 &gt; to_date(substr(#{parameterMap.rs3},1,16),'YYYY-MM-DD HH24:MI')
+		 </if>
+		 <if test="parameterMap.rs4!='' and parameterMap.rs4!=null">
+		 	and a.PXB0106 &lt; to_date(substr(#{parameterMap.rs4},1,16),'YYYY-MM-DD HH24:MI')
+		 </if>
+		 <if test="parameterMap.rs7!='' and parameterMap.rs7!=null">
+		 	and d.ORGA005 like concat('%',concat(#{parameterMap.rs7},'%'))
+		 </if>
+		 <if test="parameterMap.rs8!='' and parameterMap.rs8!=null">
+		 	and e.ORGA005 like concat('%',concat(#{parameterMap.rs8},'%'))
+		 </if>
+		 ORDER BY a.PXB0105, a.PXB0106 ASC
+	</select>
+	<select id="findByPxb0101" parameterType="String" resultType="HashMap">
+		SELECT a.PXB0102 AS rs1,
+		       CASE a.PXB0103
+		         WHEN 0 THEN
+		          '线上'
+		         WHEN 1 THEN
+		          '面授'
+		         WHEN 2 THEN
+		          '混合'
+		       END AS rs2,
+		       a.PXB0104 AS rs3,
+		       CASE a.PXB0108
+		         WHEN 0 THEN
+		          '工种鉴定'
+		         WHEN 1 THEN
+		          '技能鉴定'
+		       END AS rs4,
+		       a.PXB0112 AS rs5,
+		       to_char(a.pxb0105, 'YYYY-MM-DD HH24:MI') AS rs6,
+		       to_char(a.pxb0106, 'YYYY-MM-DD HH24:MI') AS rs7,
+		       b.orga005 AS rs8,
+		       c.orga005 AS rs9,
+		       d.USER005 AS rs10,
+		       a.PXB0113 AS rs11
+		  FROM tbPXB01 a
+		  LEFT JOIN Hrsw_t_Organ b
+		    ON b.orga001 = a.pxb0109
+		  LEFT JOIN hrsw_t_organ c
+		    ON c.orga001 = a.pxb0110
+		  LEFT JOIN hrsw_t_user d
+		    ON d.user001 = a.PXB0111
+		 <where>
+		 	a.PXB0101 = #{id}
+		 </where>
+	</select>
+	<select id="findRegisterByPxb0101" parameterType="com.huarui.common.Req" resultType="HashMap">
+		SELECT PXB0601 AS RS001, 
+			  CASE PXJK0102
+		         WHEN 0 THEN
+		          '未报到'
+		         WHEN 1 THEN
+		          '已报到'
+		         ELSE
+		          '未报到'
+		       END AS RS1,
+		       CASE PXJK0103
+		         WHEN 0 THEN
+		          '人工报到'
+		         WHEN 1 THEN
+		          '自主报到'
+		         ELSE
+		          '--'
+		       END AS RS2,
+		       PXB0605 AS RS3,
+		       PXB0606 AS RS4,
+		       orga005 AS RS5,
+		       PXB0609 AS RS6,
+		       nvl(to_char(PXJK0104, 'YYYY-MM-DD'),'--') AS RS7
+		  FROM tbPXB06
+		  LEFT JOIN tbPXJK01
+		    ON PXJK0105 = PXB0601
+		  LEFT JOIN HRSW_T_ORGAN
+		    ON ORGA001 = PXB0607
+		 <where>
+		 	PXB0602 = #{parameterMap.pxb0101}
+		 <if test="parameterMap.rs1==0">
+		 	and (PXJK0102=#{parameterMap.rs1} or PXJK0102 is null)
+		 </if>
+		  <if test="parameterMap.rs1==1">
+		 	and PXJK0102=#{parameterMap.rs1}
+		 </if>
+		 <if test="parameterMap.rs3!=null and parameterMap.rs3!=''">
+		 	and PXB0605 like concat('%',concat(#{parameterMap.rs3},'%'))
+		 </if>
+		 <if test="parameterMap.rs5!=null and parameterMap.rs5!=''">
+		 	and orga005 like concat('%',concat(#{parameterMap.rs5},'%')) 
+		 </if>
+		 </where>
+		 order by PXJK0104  DESC nulls last,PXB0601 desc
+	</select>
+	<select id="findRegisterCountByPxb0101" parameterType="com.huarui.common.Req" resultType="Integer">
+		SELECT COUNT(PXJK0101)
+		  FROM tbPXJK01
+		 INNER JOIN tbPXB06
+		    ON PXB0601 = PXJK0105
+		 <where>
+		   PXJK0102 = 1
+		   AND PXB0602 = #{parameterMap.pxb0101}
+		   <if test="parameterMap.rs1==0">
+		 	and (PXJK0102=#{parameterMap.rs1} or PXJK0102 is null)
+		 </if>
+		  <if test="parameterMap.rs1==1">
+		 	and PXJK0102=#{parameterMap.rs1}
+		 </if>
+		 <if test="parameterMap.rs3!=null and parameterMap.rs3!=''">
+		 	and PXB0605 like concat('%',concat(#{parameterMap.rs3},'%'))
+		 </if>
+		 <if test="parameterMap.rs5!=null and parameterMap.rs5!=''">
+		 	and orga005 like concat('%',concat(#{parameterMap.rs5},'%')) 
+		 </if>
+		 </where>
+	</select>
+	
+	
+	<!-- 查询已安排食宿的培训班并分页 -->
+	<select id="findArrangedListByPage" resultType="com.huarui.product2020.entity.AccommodationArrangeDto" parameterType="HashMap">
+		SELECT
+			A.PXB0101 AS ACARD001,
+			A.PXB0102 AS ACARD002,
+			A.PXB0105 AS ACARD003,
+			A.PXB0106 AS ACARD004,
+			A.PXB0109 AS ACARD005,
+			B.ORGA005 AS ACARD005N,
+			C.PXB0304 AS ACARD006,
+			D.USER005 AS ACARD006N,
+			(SELECT COUNT( 1 ) FROM TBPXB06 T WHERE T.PXB0602 = A.PXB0101 ) AS ACARD007
+		FROM
+			TBPXB01 A
+		LEFT JOIN HRSW_T_ORGAN B ON
+			A.PXB0109 = B.ORGA001
+		LEFT JOIN TBPXB03 C ON
+			A.PXB0101 = C.PXB0302
+			AND C.PXB0303 = 0
+		LEFT JOIN HRSW_T_USER D ON
+			C.PXB0304 = D.USER001
+		LEFT JOIN HR_T_RESTAURANTARRANGE E ON 
+			A.PXB0101=E.REAR002
+		<where>
+			<!-- 培训班必须已发布 -->
+			<![CDATA[ AND A.PXB0123 = 1]]>
+			<!-- 查询条件 -->
+			<![CDATA[ AND E.REAR006 = 1 ]]>
+			<if test="acard002 != null">
+			     <![CDATA[ AND A.PXB0102 LIKE CONCAT(CONCAT('%',#{acard002}),'%') ]]>
+			</if>
+			<if test="acard006n != null">
+			     <![CDATA[ AND D.USER005 LIKE CONCAT(CONCAT('%',#{acard006n}),'%') ]]>
+			</if>
+			<if test="acard005n != null">
+			     <![CDATA[ AND B.ORGA005 LIKE CONCAT(CONCAT('%',#{acard005n}),'%') ]]>
+			</if>
+			<if test="acard003 != null"> 
+			     <![CDATA[ AND A.PXB0105 >= TO_DATE(#{acard003},'YYYY-MM-DD') ]]>
+			</if>
+			<if test="acard004 != null"> 
+			     <![CDATA[ AND A.PXB0106 <= TO_DATE(#{acard004},'YYYY-MM-DD') ]]>
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 查询未安排食宿的培训班并分页 -->
+	<select id="findUnArrangeListByPage" resultType="com.huarui.product2020.entity.AccommodationArrangeDto" parameterType="HashMap">
+		SELECT
+			A.PXB0101 AS ACARD001,
+			A.PXB0102 AS ACARD002,
+			A.PXB0105 AS ACARD003,
+			A.PXB0106 AS ACARD004,
+			A.PXB0109 AS ACARD005,
+			B.ORGA005 AS ACARD005N,
+			C.PXB0304 AS ACARD006,
+			D.USER005 AS ACARD006N,
+			(SELECT COUNT( 1 ) FROM TBPXB06 T WHERE T.PXB0602 = A.PXB0101 ) AS ACARD007
+		FROM
+			TBPXB01 A
+		LEFT JOIN HRSW_T_ORGAN B ON
+			A.PXB0109 = B.ORGA001
+		LEFT JOIN TBPXB03 C ON
+			A.PXB0101 = C.PXB0302
+			AND C.PXB0303 = 0
+		LEFT JOIN HRSW_T_USER D ON
+			C.PXB0304 = D.USER001
+		LEFT JOIN HR_T_RESTAURANTARRANGE E ON 
+			A.PXB0101=E.REAR002
+		<where>
+			<!-- 培训班必须已发布 -->
+			<![CDATA[ AND A.PXB0123 = 1]]>
+			<!-- 查询条件 -->
+			<![CDATA[ AND (E.REAR001 IS NULL OR E.REAR001 = '' OR E.REAR006 = 0) ]]>
+			<if test="acard002 != null">
+			     <![CDATA[ AND A.PXB0102 LIKE CONCAT(CONCAT('%',#{acard002}),'%') ]]>
+			</if>
+			<if test="acard006n != null">
+			     <![CDATA[ AND D.USER005 LIKE CONCAT(CONCAT('%',#{acard006n}),'%') ]]>
+			</if>
+			<if test="acard005n != null">
+			     <![CDATA[ AND B.ORGA005 LIKE CONCAT(CONCAT('%',#{acard005n}),'%') ]]>
+			</if>
+			<if test="acard003 != null"> 
+			     <![CDATA[ AND A.PXB0105 >= TO_DATE(#{acard003},'YYYY-MM-DD') ]]>
+			</if>
+			<if test="acard004 != null"> 
+			     <![CDATA[ AND A.PXB0106 <= TO_DATE(#{acard004},'YYYY-MM-DD') ]]>
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="findAccommodationArranging" resultType="com.huarui.product2020.entity.AccommodationArrangeDto" >
+		<![CDATA[
+		 	SELECT
+				A.PXB0101 AS ACARD001,
+				A.PXB0102 AS ACARD002,
+				A.PXB0105 AS ACARD003,
+				A.PXB0106 AS ACARD004,
+				A.PXB0109 AS ACARD005,
+				B.ORGA005 AS ACARD005N,
+				A.PXB0109 AS ACARD005,
+				B.ORGA005 AS ACARD005N,
+				(SELECT COUNT( 1 ) FROM TBPXB06 T WHERE T.PXB0602 = A.PXB0101 ) AS ACARD007
+			FROM
+				tbPXB01 A
+			LEFT JOIN HRSW_T_ORGAN B ON
+				A.PXB0109 = B.ORGA001
+			LEFT JOIN HRSW_T_ORGAN C ON
+				A.PXB0110 = C.ORGA001
+			WHERE A.PXB0101 = #{pxb0101}
+		 ]]> 
+	</select>
+</mapper>

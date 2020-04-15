@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamineegradeMapper">
+
+<!-- 通用查询映射结果 -->
+		<resultMap type="com.huarui.product2020.entity.ExamTExamineegrade" id="ExamTExamineegrade">
+		<result column="EGRA001" property="egra001" />
+		<result column="EGRA002" property="egra002" />
+		<result column="EGRA003" property="egra003" />
+		<result column="EGRA004" property="egra004" />
+		<result column="EGRA005" property="egra005" />
+		<result column="EGRA006" property="egra006" />
+		<result column="EGRA007" property="egra007" />
+		<result column="EGRA008" property="egra008" />
+		<result column="EGRA009" property="egra009" />
+		<result column="EGRA010" property="egra010" />
+		<result column="EGRA011" property="egra011" />
+		<result column="EGRA012" property="egra012" />
+		<result column="EGRA013" property="egra013" />
+		<result column="EGRA014" property="egra014" />
+		<result column="EGRA015" property="egra015" />
+		<result column="EGRA016" property="egra016" />
+		<result column="EGRA017" property="egra017" />
+		<result column="EGRA018" property="egra018" />
+		<result column="EGRA019" property="egra019" />
+		<result column="EGRA020" property="egra010" />
+		</resultMap>
+	  
+	  <update id="updateExamineeGrade" parameterType="java.util.Map">
+	  	 <![CDATA[  UPDATE EXAM_T_EXAMINEEGRADE ]]> 
+		<set>
+			<if test="EGRA001 != null">
+			      <![CDATA[ EGRA001 = #{EGRA001} ]]> ,
+			</if>
+			<if test="EGRA002 != null">
+			      <![CDATA[ EGRA002 = #{EGRA002} ]]> ,
+			</if>
+			<if test="EGRA003 != null">
+			      <![CDATA[ EGRA003 = #{EGRA003} ]]> ,
+			</if>
+			<if test="EGRA004 != null">
+			      <![CDATA[ EGRA004 = #{EGRA004} ]]> ,
+			</if>
+			<if test="EGRA005 != null and EGRA005 != 0">
+			      <![CDATA[ EGRA005 = #{EGRA005} ]]> ,
+			</if>
+			<if test="EGRA006 != null">
+			      <![CDATA[ EGRA006 = #{EGRA006} ]]> ,
+			</if>
+			<if test="EGRA007 != null">
+			      <![CDATA[ EGRA007 = #{EGRA007} ]]> ,
+			</if>
+			<if test="EGRA008 != null">
+			      <![CDATA[ EGRA008 = #{EGRA008} ]]> ,
+			</if>
+			<if test="EGRA009 != null">
+			      <![CDATA[ EGRA009 = #{EGRA009} ]]> ,
+			</if>
+			<if test="EGRA010 != null">
+			      <![CDATA[ EGRA010 = #{EGRA010} ]]> ,
+			</if>
+			<if test="EGRA011 != null">
+			      <![CDATA[ EGRA011 = #{EGRA011} ]]> ,
+			</if>
+			<if test="EGRA012 != null">
+			      <![CDATA[ EGRA012 = #{EGRA012} ]]> ,
+		      		<if test="EGRA011 == null">
+			      	<![CDATA[ EGRA013 = EGRA011 + #{EGRA012} ]]> ,
+					</if>
+		      		<if test="EGRA011 != null">
+			      	<![CDATA[ EGRA013 = #{EGRA011} + #{EGRA012} ]]> ,
+					</if>			      
+			</if>
+			<if test="EGRA014 != null">
+			      <![CDATA[ EGRA014 = #{EGRA014} ]]> ,
+			</if>
+			<if test="EGRA015 != null">
+			      <![CDATA[ EGRA015 = #{EGRA015} ]]> ,
+			</if>
+			<if test="EGRA016 != null">
+			      <![CDATA[ EGRA016 = #{EGRA016} ]]> ,
+			</if>
+			<if test="EGRA019 != null">
+			      <![CDATA[ EGRA019 = #{EGRA019} ]]> ,
+			</if>
+			<if test="EGRA020 != null">
+			      <![CDATA[ EGRA020 = #{EGRA020} ]]> ,
+			</if>						
+		</set>
+		 <![CDATA[  WHERE EGRA001 = #{EGRA001} ]]> 
+	</update>
+</mapper>

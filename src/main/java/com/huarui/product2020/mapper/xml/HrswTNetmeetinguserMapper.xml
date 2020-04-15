@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNetmeetinguserMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNetmeetinguser">
+		<id column="NETU001" property="netu001" />
+		<result column="NETU002" property="netu002" />
+		<result column="NETU003" property="netu003" />
+		<result column="NETU004" property="netu004" />
+		<result column="NETU005" property="netu005" />
+		<result column="NETU006" property="netu006" />
+		<result column="NETU007" property="netu007" />
+		<result column="NETU008" property="netu008" />
+	</resultMap>
+
+	<select id="findnetmeetingByUID" resultType="HashMap" parameterType="java.util.Map">
+ <![CDATA[
+SELECT
+	 o.ORGA005,NETM001,NETM002,TO_CHAR(NETM003,'yyyy-MM-dd hh24:mm') NETM003,TO_CHAR(NETM004,'yyyy-MM-dd hh24:mm')NETM004,NETM005,NETM006,NETM007,NETM008,NETM009,NETM010,NETM011,TO_CHAR(NETM012,'yyyy-MM-dd hh24:mm')NETM012,TO_CHAR(NETM013,'yyyy-MM-dd hh24:mm')NETM013,NETM014,NETM015,NETM016,NETM017,NETM018
+FROM
+	hrsw_t_netmeetinguser A
+LEFT JOIN hrsw_t_netmeeting B ON A .NETU002 = NETM001 
+LEFT JOIN  hrsw_t_organ o on o.ORGA001=B.NETM010
+WHERE
+	SYSDATE > NETM003
+AND SYSDATE < NETM004
+AND NETM005 = 1 
+      ]]> 
+  <if test="netu004!=''">
+  and NETU004=#{netu004} 
+  </if>
+	</select>
+
+</mapper>

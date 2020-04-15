@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbyhqgl03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbyhqgl03">
+		<id column="YHQGL0301" property="yhqgl0301" />
+		<result column="YHQGL0302" property="yhqgl0302" />
+		<result column="YHQGL0303" property="yhqgl0303" />
+		<result column="YHQGL0304" property="yhqgl0304" />
+		<result column="YHQGL0305" property="yhqgl0305" />
+	</resultMap>
+
+	<select id="findYHQList" resultType="com.huarui.product2020.entity.Tbyhqgl03" parameterType="HashMap">
+		<![CDATA[ SELECT YHQGL0301,YHQGL0302,YHQGL0303,YHQGL0304,YHQGL0305,
+		B.YHQGL0704 YHQGL0704N 
+		FROM tbYHQGL03 A
+		INNER JOIN tbYHQGL07 B ON B.YHQGL0703 = A.YHQGL0301
+		INNER JOIN tbYHQGL01 C ON C.YHQGL0101 = A.YHQGL0302 ]]> 
+		<where>
+			<!-- 卡生成状态：0:待生成 1:已生成 2:作废 3:失效 -->
+			<![CDATA[ AND C.YHQGL0116 IN (1,2) ]]>
+		    <![CDATA[ AND A.YHQGL0303 = #{yhqgl0303} ]]>
+		    <![CDATA[ AND A.YHQGL0304 = #{yhqgl0304} ]]>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTUserpreferencesettingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTUserpreferencesetting">
+		<id column="USPS001" property="usps001" />
+		<result column="USPS002" property="usps002" />
+		<result column="USPS003" property="usps003" />
+		<result column="USPS004" property="usps004" />
+		<result column="USPS005" property="usps005" />
+		<result column="USPS006" property="usps006" />
+		<result column="USPS007" property="usps007" />
+		<result column="USPS008" property="usps008" />
+		<result column="USPS009" property="usps009" />
+		<result column="USPS010" property="usps010" />
+		<result column="USPS011" property="usps011" />
+		<result column="USPS012" property="usps012" />
+		<result column="USPS013" property="usps013" />
+		<result column="USPS014" property="usps014" />
+	</resultMap>
+
+</mapper>

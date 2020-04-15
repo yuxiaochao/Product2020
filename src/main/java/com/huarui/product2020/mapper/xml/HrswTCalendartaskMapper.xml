@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCalendartaskMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTCalendartask">
+		<id column="CALT001" property="calt001" />
+		<result column="CALT002" property="calt002" />
+		<result column="CALT003" property="calt003" />
+		<result column="CALT004" property="calt004" />
+		<result column="CALT005" property="calt005" />
+		<result column="CALT006" property="calt006" />
+		<result column="CALT007" property="calt007" />
+		<result column="CALT008" property="calt008" />
+		<result column="CALT009" property="calt009" />
+		<result column="CALT010" property="calt010" />
+		<result column="CALT011" property="calt011" />
+	</resultMap>
+
+	<select id="queryTaskList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<!-- SIGNINNUM 已完成人数,SIGNINTOTALNUM 执行此任务总人数,SIGNINMYNUM 我的签到次数,ISTYPE 状态（是否结束） -->
+		<![CDATA[ 
+   		
+   		SELECT DISTINCT CALT001,
+                CALT002,
+                CALT005,
+                CALT006,
+                CALT007,
+                USER005,
+                CALT010,
+                NVL(D.SIGNINNUM, 0) SIGNINNUM,
+                NVL(E.SIGNINTOTALNUM, 0) SIGNINTOTALNUM,
+                NVL(F.SIGNINMYNUM, 0) SIGNINMYNUM,
+                CASE WHEN sysdate<calt006 THEN 0 WHEN sysdate>calt006 THEN 1 ELSE 0 END ISTYPE
+  FROM HRSW_T_CALENDARTASK A
+ INNER JOIN HRSW_T_MEETINGTASKPEOPLE B
+    ON A.CALT001 = B.METP002
+   AND (B.METP005 = #{user001} OR A.CALT009 = #{user001})
+  LEFT JOIN HRSW_T_USER C
+    ON A.CALT009 = C.USER001
+  LEFT JOIN (SELECT T.MTSI002,COUNT(MTSI004)SIGNINNUM FROM (SELECT A.MTSI002,
+       A.MTSI004,
+       COUNT(MTSI004) AA
+  FROM HRSW_T_MEETINGTASKSIGNIN A
+ WHERE MTSI003 = 2
+   GROUP BY MTSI002,MTSI004) T 
+   LEFT JOIN HRSW_T_CALENDARTASK B
+                 ON B.CALT001 = T.MTSI002
+              WHERE T.AA >= B.CALT007
+              GROUP BY MTSI002) D
+    ON D.MTSI002 = A.CALT001
+  LEFT JOIN (SELECT COUNT(METP005) SIGNINTOTALNUM,METP002 FROM (SELECT METP005,
+       METP002
+  FROM HRSW_T_MEETINGTASKPEOPLE
+ WHERE METP003 = 2
+ GROUP BY METP002,METP005) A GROUP BY METP002) E
+    ON E.METP002 = A.CALT001
+  LEFT JOIN (SELECT COUNT(1) SIGNINMYNUM,
+                    MTSI002
+               FROM HRSW_T_MEETINGTASKSIGNIN
+              WHERE MTSI004 = #{user001}
+              GROUP BY MTSI002) F
+    ON F.MTSI002 = A.CALT001
+   		
+   		]]>
+   		<where>
+   			B.METP003 = 2 AND A.CALT011 = 1
+	   		<if test="type ==0 or type =='' or type =='undefined'">
+				<![CDATA[ and sysdate<calt006 ]]>
+			</if>
+			<if test="type ==1">
+				<![CDATA[ and sysdate>calt006  ]]>
+			</if>
+			<if test="type ==2">
+				<![CDATA[ and calt009=#{user001}  ]]>
+			</if>
+		</where>
+		order by ISTYPE
+	</select>
+	
+	<select id="queryTaskInfo" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+ 		
+ 		SELECT A.*,
+	     B.CATA002,
+	     C.USER005 CALT009N,
+	     D.TALI002,
+	     E.TLRE003,
+	     NVL(F.SIGNINNUM, 0) SIGNINNUM
+	 FROM HRSW_T_CALENDARTASK A
+	 LEFT JOIN HRSW_T_CATALOG B
+	   ON A.CALT003 = B.CATA001
+	 LEFT JOIN HRSW_T_USER C
+	   ON A.CALT009 = C.USER001
+	 LEFT JOIN HRSW_T_TASKLABELRELATION E
+	   ON A.CALT001 = E.TLRE002
+	 LEFT JOIN HRSW_T_TAGLIBRARY D
+	   ON E.TLRE003 = D.TALI001
+	 LEFT JOIN (SELECT COUNT(1) SIGNINNUM,
+	                   MTSI002
+	              FROM HRSW_T_MEETINGTASKSIGNIN
+	             WHERE MTSI004 = #{user001}
+	             GROUP BY MTSI002) F
+	   ON F.MTSI002 = A.CALT001
+	WHERE A.CALT001 = #{calt001}
+ 		
+
+   		]]>
+	</select>
+	<select id="queryTaskUserInfo" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		SELECT METP005,USER005
+  		FROM HRSW_T_CALENDARTASK A
+  		LEFT JOIN HRSW_T_MEETINGTASKPEOPLE B
+    	ON A.CALT001 = B.METP002
+    	LEFT JOIN hrsw_t_user C ON B.METP005 = C.USER001
+ 		WHERE A.CALT001 = #{calt001}
+   		AND B.METP003 = 2
+   		AND B.METP004 = #{metp004}
+   		]]>
+	</select>
+	
+	<select id="selectNoReaderTask" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+		  sum(dd.style) 
+		FROM (
+		SELECT 
+		DISTINCT
+		BB.CALT001,
+		case WHEN cc.mrea001 is null then 1 else 0 END style 
+		FROM hrsw_t_MeetingTaskPeople aa
+		INNER JOIN hrsw_t_calendarTask bb ON BB.CALT001=AA.METP002 AND <![CDATA[ sysdate>=trunc(bb.calt005,'iw') AND sysdate<=trunc(bb.calt006,'iw') + 7 AND bb.calt011=1]]>
+		LEFT JOIN hrsw_t_messageReader cc ON cc.MREA002=aa.METP002 AND cc.MREA003=aa.metp005
+		WHERE aa.metp005=#{user001}) dd
+	</select>
+	
+</mapper>

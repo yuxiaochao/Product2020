@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTraintopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTraintopic">
+		<id column="ETOP001" property="etop001" />
+		<result column="ETOP002" property="etop002" />
+		<result column="ETOP003" property="etop003" />
+		<result column="ETOP004" property="etop004" />
+		<result column="ETOP005" property="etop005" />
+		<result column="ETOP006" property="etop006" />
+		<result column="ETOP007" property="etop007" />
+		<result column="ETOP008" property="etop008" />
+		<result column="ETOP009" property="etop009" />
+		<result column="ETOP010" property="etop010" />
+		<result column="ETOP011" property="etop011" />
+		<result column="ETOP012" property="etop012" />
+		<result column="ETOP013" property="etop013" />
+		<result column="ETOP014" property="etop014" />
+		<result column="ETOP015" property="etop015" />
+		<result column="ETOP016" property="etop016" />
+		<result column="ETOP017" property="etop017" />
+		<result column="ETOP018" property="etop018" />
+		<result column="ETOP019" property="etop019" />
+		<result column="ETOP020" property="etop020" />
+		<result column="ETOP021" property="etop021" />
+		<result column="ETOP022" property="etop022" />
+		<result column="ETOP023" property="etop023" />
+		<result column="ETOP024" property="etop024" />
+		<result column="ETOP025" property="etop025" />
+		<result column="ETOP026" property="etop026" />
+		<result column="ETOP027" property="etop027" />
+		<result column="ETOP028" property="etop028" />
+		<result column="ETOP029" property="etop029" />
+		<result column="ETOP030" property="etop030" />
+		<result column="ETOP031" property="etop031" />
+		<result column="ETOP032" property="etop032" />
+		<result column="ETOP033" property="etop033" />
+		<result column="ETOP034" property="etop034" />
+		<result column="ETOP035" property="etop035" />
+	</resultMap>
+
+</mapper>

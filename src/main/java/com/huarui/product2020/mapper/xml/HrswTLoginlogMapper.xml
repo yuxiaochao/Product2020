@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTLoginlogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTLoginlog">
+		<id column="LLOG001" property="llog001" />
+		<result column="LLOG002" property="llog002" />
+		<result column="LLOG003" property="llog003" />
+		<result column="LLOG004" property="llog004" />
+		<result column="LLOG005" property="llog005" />
+		<result column="LLOG006" property="llog006" />
+		<result column="LLOG007" property="llog007" />
+		<result column="LLOG008" property="llog008" />
+		<result column="LLOG009" property="llog009" />
+		<result column="LLOG010" property="llog010" />
+		<result column="LLOG011" property="llog011" />
+		<result column="LLOG012" property="llog012" />
+	</resultMap>
+
+	<select id="queryLoginLogByUserID" parameterType="java.lang.String"  resultMap="BaseResultMap">
+		SELECT LLOG001,LLOG003,LLOG006,LLOG011,LLOG012 FROM(
+		SELECT ROW_NUMBER() OVER(PARTITION BY LLOG003 ORDER BY LLOG001 DESC) LEV,LLOG001,LLOG003,LLOG006,LLOG011,LLOG012 FROM HRSW_T_LOGINLOG) A
+		WHERE A.LLOG003=#{LLOG003} <![CDATA[ AND A.LEV <= 2 ]]>     
+		ORDER BY A.LLOG003,A.LLOG006 DESC
+	</select>
+</mapper>

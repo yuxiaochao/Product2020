@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy10Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy10">
+		<id column="CMDY1001" property="cmdy1001" />
+		<result column="CMDY1002" property="cmdy1002" />
+		<result column="CMDY1003" property="cmdy1003" />
+		<result column="CMDY1004" property="cmdy1004" />
+		<result column="CMDY1005" property="cmdy1005" />
+	</resultMap>
+	
+	<select id="findCourseAuditions" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+	    SELECT
+		    A.CMDY1001,
+		    A.CMDY1002,
+		    A.CMDY1003,
+		    A.CMDY1004,
+		    A.CMDY1005,
+		    B.CMDY0605 AS PRODUCTPRICE,
+		    C.COUR010 AS PRODUCTNAME,
+		    C.COUR004 AS PRODUCTIMAGE,
+		    C.COUR001,
+            D.WDKC0101
+		FROM
+		    TBCMDY10 A
+		LEFT JOIN TBCMDY06 B ON
+		    A.CMDY1005 = B.CMDY0601
+		LEFT JOIN XZXY_T_COURSE C ON
+		    A.CMDY1003 = C.COUR001
+		LEFT JOIN tbWDKC01 D ON 
+            B.CMDY0601 = D.WDKC0103
+		<where>
+		    <![CDATA[ AND A.CMDY1002 = #{cmdy1002} ]]>
+		    <if test="cmdy0601 != null">
+                <![CDATA[ AND B.CMDY0601 = #{cmdy0601} ]]>
+            </if>
+		</where>
+		ORDER BY B.CMDY0604, A.CMDY1004
+	</select>
+	
+	<select id="findCourseAuditionsClassify" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+	   SELECT
+            B.CMDY0601,
+            B.CMDY0603
+        FROM
+            TBCMDY10 A
+        LEFT JOIN TBCMDY06 B ON
+            A.CMDY1005 = B.CMDY0601
+        LEFT JOIN XZXY_T_COURSE C ON
+            A.CMDY1003 = C.COUR001
+        WHERE A.CMDY1002 = #{cmdy1002}
+        GROUP BY B.CMDY0601, B.CMDY0603
+	</select>
+
+</mapper>

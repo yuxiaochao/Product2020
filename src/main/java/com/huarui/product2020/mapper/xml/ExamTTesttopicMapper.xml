@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTesttopicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTesttopic">
+		<id column="TTOP001" property="ttop001" />
+		<result column="TTOP002" property="ttop002" />
+		<result column="TTOP003" property="ttop003" />
+		<result column="TTOP004" property="ttop004" />
+		<result column="TTOP005" property="ttop005" />
+		<result column="TTOP006" property="ttop006" />
+		<result column="TTOP007" property="ttop007" />
+		<result column="TTOP008" property="ttop008" />
+		<result column="TTOP009" property="ttop009" />
+		<result column="TTOP010" property="ttop010" />
+		<result column="TTOP011" property="ttop011" />
+		<result column="TTOP012" property="ttop012" />
+		<result column="TTOP013" property="ttop013" />
+		<result column="TTOP014" property="ttop014" />
+		<result column="TTOP015" property="ttop015" />
+		<result column="TTOP016" property="ttop016" />
+		<result column="TTOP017" property="ttop017" />
+		<result column="TTOP018" property="ttop018" />
+		<result column="TTOP019" property="ttop019" />
+		<result column="TTOP020" property="ttop020" />
+		<result column="TTOP021" property="ttop021" />
+		<result column="TTOP022" property="ttop022" />
+		<result column="TTOP023" property="ttop023" />
+		<result column="TTOP024" property="ttop024" />
+		<result column="TTOP025" property="ttop025" />
+		<result column="TTOP026" property="ttop026" />
+		<result column="TTOP027" property="ttop027" />
+		<result column="TTOP028" property="ttop028" />
+		<result column="TTOP029" property="ttop029" />
+		<result column="TTOP030" property="ttop030" />
+		<result column="TTOP031" property="ttop031" />
+		<result column="TTOP032" property="ttop032" />
+		<result column="TTOP033" property="ttop033" />
+		<result column="TTOP034" property="ttop034" />
+		<result column="TTOP035" property="ttop035" />
+	</resultMap>
+
+	<select id="selectTestPaperNum" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT COUNT(1) TESTPAPERNUM
+  			FROM EXAM_T_TESTACTIVITY T
+  			LEFT JOIN (SELECT EGRA004, COUNT(*) JOINCOUNT
+               FROM EXAM_T_EXAMINEEGRADE
+              WHERE EGRA002 =#{user001}
+              GROUP BY EGRA004) EG ON EG.EGRA004 = T.TACT001
+  			LEFT JOIN (SELECT EGRA004, EGRA007
+               FROM EXAM_T_EXAMINEEGRADE
+              WHERE EGRA007 = 2
+                AND EGRA002 =#{user001}) SG ON SG.EGRA004 = T.TACT001
+ 			WHERE (SYSDATE BETWEEN T.TACT006 AND T.TACT007)
+ 		<![CDATA[
+   			AND (T.TACT012 = 0 OR NVL(EG.JOINCOUNT, 0) < T.TACT012 OR
+       		(NVL(EG.JOINCOUNT, 0) < T.TACT012 AND NVL(SG.EGRA007, 0) = 2))
+   			AND EXISTS (SELECT 1
+          		FROM EXAM_V_EXAMUSER V
+         		WHERE V.TUSE002 = T.TACT001
+    	]]>     
+           AND USER001 = #{user001})
+	</select>
+	
+	<select id="selectRecentExamList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT TACT001,TACT003,TACT004,TO_CHAR(TACT006, 'YYYY-MM-DD HH24:MI') TACT006,TO_CHAR(TACT007, 'YYYY-MM-DD HH24:MI') TACT007,   
+       	TACT041
+  		FROM EXAM_T_TESTACTIVITY A
+ 		INNER JOIN HRSW_T_ORGAN B ON A.TACT003 = B.ORGA001
+  		JOIN EXAM_T_USERRESOURCERELATION C ON A.TACT001 = C.URRE004
+                                    		AND C.URRE011 = 1
+  		JOIN HRSW_T_USER D ON D.USER001 = C.URRE009
+  		JOIN EXAM_V_EXAMUSER V ON A.TACT001 = V.TUSE002
+                        AND V.USER001 = #{user001}
+  		LEFT JOIN EXAM_V_001EXAMINEEGRADEFORJOIN E ON A.TACT001 = E.TPID
+                                            AND E.USERID = #{user001}
+        <![CDATA[ WHERE ROWNUM < 4]]>                              
+        ORDER BY TACT006 DESC
+	</select>
+</mapper>

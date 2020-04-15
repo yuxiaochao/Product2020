@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.UserDiscussMapper">
+
+	<select id="queryDiscussList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.DIS001 TPDSID, A.DIS002 PAPERID,A.DIS003 CONTENT,A.DIS004 USERID,C.USER005 USERALIAS,
+		TO_CHAR(A.DIS005, 'YYYY-MM-DD HH24:MI:SS')DATECREATED,A.DIS006 PARENTID,
+		A.DIS008 ENJOYNM, NVL2(TBE.ENJ001, '1','0')ENJOYSTATUS,
+		<![CDATA[ (
+			 SELECT D.ATTA007 FROM HRSW_T_ATTACHMENT D WHERE
+             D.ATTA002 = #{userid}  AND  ATTA004 = 1 AND ROWNUM < 2
+		)PICTURE ]]> 
+		FROM HRSW_T_DISCUSS A
+		<!-- LEFT JOIN EXAM_T_TESTACTIVITY B ON A.DIS002 = B.TACT001 -->
+		LEFT JOIN HRSW_T_USER C ON C.USER001 = A.DIS004
+		<!-- 查询当前用户的点赞状态 -->
+		LEFT JOIN (SELECT ENJ003, ENJ001
+		FROM HRSW_T_ENJOY
+		WHERE ENJ002 = #{userid}
+		AND ENJ005 = 1)TBE ON TBE.ENJ003 = A.DIS001
+		<where>
+			A.DIS002 = #{tact001} AND A.DIS006 = '0'
+			<if test="type != null and type != ''">
+		 		AND A.DIS007 = #{type}
+			</if>
+			ORDER BY DIS005 ASC
+		</where>
+	</select>
+
+	<insert id="publishDiscuss" parameterType="java.util.Map">
+		<![CDATA[ INSERT INTO HRSW_T_DISCUSS(
+	   			 DIS001,DIS002,DIS003,DIS004,DIS005,DIS006,DIS007
+				)VALUES(
+	    		#{uuid,jdbcType=VARCHAR},
+	   		 	#{tact001,jdbcType=VARCHAR},
+	    		#{content,jdbcType=VARCHAR},
+	    		#{userid,jdbcType=VARCHAR},
+	    		SYSDATE,0,
+	    		#{dis007,jdbcType=INTEGER}
+		) ]]> 
+	</insert>
+
+	<insert id="publishReplyDiscuss" parameterType="java.util.Map">
+		<![CDATA[ INSERT INTO HRSW_T_DISCUSS(
+	   			 DIS001,DIS003,DIS004,DIS005,DIS006
+				)VALUES(
+	    		#{uuid,jdbcType=VARCHAR},
+	    		#{content,jdbcType=VARCHAR},
+	    		#{userid,jdbcType=VARCHAR},
+	    		SYSDATE,
+	    		#{dis001,jdbcType=VARCHAR}
+		) ]]> 
+	</insert>
+	
+	<select id="queryDiscussReplyList" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.dis001 TPDSID,A.dis003 CONTENT,B.USER005 USERALIAS,A.dis006 PARENTID,
+		B.USER001 USERID,TO_CHAR(A.dis005, 'YYYY-MM-DD HH24:MI:SS') DATECREATED,
+		<![CDATA[ (
+			 SELECT D.ATTA007 FROM HRSW_T_ATTACHMENT D WHERE
+             D.ATTA002 = #{userid}  AND  ATTA004 = 1 AND ROWNUM < 2
+		)PICTURE ]]> 
+		FROM HRSW_T_DISCUSS A
+		LEFT OUTER JOIN HRSW_T_USER B ON A.dis004 = B.USER001
+		<where>
+		<![CDATA[ A.dis006 <> '0' ]]> 
+		AND A.dis006 = #{tpdsid}
+		ORDER BY A.dis005 ASC
+		</where>
+	</select>
+	
+	<!-- 查询吐槽回复列表(多个评论回复)  -->
+	<select id="queryDiscussReplys" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		SELECT A.dis001 TPDSID,A.dis003 CONTENT,B.USER005 USERALIAS,A.dis006 PARENTID,
+		B.USER001 USERID,TO_CHAR(A.dis005, 'YYYY-MM-DD HH24:MI:SS') DATECREATED,
+		<![CDATA[ (
+			 SELECT D.ATTA007 FROM HRSW_T_ATTACHMENT D WHERE
+             D.ATTA002 = #{userid}  AND  ATTA004 = 1 AND ROWNUM < 2
+		)PICTURE ]]> 
+		FROM HRSW_T_DISCUSS A
+		LEFT OUTER JOIN HRSW_T_USER B ON A.dis004 = B.USER001
+		<where>
+		<![CDATA[ A.dis006 <> '0' ]]>
+		AND A.dis006 IN  
+			<foreach item="item" index="index" collection="tpdsidArray"  open="(" separator="," close=")">
+			 #{item}
+			 </foreach>
+		ORDER BY A.dis005 ASC
+		</where>
+	</select>
+	
+	<update id="addDiscussEnjoy" parameterType="java.util.Map">
+			UPDATE HRSW_T_DISCUSS
+		<set>
+			DIS008 = (DIS008 + 1)
+		</set> 
+			WHERE DIS001 = #{tpdsid}
+	</update>
+	
+	<update id="cancelDiscussEnjoy" parameterType="java.util.Map">
+			UPDATE HRSW_T_DISCUSS
+		<set>
+			DIS008 = 
+			<![CDATA[
+			CASE 
+			WHEN DIS008 >0 THEN (DIS008 - 1) 
+			when DIS008 < = 0 THEN 0
+			ELSE 0
+			END ]]> 
+		</set> 
+			WHERE DIS001 = #{tpdsid}
+	</update>
+	
+	<insert id="insertDiscussEnjoyUser" parameterType="java.util.Map">
+		<![CDATA[ 
+		    MERGE INTO HRSW_T_ENJOY L
+			USING(SELECT * FROM DUAL)P
+			ON(l.enj003 = #{tpdsid} and l.enj002= #{userid})
+			WHEN NOT MATCHED THEN
+	 		INSERT(enj001,enj003,enj002,enj004,enj005)
+			VALUES(#{uuid},#{tpdsid},#{userid},SYSDATE,#{islike})
+			WHEN MATCHED THEN
+			UPDATE  SET enj005 = #{islike}
+			WHERE enj003 = #{tpdsid} AND enj002= #{userid}
+		 ]]> 
+	</insert>
+	
+	<select id="queryEnjoyUserNameList" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		
+		<![CDATA[
+		 	 SELECT TO_CHAR(WMSYS.WM_CONCAT(TO_CHAR(NVL(b.USER005,'')))) useralias 
+		 	 FROM HRSW_T_ENJOY A
+  			 LEFT JOIN HRSW_T_USER B ON A.enj002 = B.USER001
+		]]> 
+		<where>
+			A.enj003 =  #{TPDSID}
+			AND A.enj005 = 1
+		</where>
+	</select>
+	
+         <select id="queryEnjoyStatusNameList" resultType="java.util.HashMap"
+		parameterType="java.lang.String">
+		
+		<![CDATA[
+		 	 SELECT A.dis001 TPDSID,A.dis008 Enjoynm,NVL2(TBE.enj001, '1', '0') ENJOYSTATUS
+	 		 FROM HRSW_T_DISCUSS A
+			 LEFT JOIN (SELECT ENJ003, ENJ001
+			 FROM HRSW_T_ENJOY
+	 		 WHERE ENJ002 =#{arg1}
+	 		 AND ENJ005 = 1) TBE ON TBE.ENJ003 = A.DIS001
+		]]> 
+		<where>
+			A.dis001 =  #{arg0}
+			ORDER BY A.dis005 ASC
+		</where>
+	</select>
+    
+    <delete id="deleteDiscussList" parameterType="java.util.Map">
+        DELETE  FROM HRSW_T_DISCUSS 
+        <where>
+			 DIS002 = #{topicid}  and DIS004 = #{userid}
+			 <!--  AND DIS006 = '0'
+			<if test="type != null and type != ''">
+		 		AND A.DIS007 = #{type}
+			</if> -->
+		</where>       
+    </delete>
+    
+    <delete id="deleteEnjoyList" parameterType="java.util.Map">
+        DELETE FROM HRSW_T_ENJOY A
+        WHERE EXISTS
+         (
+         select 1 from
+            (
+         select  DIS001 from HRSW_T_DISCUSS
+         <where>
+			 DIS002 = #{topicid}  and DIS004 = #{userid} 
+		</where>
+		 ) S WHERE A.ENJ003=S.DIS001
+		)
+    </delete>
+    
+    
+</mapper>

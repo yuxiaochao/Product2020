@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCoursewareMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCourseware">
+		<id column="COUR001" property="cour001" />
+		<result column="COUR002" property="cour002" />
+		<result column="COUR003" property="cour003" />
+		<result column="COUR004" property="cour004" />
+		<result column="COUR005" property="cour005" />
+		<result column="COUR006" property="cour006" />
+		<result column="COUR007" property="cour007" />
+		<result column="COUR008" property="cour008" />
+		<result column="COUR009" property="cour009" />
+		<result column="COUR010" property="cour010" />
+		<result column="COUR011" property="cour011" />
+		<result column="COUR012" property="cour012" />
+		<result column="COUR013" property="cour013" />
+		<result column="COUR014" property="cour014" />
+		<result column="COUR015" property="cour015" />
+		<result column="COUR016" property="cour016" />
+		<result column="COUR017" property="cour017" />
+		<result column="COUR018" property="cour018" />
+		<result column="COUR019" property="cour019" />
+	</resultMap>
+
+
+    <select id="findbyCourseFirstSectionList" resultType="java.util.Map">
+		<![CDATA[ select * from (
+			select
+			t.cour001,
+			t3.ccwe001,  /*-- 章节id*/
+			t4.COUR006,  /*-- 播放路径*/
+			nvl(t3.ccwe008, 0) ccwe008, /*-- 非当前课件学习页面自动停止播放和计时：0、否 1、是*/
+			nvl(t3.ccwe009, 0) ccwe009,  /*-- 视频类课件首次学习时允许拖拽：1、不允许 0、允许*/
+			row_number() over( order by t2.ccwe005 asc, t3.ccwe005 asc) rownum02
+			 from xzxy_t_course t
+			inner join course_t_courseware t2 on t.cour001 = t2.ccwe002 and t2.ccwe004 = 0
+			inner join course_t_courseware t3 on t2.ccwe001 = t3.ccwe010 and t3.ccwe004 = 1
+			inner join hrsw_t_courseware t4 on t4.cour001 = t3.ccwe006
+
+
+			where t.cour001 = #{cour001}
+		) aa
+		where aa.rownum02 = 1
+		 ]]>
+	</select>
+
+</mapper>

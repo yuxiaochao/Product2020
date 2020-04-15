@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.AcademicbuildingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Academicbuilding">
+		<id column="ACAD001" property="acad001" />
+		<result column="ACAD002" property="acad002" />
+		<result column="ACAD003" property="acad003" />
+		<result column="ACAD004" property="acad004" />
+		<result column="ACAD005" property="acad005" />
+		<result column="ACAD006" property="acad006" />
+		<result column="ACAD007" property="acad007" />
+	</resultMap>
+
+
+	<!-- 查询教学楼信息列表并分页 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Academicbuilding" parameterType="HashMap">
+		SELECT
+			A.ACAD001,
+			A.ACAD002,
+			A.ACAD003,
+			A.ACAD004,
+			B.USER005 AS ACAD005,
+			A.ACAD006,
+			A.ACAD007
+		FROM
+			HR_T_ACADEMICBUILDING A
+		LEFT JOIN HRSW_T_USER B ON
+			A.ACAD005 = B.USER001
+		<where>
+			<!-- 模糊匹配教学楼名称 -->
+			<if test="acad002 != null">
+				<![CDATA[ AND A.ACAD002 LIKE CONCAT(CONCAT('%',#{acad002}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.ACAD006 DESC]]>
+		</if>
+	</select>
+	
+	
+	
+	<!-- 选择教学楼弹框信息列表并分页 -->
+	<select id="findAcademicbuilding" resultType="HashMap" parameterType="HashMap">
+		SELECT
+			A.ACAD001,
+			A.ACAD002,
+			A.ACAD003,
+			A.ACAD004,
+			B.USER005 AS ACAD005,
+			A.ACAD006,
+			A.ACAD007
+		FROM
+			HR_T_ACADEMICBUILDING A
+		LEFT JOIN HRSW_T_USER B ON
+			A.ACAD005 = B.USER001
+		<where>
+			<!-- 模糊匹配教学楼名称 -->
+			<if test="acad002 != null">
+				<![CDATA[ AND A.ACAD002 LIKE CONCAT(CONCAT('%',#{acad002}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.ACAD006 DESC]]>
+		</if>
+	</select>
+</mapper>

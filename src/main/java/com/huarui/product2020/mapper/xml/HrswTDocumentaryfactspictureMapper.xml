@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTDocumentaryfactspictureMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTDocumentaryfactspicture">
+		<id column="DOFP001" property="dofp001" />
+		<result column="DOFP002" property="dofp002" />
+		<result column="DOFP003" property="dofp003" />
+		<result column="DOFP004" property="dofp004" />
+	</resultMap>
+
+<delete id="deletePictrue" parameterType="java.util.Map" >
+  delete * from  hrsw_t_DocumentaryFactsPicture where  dofp002=#{dofp002} and dofp003=#{dofp003} 
+</delete>
+</mapper>

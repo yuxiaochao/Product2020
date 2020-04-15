@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Dcwj02Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Dcwj02">
+		<id column="DCWJ0201" property="dcwj0201" />
+		<result column="DCWJ0202" property="dcwj0202" />
+		<result column="DCWJ0203" property="dcwj0203" />
+		<result column="DCWJ0204" property="dcwj0204" />
+		<result column="DCWJ0205" property="dcwj0205" />
+		<result column="DCWJ0206" property="dcwj0206" />
+		<result column="DCWJ0207" property="dcwj0207" />
+		<result column="DCWJ0208" property="dcwj0208" />
+		<result column="DCWJ0209" property="dcwj0209" />
+		<result column="DCWJ0210" property="dcwj0210" />
+		<result column="ORGA005" property="orga005" />
+		<result column="USER005" property="user005" />
+		<result column="ROW_ID" property="serialNumber" />
+		<result column="QUOTENUM" property="quoteNum" />
+	</resultMap>
+
+	<select id="selectPage"  resultMap="BaseResultMap">
+		SELECT 
+			A.DCWJ0201,A.DCWJ0202,A.DCWJ0203,A.DCWJ0204,A.DCWJ0205,A.DCWJ0206,A.DCWJ0207,
+			A.DCWJ0208,A.DCWJ0209,A.DCWJ0210,C.ORGA005,D.USER005,
+			0 QUOTENUM  
+		FROM 
+			DCWJ02 A
+		INNER JOIN
+			DCWJ01 B
+		ON	A.DCWJ0202 = B.DCWJ0101
+		INNER JOIN
+			HRSW_T_ORGAN C
+		ON	C.ORGA001 = B.DCWJ0103
+		INNER JOIN
+			HRSW_T_USER D
+		ON D.USER001 = B.DCWJ0104
+		${ew.getSqlSegment}
+	</select>
+</mapper>

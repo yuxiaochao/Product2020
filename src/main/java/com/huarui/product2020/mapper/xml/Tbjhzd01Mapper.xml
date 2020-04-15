@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjhzd01Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjhzd01">
+		<id column="JHZD0101" property="jhzd0101" />
+		<result column="JHZD0102" property="jhzd0102" />
+		<result column="JHZD0103" property="jhzd0103" />
+		<result column="JHZD0104" property="jhzd0104" />
+		<result column="JHZD0105" property="jhzd0105" />
+		<result column="JHZD0106" property="jhzd0106" />
+		<result column="JHZD0107" property="jhzd0107" />
+		<result column="JHZD0108" property="jhzd0108" />
+		<result column="JHZD0109" property="jhzd0109" />
+		<result column="JHZD0110" property="jhzd0110" />
+		<result column="JHZD0111" property="jhzd0111" />
+		<result column="JHZD0112" property="jhzd0112" />
+		<result column="JHZD0113" property="jhzd0113" />
+		<result column="JHZD0114" property="jhzd0114" />
+	</resultMap>
+
+</mapper>

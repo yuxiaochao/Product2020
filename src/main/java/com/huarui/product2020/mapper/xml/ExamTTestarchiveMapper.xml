@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTTestarchiveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTTestarchive">
+		<id column="TACT001" property="tact001" />
+		<result column="TACT004" property="tact004" />
+		<result column="TACT005" property="tact005" />
+		<result column="ORGA001" property="orga001" />
+		<result column="TACT003NAME" property="tact003name" />
+		<result column="USER005" property="user005" />
+		<result column="EXAMNUM" property="examnum" />
+		<result column="JOINNUM" property="joinnum" />
+		<result column="PASSNUM" property="passnum" />
+		<result column="PASSRATE" property="passrate" />
+		<result column="AVGSCORE" property="avgscore" />
+		<result column="MAXSCORE" property="maxscore" />
+		<result column="MINSCORE" property="minscore" />
+		<result column="ARCHIVETIME" property="archivetime" />
+	</resultMap>
+
+</mapper>

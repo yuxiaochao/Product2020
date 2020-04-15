@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.CanteenMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Canteen">
+		<id column="CANT001" property="cant001" />
+		<result column="CANT002" property="cant002" />
+		<result column="CANT003" property="cant003" />
+		<result column="CANT004" property="cant004" />
+		<result column="CANT005" property="cant005" />
+		<result column="CANT006" property="cant006" />
+		<result column="CANT007" property="cant007" />
+		<result column="CANT008" property="cant008" />
+		<result column="CANT009" property="cant009" />
+		<result column="CANT010" property="cant010" />
+		<result column="CANT011" property="cant011" />
+		<result column="CANT012" property="cant012" />
+		<result column="CANT013" property="cant013" />
+	</resultMap>
+	
+	
+	<!-- 宿舍楼资源 -->
+	<select id="findList" resultType="com.huarui.product2020.entity.Canteen" parameterType="HashMap">
+		SELECT
+			A.CANT001,
+			A.CANT002,
+			A.CANT003,
+			A.CANT004,
+			A.CANT005,
+			A.CANT006,
+			A.CANT007,
+			A.CANT008,
+			A.CANT009,
+			A.CANT010,
+			A.CANT011,
+			A.CANT012,
+			A.CANT013
+		FROM
+			HR_T_CANTEEN  A
+		<where>
+			<if test="cant002 != null">
+				<![CDATA[ AND A.CANT002 LIKE CONCAT(CONCAT('%',#{cant002}), '%') ]]> 
+			</if>
+			<if test="cant003 != null">
+				<![CDATA[ AND A.CANT003 LIKE CONCAT(CONCAT('%',#{cant003}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.CANT009 DESC]]>
+		</if>
+	</select>
+
+
+	<!-- 餐厅信息导出 -->
+	<select id="findToExcel" resultType="com.huarui.product2020.entity.Canteen" parameterType="HashMap">
+		SELECT
+			A.CANT001,
+			A.CANT002,
+			A.CANT003,
+			A.CANT004,
+			A.CANT005,
+			A.CANT006,
+			A.CANT007,
+			A.CANT008,
+			A.CANT009,
+			A.CANT010,
+			A.CANT011,
+			A.CANT012,
+			A.CANT013
+		FROM
+			HR_T_CANTEEN  A
+		<where>
+			<if test="cant002 != null">
+				<![CDATA[ AND A.CANT002 LIKE CONCAT(CONCAT('%',#{cant002}), '%') ]]> 
+			</if>
+			<if test="cant003 != null">
+				<![CDATA[ AND A.CANT003 LIKE CONCAT(CONCAT('%',#{cant003}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.CANT009 DESC]]>
+		</if>
+	</select>
+	
+	
+	<select id="findMaxCode" resultType="java.lang.String">
+		SELECT MAX(CANT002) FROM HR_T_CANTEEN
+	</select>
+	
+	
+	<select id="findChooseCanteenList" resultType="com.huarui.product2020.entity.Canteen" parameterType="HashMap">
+		SELECT
+			A.CANT001,
+			A.CANT002,
+			A.CANT003,
+			A.CANT004,
+			A.CANT005,
+			A.CANT006,
+			A.CANT007,
+			A.CANT008,
+			A.CANT009,
+			A.CANT010,
+			A.CANT011,
+			A.CANT012,
+			A.CANT013
+		FROM
+			HR_T_CANTEEN  A
+		<where>
+			<if test="cant002 != null">
+				<![CDATA[ AND A.CANT002 LIKE CONCAT(CONCAT('%',#{cant002}), '%') ]]> 
+			</if>
+			<if test="cant003 != null">
+				<![CDATA[ AND A.CANT003 LIKE CONCAT(CONCAT('%',#{cant003}), '%') ]]> 
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.CANT009 DESC]]>
+		</if>
+	</select>
+</mapper>

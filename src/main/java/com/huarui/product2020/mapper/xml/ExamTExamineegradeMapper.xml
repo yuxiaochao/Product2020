@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTExamineegradeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTExamineegrade">
+		<id column="EGRA001" property="egra001" />
+		<result column="EGRA002" property="egra002" />
+		<result column="EGRA003" property="egra003" />
+		<result column="EGRA004" property="egra004" />
+		<result column="EGRA005" property="egra005" />
+		<result column="EGRA006" property="egra006" />
+		<result column="EGRA007" property="egra007" />
+		<result column="EGRA008" property="egra008" />
+		<result column="EGRA009" property="egra009" />
+		<result column="EGRA010" property="egra010" />
+		<result column="EGRA011" property="egra011" />
+		<result column="EGRA012" property="egra012" />
+		<result column="EGRA013" property="egra013" />
+		<result column="EGRA014" property="egra014" />
+		<result column="EGRA015" property="egra015" />
+		<result column="EGRA016" property="egra016" />
+		<result column="EGRA017" property="egra017" />
+		<result column="EGRA018" property="egra018" />
+		<result column="EGRA019" property="egra019" />
+		<result column="EGRA020" property="egra020" />
+	</resultMap>
+
+</mapper>

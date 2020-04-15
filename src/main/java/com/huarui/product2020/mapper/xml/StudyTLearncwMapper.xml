@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTLearncwMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTLearncw">
+		<id column="LECW001" property="lecw001" />
+		<result column="LECW002" property="lecw002" />
+		<result column="LECW003" property="lecw003" />
+		<result column="LECW004" property="lecw004" />
+		<result column="LECW005" property="lecw005" />
+		<result column="LECW006" property="lecw006" />
+		<result column="LECW007" property="lecw007" />
+		<result column="LECW008" property="lecw008" />
+		<result column="LECW009" property="lecw009" />
+	</resultMap>
+
+</mapper>

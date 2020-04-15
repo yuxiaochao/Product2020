@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTTeacherMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTTeacher">
+		<id column="TEAC001" property="teac001" />
+		<result column="TEAC011" property="teac011" />
+		<result column="TEAC012" property="teac012" />
+		<result column="TEAC013" property="teac013" />
+		<result column="TEAC014" property="teac014" />
+		<result column="TEAC015" property="teac015" />
+		<result column="TEAC016" property="teac016" />
+		<result column="TEAC017" property="teac017" />
+		<result column="TEAC018" property="teac018" />
+		<result column="TEAC019" property="teac019" />
+		<result column="TEAC020" property="teac020" />
+		<result column="TEAC021" property="teac021" />
+		<result column="TEAC002" property="teac002" />
+		<result column="TEAC003" property="teac003" />
+		<result column="TEAC004" property="teac004" />
+		<result column="TEAC005" property="teac005" />
+		<result column="TEAC006" property="teac006" />
+		<result column="TEAC007" property="teac007" />
+		<result column="TEAC008" property="teac008" />
+		<result column="TEAC009" property="teac009" />
+		<result column="TEAC010" property="teac010" />
+	</resultMap>
+
+</mapper>

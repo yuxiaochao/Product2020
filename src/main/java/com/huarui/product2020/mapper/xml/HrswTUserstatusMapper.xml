@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTUserstatusMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTUserstatus">
+		<id column="USST001" property="usst001" />
+		<result column="USST002" property="usst002" />
+		<result column="USST003" property="usst003" />
+		<result column="USST004" property="usst004" />
+		<result column="USST005" property="usst005" />
+		<result column="USST006" property="usst006" />
+		<result column="USST007" property="usst007" />
+		<result column="USST008" property="usst008" />
+		<result column="USST009" property="usst009" />
+		<result column="USST010" property="usst010" />
+		<result column="USST011" property="usst011" />
+	</resultMap>
+    
+    <insert id="insertInfo" parameterType="com.huarui.product2020.entity.HrswTUserstatus">
+    INSERT INTO 
+    hrsw_t_UserStatus(usst001,usst002,usst003,usst004,usst005,usst006,usst008)
+    VALUES(#{usst001},#{usst002},#{usst003},#{usst004},SYSDATE,SYSDATE,#{usst008})  
+    </insert>
+</mapper>

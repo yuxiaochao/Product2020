@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTUserpurviewMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTUserpurview">
+		<id column="UPUR001" property="upur001" />
+		<result column="UPUR002" property="upur002" />
+		<result column="UPUR003" property="upur003" />
+		<result column="UPUR004" property="upur004" />
+		<result column="UPUR005" property="upur005" />
+		<result column="UPUR006" property="upur006" />
+		<result column="UPUR007" property="upur007" />
+		<result column="UPUR008" property="upur008" />
+		<result column="UPUR009" property="upur009" />
+		<result column="UPUR010" property="upur010" />
+		<result column="UPUR011" property="upur011" />
+		<result column="UPUR012" property="upur012" />
+	</resultMap>
+	<!--  -->
+	<select id="findOrganByUserId" resultType="HashMap">
+		SELECT A.ORGA001,A.ORGA006,A.ORGA010,A.ORGA021,A.ORGA026,B.UPUR001,B.UPUR007,B.UPUR010,B.ROLE008
+		FROM HRSW_T_ORGAN A
+		INNER JOIN (
+	      SELECT UPUR001,UPUR007,UPUR009,UPUR010,ROLE008 FROM HRSW_T_USERPURVIEW A
+	      INNER JOIN HRSW_T_ROLE B ON B.ROLE001 = A.UPUR003 
+	      WHERE A.UPUR002 = #{userId}
+	    ) B ON A.ORGA001=B.UPUR009
+		ORDER BY A.ORGA010,A.ORGA008 
+	</select>
+
+	<select id="findOrganByUPCode" resultType="HashMap" parameterType="java.util.Map">
+		SELECT A.ORGA001, A.ORGA006, A.ORGA010, B.UPUR007,B.UPUR010
+		  FROM HRSW_T_ORGAN A
+		 INNER JOIN (SELECT C.UPUR007, C.UPUR009, C.UPUR010
+		               FROM HRSW_T_USERPURVIEW C
+		              WHERE C.UPUR002 = #{userId}
+		              GROUP BY C.UPUR007, C.UPUR009, C.UPUR010) B ON A.ORGA001 = B.UPUR009
+		 ORDER BY A.ORGA010, A.ORGA008 
+	</select>
+	
+</mapper>

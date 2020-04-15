@@ -1,0 +1,1109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTUser">
+        <id column="USER001" property="user001"/>
+        <result column="USER002" property="user002"/>
+        <result column="USER003" property="user003"/>
+        <result column="USER004" property="user004"/>
+        <result column="USER005" property="user005"/>
+        <result column="USER006" property="user006"/>
+        <result column="USER007" property="user007"/>
+        <result column="USER008" property="user008"/>
+        <result column="USER009" property="user009"/>
+        <result column="USER010" property="user010"/>
+        <result column="USER011" property="user011"/>
+        <result column="USER012" property="user012"/>
+        <result column="USER013" property="user013"/>
+        <result column="USER014" property="user014"/>
+        <result column="USER015" property="user015"/>
+        <result column="USER016" property="user016"/>
+        <result column="USER017" property="user017"/>
+        <result column="USER018" property="user018"/>
+        <result column="USER019" property="user019"/>
+        <result column="USER020" property="user020"/>
+        <result column="USER021" property="user021"/>
+        <result column="USER022" property="user022"/>
+        <result column="USER023" property="user023"/>
+        <result column="USER024" property="user024"/>
+        <result column="USER025" property="user025"/>
+        <result column="USER026" property="user026"/>
+        <result column="USER027" property="user027"/>
+        <result column="USER028" property="user028"/>
+        <result column="USER029" property="user029"/>
+        <result column="USER030" property="user030"/>
+        <result column="USER031" property="user031"/>
+        <result column="USER032" property="user032"/>
+        <result column="USER033" property="user033"/>
+        <result column="USER034" property="user034"/>
+        <result column="USER035" property="user035"/>
+        <result column="USER036" property="user036"/>
+        <result column="USER037" property="user037"/>
+        <result column="USER038" property="user038"/>
+        <result column="USER039" property="user039"/>
+        <result column="USER040" property="user040"/>
+    </resultMap>
+    <select id="checkAccount" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT *
+        FROM hrsw_t_user
+        WHERE USER004 = #{user004}
+    </select>
+    <update id="retrievePassword" parameterType="java.util.Map">
+        update hrsw_t_user
+        SET USER016=#{pwd}
+        WHERE USER001 = #{user001}
+    </update>
+
+    <select id="selectMapForUserInfo" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+	SELECT
+	TX.ATTA007,
+	A.USER001,
+	A.USER002,
+	A.USER004,
+	A.USER005,
+	A.USER006,
+	TO_CHAR( A.USER007, 'YYYY-MM-DD' ) AS USER007N,
+	TO_CHAR( A.USER008, 'YYYY-MM-DD' ) AS USER008N,
+	A.USER009,
+	A.USER010,
+	A.USER011,
+	A.USER012,
+	A.USER013,
+	A.USER014,
+	A.USER015,
+	A.USER016,
+	A.USER017,
+	A.USER027,
+	A.USER028,
+	A.USER029,
+	A.USER030,
+	C.ORGA006,
+	D.USST003
+	FROM
+	
+	HRSW_T_USER A
+	LEFT JOIN (
+	SELECT
+		WM_CONCAT ( GW.CATA002 ) POST,
+		CDOM006 
+	FROM
+		HRSW_T_CATALOGDOMAIN FW
+		LEFT JOIN HRSW_T_CATALOG GW ON GW.CATA008 = 2 
+		AND GW.CATA001 = FW.CDOM003 
+	GROUP BY
+		FW.CDOM006 
+	) T ON T.CDOM006 = A.USER001
+	LEFT JOIN HRSW_T_ORGAN C ON A.USER002 = C.ORGA001
+	LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = A.USER001 
+	AND TX.ATTA004 = 1
+	LEFT JOIN HRSW_T_USERSTATUS D ON D.USST002 = A.USER001
+		]]>
+        WHERE A.USER004 = #{arg0}
+        <if test="arg1 != 'loginAgain1070331325'">
+            AND A.USER016 = #{arg1}
+        </if>
+    </select>
+
+    <select id="selectMapForUserInfo01" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+        SELECT TX.ATTA007,
+               A.USER001,
+               A.USER002,
+               A.USER004,
+               A.USER005,
+               A.USER006,
+               TO_CHAR(A.USER007, 'YYYY-MM-DD') AS USER007N,
+               TO_CHAR(A.USER008, 'YYYY-MM-DD') AS USER008N,
+               A.USER009,
+               A.USER010,
+               A.USER011,
+               A.USER012,
+               A.USER013,
+               A.USER014,
+               A.USER015,
+               A.USER017,
+               C.ORGA006,
+               D.USST003
+        FROM HRSW_T_USER A
+                 LEFT JOIN (
+            SELECT WM_CONCAT(GW.CATA002) POST,
+                   CDOM006
+            FROM HRSW_T_CATALOGDOMAIN FW
+                     LEFT JOIN HRSW_T_CATALOG GW ON GW.CATA008 = 2
+                AND GW.CATA001 = FW.CDOM003
+            GROUP BY FW.CDOM006
+        ) T ON T.CDOM006 = A.USER001
+                 LEFT JOIN HRSW_T_ORGAN C ON A.USER002 = C.ORGA001
+                 LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = A.USER001
+            AND TX.ATTA004 = 1
+                 LEFT JOIN HRSW_T_USERSTATUS D ON D.USST002 = A.USER001
+	
+		]]>
+		WHERE A.USER004 = #{arg0}
+    </select>
+
+    <select id="selectUserInfoById" parameterType="java.lang.String" resultType="java.util.HashMap">
+        <![CDATA[
+		SELECT A.USER004,
+			   A.USER015,
+			   A.USER014,
+			   B.UINF0104,
+			   B.UINF0114,
+			   B.UINF0103,
+			   B.UINF0105,
+               B.UINF0107,
+               B.UINF0108,
+               B.UINF0109,
+			   B.UINF0108 || ',' || B.UINF0109 || ',' || B.UINF0110 RESIDENCEPLACE,
+               B.UINF0110,
+               B.UINF0111,
+               B.UINF0112,
+               B.UINF0113,
+			   B.UINF0111 || ',' || B.UINF0112 || ',' || B.UINF0113 HOMETOWN,
+			   B.UINF0115,
+		       c.ATTA007
+		FROM HRSW_T_USER A
+		LEFT JOIN TBUSERINFO B
+		ON A.USER001 = B.UINF0102
+		left join HRSW_T_ATTACHMENT c on a.user001 = c.ATTA002 and c.ATTA004 = 1
+		]]>
+			WHERE A.USER001 = #{user001}
+    </select>
+
+    <select id="selectUserQRCodeById" parameterType="java.lang.String" resultType="java.lang.String">
+        <![CDATA[
+        SELECT C.ATTA007
+        FROM HRSW_T_USER A
+                 LEFT JOIN HRSW_T_ATTACHMENT C ON A.USER001 = C.ATTA002
+			  ]]>
+			 WHERE A.USER001 = #{user001}
+          AND C.ATTA004 = 4
+    </select>
+
+    <select id="selectuserInfoMultipleById" resultType="HashMap" parameterType="java.util.Map">
+        <![CDATA[
+			SELECT A.USER001,A.USER002,A.USER004,A.USER005,A.USER006,ATTA007,us.usst003,
+			TO_CHAR(A.USER007, 'YYYY-MM-DD') AS USER007N,TO_CHAR(A.USER008, 'YYYY-MM-DD') AS USER008N,
+			A.USER009,A.USER010,A.USER011,A.USER012,A.USER013,A.USER014,A.USER015,A.USER017,C.ORGA006 
+		FROM HRSW_T_USER A 
+		LEFT JOIN (SELECT WM_CONCAT(GW.CATA002) POST,CDOM006 FROM HRSW_T_CATALOGDOMAIN FW 
+		LEFT JOIN HRSW_T_CATALOG GW ON GW.CATA008 = 2 AND GW.CATA001 = FW.CDOM003 GROUP BY FW.CDOM006) T ON T.CDOM006 = A.USER001
+		LEFT JOIN HRSW_T_ORGAN C ON A.USER002 = C.ORGA001
+		LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = A.USER001 AND TX.ATTA004 = 1
+		left join hrsw_t_UserStatus us on us.usst002 = A.USER001
+		]]>
+        WHERE A.USER001 IN
+        <foreach item="item" index="index" collection="option" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectUserInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *
+        FROM HRSW_T_USER
+        WHERE USER001 = #{user001}
+          AND USER016 = #{user016}
+    </select>
+
+    <update id="updatePwd" parameterType="java.util.Map">
+        update HRSW_T_USER
+        set USER016=#{user016}
+        WHERE USER001 = #{user001}
+    </update>
+
+    <select id="userInfo" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT dd.*
+        FROM (
+                 SELECT aa.USER005,
+                        aa.USER006,
+                        aa.USER007,
+                        aa.USER010,
+                        aa.USER013,
+                        aa.USER014,
+                        cc.usst003,
+                        ee.ATTA007,
+                        CASE
+                            WHEN cc.usst003 = 1 THEN '工作'
+                            WHEN cc.usst003 = 2 THEN '会议'
+                            WHEN cc.usst003 = 3 THEN '下班'
+                            WHEN cc.usst003 = 4 THEN '休假'
+                            WHEN cc.usst003 = 5 THEN '出差'
+                            else '暂无状态' END style,
+                        BB.ORGA012,
+                        bb.ORGA005
+                 FROM HRSW_T_USER aa
+                          INNER JOIN hrsw_t_organ bb ON BB.ORGA001 = AA.USER002
+                          LEFT JOIN hrsw_t_attachment ee ON ee.ATTA002 = aa.USER001 AND ee.ATTA004 = 1
+                          left JOIN hrsw_t_UserStatus cc ON cc.usst002 = aa.USER001
+                 WHERE aa.USER001 = #{user001}
+                 ORDER BY cc.usst005 desc) dd
+        WHERE ROWNUM = 1
+    </select>
+
+    <!-- 查询用户信息列表 -->
+    <select id="queryUserInfoList" resultType="HashMap" parameterType="HashMap">
+        SELECT USER001,USER002,B.ORGA012 AS
+        ORGANNAME,USER003,USER004,USER005,USER006,USER007,USER008,USER009,USER010,USER011,USER012,USER013,USER014,USER015,USER016,USER017,
+        CASE WHEN USER017 = 1 THEN '正常' WHEN USER017 = 2 THEN '虚拟' WHEN USER017 = 3 THEN '禁用' END USER017N,
+        USER018,USER019,USER020,USER021,USER022,USER023,USER024,USER025,USER026,USER027,
+        CASE WHEN USER027 = 1 THEN '运管单位 '
+        WHEN USER027 = 2 THEN '认证机构 '
+        WHEN USER027 = 3 THEN '报名机构 '
+        ELSE '' END USER027N,
+        USER028,USER029,USER030,USER031,USER032,
+        CASE WHEN USER032 = 1 THEN '管理员录入' WHEN USER032 = 2 THEN '用户注册' END USER032N,
+        USER033,USER034,USER035,USER036,USER037,USER038,USER039,USER040,USER041,USER042,TO_CHAR(USER042,'yyyy-mm-dd
+        hh24:mi:ss') USER042N,USER043,(SELECT USER027 FROM HRSW_T_USER U WHERE A.USER043 = U.USER001) USER043N
+        <!-- ,UPUR003S,ORGA005S -->
+        FROM HRSW_T_USER A
+        <!-- 人员属性表 -->
+        Left join hr_t_PersonnelAttributes Pa on a.USER025 = Pa.Reat001
+        <choose>
+            <when test="isRemovePurview == 1"><!-- 判断是否根据权限查询用户 (用户管理 1   多租户管理和报名单位管理 0)-->
+                INNER JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+            </when>
+            <when test="selectUserType != null and selectUserType == 4">
+                INNER JOIN (
+                SELECT E.UPUR002,O.ORGA012
+                FROM HRSW_T_USERPURVIEW E
+                INNER JOIN HRSW_T_ORGAN O ON E.UPUR009=O.ORGA001
+                INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+                INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+                WHERE H.RESO003 IN ('tkgl','kjgl','testActivity01','testActivity03','publicSubject')
+                AND E.UPUR002!=#{userId}
+                AND ((E.UPUR009=#{organId} AND E.UPUR007=1) OR E.UPUR009!=#{organId})
+                GROUP BY E.UPUR002,O.ORGA012
+                ) B ON A.USER001=B.UPUR002
+            </when>
+            <when test="selectUserType != null and selectUserType == 61">
+                INNER JOIN (
+                SELECT E.UPUR002,O.ORGA012
+                FROM HRSW_T_USERPURVIEW E
+                INNER JOIN HRSW_T_ORGAN O ON E.UPUR009=O.ORGA001
+                INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+                INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+                WHERE H.RESO003 IN ('kjgl','publicSubject') AND E.UPUR002!=#{userId}
+                AND ((E.UPUR009=#{organId} AND E.UPUR007=1) OR E.UPUR009!=#{organId})
+                GROUP BY E.UPUR002,O.ORGA012
+                ) B ON A.USER001=B.UPUR002
+            </when>
+            <when test="selectUserType != null and selectUserType == 2">
+                INNER JOIN (
+                SELECT E.UPUR002,O.ORGA012
+                FROM HRSW_T_USERPURVIEW E
+                INNER JOIN HRSW_T_ORGAN O ON E.UPUR009=O.ORGA001
+                INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+                INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+                WHERE H.RESO003='onlineMarking'
+                GROUP BY E.UPUR002,O.ORGA012
+                ) B ON A.USER001=B.UPUR002
+            </when>
+            <when test="selectUserType != null and selectUserType == 30">
+                INNER JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+                INNER JOIN (
+                SELECT
+                LREL002
+                FROM HRSW_T_LEVELRELATION
+                WHERE LREL004 = #{orgaid}
+                )C ON A.USER002 = C.LREL002
+                INNER JOIN HRSW_T_USERPURVIEW D ON D.UPUR002 = A.USER001
+            </when>
+            <when test="selectUserType != null and selectUserType == 31"><!-- 选择当前认证机构管理员主办单位对应服务单位的考生 -->
+                INNER JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+                INNER JOIN (
+                SELECT AURA003 FROM HR_T_AUTHENTICARANGE A
+                INNER JOIN (
+                SELECT
+                C.UPUR007,
+                C.UPUR009,
+                C.UPUR010
+                FROM
+                HRSW_T_USERPURVIEW C
+                WHERE
+                C.UPUR002 = '7e217ccaf7aa4c58a86f482e778c8b25'
+                GROUP BY
+                C.UPUR007,
+                C.UPUR009,
+                C.UPUR010
+                ) B ON A .AURA002 = B.UPUR009
+                ) C ON C .AURA003 = A.USER002
+            </when>
+            <otherwise>
+                INNER JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+                <choose>
+                    <when test="user002 != null">
+                        INNER JOIN (
+                        SELECT LREL002
+                        FROM HRSW_T_LEVELRELATION
+                        WHERE LREL007=#{lrel007} AND LREL004=#{user002}
+                        ) D ON B.ORGA001=D.LREL002
+                    </when>
+                    <otherwise>
+                        INNER JOIN (
+                        SELECT E.UPUR002,D.LREL002
+                        FROM HRSW_T_USERPURVIEW E
+                        INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+                        INNER JOIN HRSW_T_LEVELRELATION D ON C.DDOM003=D.LREL004 AND D.LREL007=#{lrel007}
+                        INNER JOIN HRSW_T_ROLEPURVIEW G ON E.UPUR003 = G.RPUR002
+                        INNER JOIN HRSW_T_RESOURCES H ON G.RPUR003 = H.RESO001
+                        WHERE E.UPUR002=#{userId}
+                        <!--  AND H.RESO003='usermanagement' -->
+                        GROUP BY E.UPUR002,D.LREL002
+                        ) F ON B.ORGA001=F.LREL002
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+        <if test="selectUserOrganId != null">
+            INNER JOIN (
+            SELECT LREL002
+            FROM HRSW_T_LEVELRELATION
+            WHERE LREL007=1
+            AND LREL004 IN
+            <foreach collection="selectUserOrganId" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+            ) I ON B.ORGA001=I.LREL002
+        </if>
+        <if test="orga001F != null">
+            LEFT JOIN HRSW_T_USERPURVIEW T ON A.USER001 = T.UPUR002
+            LEFT JOIN HRSW_T_ROLE T2 ON T.UPUR003 = T2.ROLE001
+            LEFT JOIN HRSW_T_DATADOMAIN T3 ON T.UPUR001 = T3.DDOM002
+            LEFT JOIN HRSW_T_ORGAN T4 ON T3.DDOM003 = T4.ORGA001
+        </if>
+        <where>
+            <!-- 是否 运管平台 0否 1是 -->
+            <if test="source != null and source == 1">
+                AND Pa.Reat013 = 1
+            </if>
+            <!-- 是否 鉴定中心 0否 1是 -->
+            <if test="source != null and source == 2 and organType != null and organType == 2">
+                AND Pa.Reat014 = 1
+            </if>
+            <!-- 是否 鉴定站 0否 1是 -->
+            <if test="source != null and source == 2 and organType != null and organType == 3">
+                AND Pa.Reat015 = 1
+            </if>
+            <!-- 是否 报名中心 0否 1是 -->
+            <if test="source != null and source == 3">
+                AND Pa.Reat016 = 1
+            </if>
+            <if test="orga020 != null and orga020 != '' ">
+                AND B.ORGA020 = #{orga020}
+            </if>
+            <if test="removeOrga020 != null and removeOrga020 != '' ">
+                AND B.ORGA020 != #{removeOrga020}
+            </if>
+            <if test="aura002 != null and aura002 != '' "><!-- 查询用户来源   认证机构查询对应的服务单位的用户   -->
+                AND EXISTS ( SELECT 1 FROM hr_t_AuthenticaRange WHERE AURA003 = B.ORGA001
+                AND AURA002 = #{aura002}
+                )
+            </if>
+            <if test="orga001L != null">
+                <![CDATA[ AND USER002 IN ]]>
+                <foreach collection="orga001L" index="index" item="item" open="("
+                         separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="orga001F != null">
+                <![CDATA[ AND T4.ORGA001 IN ]]>
+                <foreach collection="orga001F" index="index" item="item" open="("
+                         separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="user001 != null">
+                AND USER001 = #{user001}
+            </if>
+            <if test="user003 != null">
+                AND USER003 = #{user003}
+            </if>
+            <if test="user004 != null">
+                AND UPPER(USER004) LIKE UPPER(CONCAT(CONCAT('%',#{user004}), '%'))
+            </if>
+            <if test="user005 != null">
+                AND UPPER(USER005) LIKE UPPER(CONCAT(CONCAT('%',#{user005}), '%'))
+            </if>
+            <if test="user006 != null">
+                AND USER006 = #{user006}
+            </if>
+            <if test="user007 != null">
+                AND USER007 = #{user007}
+            </if>
+            <if test="user008 != null">
+                AND USER008 = #{user008}
+            </if>
+            <if test="user009 != null">
+                AND USER009 = #{user009}
+            </if>
+            <if test="user010 != null">
+                AND USER010 = #{user010}
+            </if>
+            <if test="user011 != null">
+                AND USER011 = #{user011}
+            </if>
+            <if test="user012 != null">
+                AND USER012 = #{user012}
+            </if>
+            <if test="user013 != null">
+                AND USER013 = #{user013}
+            </if>
+            <if test="user014 != null">
+                AND EXISTS (SELECT USER014 FROM HRSW_T_USER WHERE UPPER(USER014) LIKE
+                UPPER(CONCAT(CONCAT('%',#{user014}), '%')) AND USER001=A.USER001)
+            </if>
+            <if test="user015 != null">
+                AND USER015 = #{user015}
+            </if>
+            <if test="user016 != null">
+                AND USER016 = #{user016}
+            </if>
+            <if test="user017 != null and user017.size() >= 1">
+                AND USER017 in
+                <foreach item="item" index="index" collection="user017" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="user018 != null">
+                AND USER018 = #{user018}
+            </if>
+            <if test="user019 != null">
+                AND USER019 = #{user019}
+            </if>
+            <if test="user020 != null">
+                AND USER020 = #{user020}
+            </if>
+            <if test="user021 != null">
+                AND USER021 = #{user021}
+            </if>
+            <if test="user022 != null">
+                AND USER022 = #{user022}
+            </if>
+            <if test="user023 != null">
+                AND USER023 = #{user023}
+            </if>
+            <if test="user024 != null">
+                AND USER024 = #{user024}
+            </if>
+            <if test="user025 != null and user025 != '-1'">
+                AND USER025 = #{user025}
+            </if>
+            <if test="user026 != null">
+                AND USER026 = #{user026}
+            </if>
+            <if test="user027 != null">
+                AND USER027 = #{user027}
+            </if>
+            <if test="user028 != null">
+                AND USER028 = #{user028}
+            </if>
+            <if test="user029 != null">
+                AND USER029 = #{user029}
+            </if>
+            <if test="user030 != null">
+                AND USER030 = #{user030}
+            </if>
+            <if test="user031 != null">
+                AND USER031 = #{user031}
+            </if>
+            <if test="user032 != null">
+                AND USER032 = #{user032}
+            </if>
+            <if test="user033 != null">
+                AND USER033 = #{user033}
+            </if>
+            <if test="user034 != null">
+                AND USER034 = #{user034}
+            </if>
+            <if test="user035 != null">
+                AND USER035 = #{user035}
+            </if>
+            <if test="user036 != null">
+                AND USER036 = #{user036}
+            </if>
+            <if test="user037 != null">
+                AND USER037 = #{user037}
+            </if>
+            <if test="user038 != null">
+                AND USER038 = #{user038}
+            </if>
+            <if test="user039 != null">
+                AND USER039 = #{user039}
+            </if>
+            <if test="user040 != null">
+                AND USER040 = #{user040}
+            </if>
+        </where>
+        <if test="sortExpression != null">
+            <![CDATA[  ORDER BY ${sortExpression} ]]>
+        </if>
+        <if test="sortExpression == null">
+            <![CDATA[  ORDER BY A.USER004 ASC]]>
+        </if>
+    </select>
+
+
+    <select id="findToExcel" resultType="com.huarui.product2020.entity.HrswTUser" parameterType="HashMap">
+        select rownum,t.* from (
+        SELECT USER001,USER002,B.ORGA012 AS
+        ORGANNAME,USER003,USER004,USER005,USER006,USER007,USER008,USER009,USER010,USER011,
+        ca.cata002 USER011N,USER012,USER013,USER014,USER015,USER016,USER017,
+        CASE WHEN USER017 = 1 THEN '正常' WHEN USER017 = 2 THEN '虚拟' WHEN USER017 = 3 THEN '禁用' END USER017N,
+        USER018,USER019,USER020,USER021,USER022,USER023,USER024,USER025,USER026,USER027,
+        CASE WHEN USER027 = 1 THEN '运管单位 '
+        WHEN USER027 = 2 THEN '认证机构 '
+        WHEN USER027 = 3 THEN '报名机构 '
+        ELSE '' END USER027N,
+        USER028,USER029,USER030,USER031,USER032,
+        CASE WHEN USER032 = 1 THEN '管理员录入' WHEN USER032 = 2 THEN '用户注册' END USER032N,
+        USER033,USER034,USER035,USER036,USER037,USER038,USER039,USER040,USER041,USER042,TO_CHAR(USER042,'yyyy-mm-dd
+        hh24:mi:ss') USER042N,USER043,(SELECT USER027 FROM HRSW_T_USER U WHERE A.USER043 = U.USER001) USER043N
+        <!-- ,UPUR003S,ORGA005S -->
+        FROM HRSW_T_USER A
+        <!-- 数据字典 -->
+        Left join hrsw_t_catalog ca on a.user011 = ca.cata001
+        <!-- 人员属性表 -->
+        Left join hr_t_PersonnelAttributes Pa on a.USER025 = Pa.Reat001
+        <!-- 查询用户管理范围的机构和用户的角色 -->
+        <!-- LEFT JOIN (
+            SELECT UPUR002,RTRIM(TO_CHAR(REGEXP_REPLACE(XMLAGG(XMLPARSE(CONTENT T2.ROLE003||',' WELLFORMED) ORDER BY T2.ROLE003).GETCLOBVAL(), '([^,]+)(,\1)+', '\1')),',') UPUR003S,
+                   RTRIM(TO_CHAR(REGEXP_REPLACE(XMLAGG(XMLPARSE(CONTENT T4.ORGA005||',' WELLFORMED) ORDER BY T4.ORGA005).GETCLOBVAL(), '([^,]+)(,\1)+', '\1')),',') ORGA005S
+            FROM HRSW_T_USERPURVIEW T
+            LEFT JOIN HRSW_T_ROLE T2 ON T.UPUR003  = T2.ROLE001
+            LEFT JOIN HRSW_T_DATADOMAIN T3 ON T.UPUR001 = T3.DDOM002
+            LEFT JOIN HRSW_T_ORGAN T4 ON T3.DDOM003 = T4.ORGA001
+            WHERE 1=1
+            <if test="orga001F != null">
+                <choose>
+                    <when test="queryTypeMap.orga001F == 'IN'" >
+                        <![CDATA[ AND T4.ORGA001 IN ]]>
+                        <foreach collection="orga001F" index="index" item="item" open="("
+                            separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        AND T4.ORGA001=#{orga001F}
+                    </otherwise>
+                </choose>
+            </if>
+            GROUP BY UPUR002
+        ) C ON C.UPUR002 = A.USER001  -->
+        <choose>
+            <when test="isRemovePurview == 1">
+                LEFT JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+            </when>
+            <otherwise>
+                INNER JOIN HRSW_T_ORGAN B ON A.USER002=B.ORGA001
+                INNER JOIN (
+                SELECT E.UPUR002,D.LREL002
+                FROM HRSW_T_USERPURVIEW E
+                INNER JOIN HRSW_T_DATADOMAIN C ON E.UPUR001=C.DDOM002
+                INNER JOIN HRSW_T_LEVELRELATION D ON C.DDOM003=D.LREL004 AND D.LREL007=1
+                WHERE E.UPUR002=#{userId}
+                GROUP BY E.UPUR002,D.LREL002
+                ) F ON B.ORGA001=F.LREL002
+            </otherwise>
+        </choose>
+        <if test="selectUserOrganId != null">
+            INNER JOIN (
+            SELECT LREL002
+            FROM HRSW_T_LEVELRELATION
+            WHERE LREL007=1
+            AND LREL004 IN
+            <foreach collection="selectUserOrganId" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+            ) D ON B.ORGA001=D.LREL002
+        </if>
+        <if test="orga001F != null">
+            LEFT JOIN HRSW_T_USERPURVIEW T ON A.USER001 = T.UPUR002
+            LEFT JOIN HRSW_T_ROLE T2 ON T.UPUR003 = T2.ROLE001
+            LEFT JOIN HRSW_T_DATADOMAIN T3 ON T.UPUR001 = T3.DDOM002
+            LEFT JOIN HRSW_T_ORGAN T4 ON T3.DDOM003 = T4.ORGA001
+        </if>
+        <where>
+            <!-- 是否 运管平台 0否 1是 -->
+            <if test="source != null and source == 1">
+                AND Pa.Reat013 = 1
+            </if>
+            <!-- 是否 鉴定中心 0否 1是 -->
+            <if test="source != null and source == 2 and organType != null and organType == 2">
+                AND Pa.Reat014 = 1
+            </if>
+            <!-- 是否 鉴定站 0否 1是 -->
+            <if test="source != null and source == 2 and organType != null and organType == 3">
+                AND Pa.Reat015 = 1
+            </if>
+            <!-- 是否 报名中心 0否 1是 -->
+            <if test="source != null and source == 3">
+                AND Pa.Reat016 = 1
+            </if>
+            <if test="orga020 != null and orga020 != '' ">
+                AND B.ORGA020 = #{orga020}
+            </if>
+            <if test="removeOrga020 != null and removeOrga020 != '' ">
+                AND B.ORGA020 != #{removeOrga020}
+            </if>
+            <if test="aura002 != null and aura002 != '' "><!-- 查询用户来源   认证机构查询对应的服务单位的用户   -->
+                AND EXISTS ( SELECT 1 FROM hr_t_AuthenticaRange WHERE AURA003 = B.ORGA001
+                AND AURA002 = #{aura002}
+                )
+            </if>
+            <if test="orga001L != null">
+                <![CDATA[ AND USER002 IN ]]>
+                <foreach collection="orga001L" index="index" item="item" open="("
+                         separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="orga001F != null">
+                <![CDATA[ AND T4.ORGA001 IN ]]>
+                <foreach collection="orga001F" index="index" item="item" open="("
+                         separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="user001 != null">
+                AND USER001 = #{user001}
+            </if>
+            <if test="user003 != null">
+                AND USER003 = #{user003}
+            </if>
+            <if test="user004 != null">
+                AND EXISTS (SELECT USER004 FROM HRSW_T_USER WHERE UPPER(USER004) LIKE
+                UPPER(CONCAT(CONCAT('%',#{user004}), '%')) AND USER001=A.USER001)
+            </if>
+            <if test="user005 != null">
+                AND EXISTS (SELECT USER005 FROM HRSW_T_USER WHERE UPPER(USER005) LIKE
+                UPPER(CONCAT(CONCAT('%',#{user005}), '%')) AND USER001=A.USER001)
+            </if>
+            <if test="user006 != null">
+                AND USER006 = #{user006}
+            </if>
+            <if test="user007 != null">
+                AND USER007 = #{user007}
+            </if>
+            <if test="user008 != null">
+                AND USER008 = #{user008}
+            </if>
+            <if test="user009 != null">
+                AND USER009 = #{user009}
+            </if>
+            <if test="user010 != null">
+                AND USER010 = #{user010}
+            </if>
+            <if test="user011 != null">
+                AND USER011 = #{user011}
+            </if>
+            <if test="user012 != null">
+                AND USER012 = #{user012}
+            </if>
+            <if test="user013 != null">
+                AND USER013 = #{user013}
+            </if>
+            <if test="user014 != null">
+                AND EXISTS (SELECT USER014 FROM HRSW_T_USER WHERE UPPER(USER014) LIKE
+                UPPER(CONCAT(CONCAT('%',#{user014}), '%')) AND USER001=A.USER001)
+            </if>
+            <if test="user015 != null">
+                AND USER015 = #{user015}
+            </if>
+            <if test="user016 != null">
+                AND USER016 = #{user016}
+            </if>
+            <if test="user017 != null">
+                AND USER017 = #{user017}
+            </if>
+            <if test="user018 != null">
+                AND USER018 = #{user018}
+            </if>
+            <if test="user019 != null">
+                AND USER019 = #{user019}
+            </if>
+            <if test="user020 != null">
+                AND USER020 = #{user020}
+            </if>
+            <if test="user021 != null">
+                AND USER021 = #{user021}
+            </if>
+            <if test="user022 != null">
+                AND USER022 = #{user022}
+            </if>
+            <if test="user023 != null">
+                AND USER023 = #{user023}
+            </if>
+            <if test="user024 != null">
+                AND USER024 = #{user024}
+            </if>
+            <if test="user025 != null and user025 != '-1'">
+                AND USER025 = #{user025}
+            </if>
+            <if test="user026 != null">
+                AND USER026 = #{user026}
+            </if>
+            <if test="user027 != null">
+                AND USER027 = #{user027}
+            </if>
+            <if test="user028 != null">
+                AND USER028 = #{user028}
+            </if>
+            <if test="user029 != null">
+                AND USER029 = #{user029}
+            </if>
+            <if test="user030 != null">
+                AND USER030 = #{user030}
+            </if>
+            <if test="user031 != null">
+                AND USER031 = #{user031}
+            </if>
+            <if test="user032 != null">
+                AND USER032 = #{user032}
+            </if>
+            <if test="user033 != null">
+                AND USER033 = #{user033}
+            </if>
+            <if test="user034 != null">
+                AND USER034 = #{user034}
+            </if>
+            <if test="user035 != null">
+                AND USER035 = #{user035}
+            </if>
+            <if test="user036 != null">
+                AND USER036 = #{user036}
+            </if>
+            <if test="user037 != null">
+                AND USER037 = #{user037}
+            </if>
+            <if test="user038 != null">
+                AND USER038 = #{user038}
+            </if>
+            <if test="user039 != null">
+                AND USER039 = #{user039}
+            </if>
+            <if test="user040 != null">
+                AND USER040 = #{user040}
+            </if>
+        </where>
+        <if test="sortExpression != null">
+            <![CDATA[  ORDER BY ${sortExpression} ]]>
+        </if>
+        <if test="sortExpression == null">
+            <![CDATA[  ORDER BY A.USER004 ASC]]>
+        </if>
+        )t
+    </select>
+
+
+    <select id="findWorkPersonnel" resultType="com.huarui.product2020.entity.HrswTUser" parameterType="HashMap">
+        SELECT
+        USER001,
+        USER002,
+        B.ORGA005 AS ORGANNAME,
+        USER003,
+        USER004,
+        USER005,
+        USER006,
+        USER007,
+        USER008,
+        USER009,
+        USER010,
+        USER011,
+        USER012,
+        USER013,
+        USER014,
+        USER015,
+        USER016,
+        USER017,
+        CASE
+        WHEN USER017 = 1 THEN '正常'
+        WHEN USER017 = 2 THEN '虚拟'
+        WHEN USER017 = 3 THEN '禁用'
+        END USER017N,
+        USER018,
+        USER019,
+        USER020,
+        USER021,
+        USER022,
+        USER023,
+        USER024,
+        USER025,
+        USER026,
+        USER027,
+        CASE
+        WHEN USER027 = 1 THEN '运管单位 '
+        WHEN USER027 = 2 THEN '认证机构 '
+        WHEN USER027 = 3 THEN '报名机构 '
+        ELSE ''
+        END USER027N,
+        USER028,
+        USER029,
+        USER030,
+        USER031,
+        USER032,
+        CASE
+        WHEN USER032 = 1 THEN '管理员录入'
+        WHEN USER032 = 2 THEN '用户注册'
+        END USER032N,
+        USER033,
+        USER034,
+        USER035,
+        USER036,
+        USER037,
+        USER038,
+        USER039,
+        USER040,
+        USER041,
+        USER042,
+        USER043,
+        (
+        SELECT
+        USER027
+        FROM
+        HRSW_T_USER U
+        WHERE
+        A.USER043 = U.USER001) USER043N
+        FROM
+        HRSW_T_USER A
+
+        LEFT JOIN HRSW_T_ORGAN B ON
+        A.USER002 = B.ORGA001
+        <!-- 人员属性表 -->
+        LEFT JOIN HR_T_PERSONNELATTRIBUTES PA ON
+        A.USER025 = PA.REAT001
+        <where>
+            <!-- 人员分类 -->
+            <if test="reat002 != null">
+                AND PA.REAT002 = #{reat002}
+            </if>
+            <if test="user001 != null">
+                AND USER001 = #{user001}
+            </if>
+            <if test="user002 != null">
+                AND USER002 = #{user002}
+            </if>
+            <if test="user003 != null">
+                AND USER003 = #{user003}
+            </if>
+            <if test="user004 != null">
+                AND UPPER(USER004) LIKE UPPER(CONCAT(CONCAT('%',#{user004}), '%'))
+            </if>
+            <if test="user005 != null">
+                AND UPPER(USER005) LIKE UPPER(CONCAT(CONCAT('%',#{user005}), '%'))
+            </if>
+            <if test="user006 != null">
+                AND USER006 = #{user006}
+            </if>
+            <if test="user007 != null">
+                AND USER007 = #{user007}
+            </if>
+            <if test="user008 != null">
+                AND USER008 = #{user008}
+            </if>
+            <if test="user009 != null">
+                AND USER009 = #{user009}
+            </if>
+            <if test="user010 != null">
+                AND USER010 = #{user010}
+            </if>
+            <if test="user011 != null">
+                AND USER011 = #{user011}
+            </if>
+            <if test="user012 != null">
+                AND USER012 = #{user012}
+            </if>
+            <if test="user013 != null">
+                AND USER013 = #{user013}
+            </if>
+            <if test="user014 != null">
+                AND EXISTS (SELECT USER014 FROM HRSW_T_USER WHERE UPPER(USER014) LIKE
+                UPPER(CONCAT(CONCAT('%',#{user014}), '%')) AND USER001=A.USER001)
+            </if>
+            <if test="user015 != null">
+                AND USER015 = #{user015}
+            </if>
+            <if test="user016 != null">
+                AND USER016 = #{user016}
+            </if>
+            <if test="user017 != null and user017.size() >= 1">
+                AND USER017 in
+                <foreach item="item" index="index" collection="user017" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="user018 != null">
+                AND USER018 = #{user018}
+            </if>
+            <if test="user019 != null">
+                AND USER019 = #{user019}
+            </if>
+            <if test="user020 != null">
+                AND USER020 = #{user020}
+            </if>
+            <if test="user021 != null">
+                AND USER021 = #{user021}
+            </if>
+            <if test="user022 != null">
+                AND USER022 = #{user022}
+            </if>
+            <if test="user023 != null">
+                AND USER023 = #{user023}
+            </if>
+            <if test="user024 != null">
+                AND USER024 = #{user024}
+            </if>
+            <if test="user025 != null and user025 != '-1'">
+                AND USER025 = #{user025}
+            </if>
+            <if test="user026 != null">
+                AND USER026 = #{user026}
+            </if>
+            <if test="user027 != null">
+                AND USER027 = #{user027}
+            </if>
+            <if test="user028 != null">
+                AND USER028 = #{user028}
+            </if>
+            <if test="user029 != null">
+                AND USER029 = #{user029}
+            </if>
+            <if test="user030 != null">
+                AND USER030 = #{user030}
+            </if>
+            <if test="user031 != null">
+                AND USER031 = #{user031}
+            </if>
+            <if test="user032 != null">
+                AND USER032 = #{user032}
+            </if>
+            <if test="user033 != null">
+                AND USER033 = #{user033}
+            </if>
+            <if test="user034 != null">
+                AND USER034 = #{user034}
+            </if>
+            <if test="user035 != null">
+                AND USER035 = #{user035}
+            </if>
+            <if test="user036 != null">
+                AND USER036 = #{user036}
+            </if>
+            <if test="user037 != null">
+                AND USER037 = #{user037}
+            </if>
+            <if test="user038 != null">
+                AND USER038 = #{user038}
+            </if>
+            <if test="user039 != null">
+                AND USER039 = #{user039}
+            </if>
+            <if test="user040 != null">
+                AND USER040 = #{user040}
+            </if>
+        </where>
+        <if test="sortExpression != null">
+            <![CDATA[  ORDER BY ${sortExpression} ]]>
+        </if>
+        <if test="sortExpression == null">
+            <![CDATA[  ORDER BY A.USER004 ASC]]>
+        </if>
+    </select>
+
+    <update id="updateUserInfo">
+        update hrsw_t_user set
+        <if test='users == "user005"'>
+            user005 =#{modelName}  ,
+        </if>
+        <if test='users == "user006"'>
+            user006 =#{modelName}  ,
+        </if>
+        <if test='users == "user015"'>
+            user015 =#{modelName}  ,
+        </if>
+        <if test='users == "user022"'>
+            user022 =#{modelName}  ,
+        </if>
+        <if test='users == "user024"'>
+            user024 =#{modelName}  ,
+        </if>
+        <if test='users == "user010"'>
+            user010 =#{modelName}  ,
+        </if>
+        <if test='users == "user007"'>
+            user007=to_date(#{modelName},'YYYY/MM/DD'),
+        </if>
+        user042 = SYSDATE  where user001 = #{user001}
+    </update>
+
+	
+		<select id="selectMapForUserInfo1" parameterType="java.lang.String" resultType="java.util.HashMap">
+		<![CDATA[
+	SELECT
+	TX.ATTA007,
+	A.USER001,
+	A.USER002,
+	A.USER004,
+	A.USER005,
+	A.USER006,
+	TO_CHAR( A.USER007, 'YYYY-MM-DD' ) AS USER007N,
+	TO_CHAR( A.USER008, 'YYYY-MM-DD' ) AS USER008N,
+	A.USER009,
+	A.USER010,
+	A.USER011,
+	A.USER012,
+	A.USER013,
+	A.USER014,
+	A.USER015,
+	A.USER017,
+	A.USER027,
+	A.USER028,
+	A.USER029,
+	C.ORGA006,
+	D.USST003
+	FROM
+	
+	HRSW_T_USER A
+	LEFT JOIN (
+	SELECT
+		WM_CONCAT ( GW.CATA002 ) POST,
+		CDOM006 
+	FROM
+		HRSW_T_CATALOGDOMAIN FW
+		LEFT JOIN HRSW_T_CATALOG GW ON GW.CATA008 = 2 
+		AND GW.CATA001 = FW.CDOM003 
+	GROUP BY
+		FW.CDOM006 
+	) T ON T.CDOM006 = A.USER001
+	LEFT JOIN HRSW_T_ORGAN C ON A.USER002 = C.ORGA001
+	LEFT JOIN HRSW_T_ATTACHMENT TX ON TX.ATTA002 = A.USER001 
+	AND TX.ATTA004 = 1
+	LEFT JOIN HRSW_T_USERSTATUS D ON D.USST002 = A.USER001
+		]]>
+		WHERE A.USER004 = #{arg0}
+	</select>
+
+    <insert id="uploadPic" parameterType="java.util.Map" >
+		MERGE INTO hrsw_t_attachment A
+		USING(SELECT * FROM DUAL)P
+		ON(A.ATTA002 = #{ATTA002} AND A.ATTA004= #{ATTA004} )
+		WHEN MATCHED THEN
+		     UPDATE SET
+				 ATTA005 = #{ATTA005},
+				 ATTA006 = #{ATTA006},
+				 ATTA007 = #{ATTA007},
+				 ATTA008 = sysdate
+		WHEN NOT MATCHED THEN
+			INSERT   (ATTA001,ATTA002,ATTA004,ATTA005,ATTA006,ATTA007,ATTA008)
+			VALUES(sys_guid(),#{ATTA002},#{ATTA004},#{ATTA005},#{ATTA006},#{ATTA007},sysdate)
+	</insert>
+
+    <update id="uploadUserPic">
+		update tbUserinfo set UINF0114=#{ATTA007}  where UINF0102 = #{ATTA002}
+    </update>
+</mapper>

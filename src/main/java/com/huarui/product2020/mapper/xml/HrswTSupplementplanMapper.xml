@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTSupplementplanMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTSupplementplan">
+		<id column="SUPL001" property="supl001" />
+		<result column="SUPL002" property="supl002" />
+		<result column="SUPL003" property="supl003" />
+		<result column="SUPL004" property="supl004" />
+		<result column="SUPL005" property="supl005" />
+		<result column="SUPL006" property="supl006" />
+		<result column="SUPL007" property="supl007" />
+	</resultMap>
+
+</mapper>

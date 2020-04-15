@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.StudyTFavMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.StudyTFav">
+		<id column="FAV001" property="fav001" />
+		<result column="FAV002" property="fav002" />
+		<result column="FAV003" property="fav003" />
+		<result column="FAV004" property="fav004" />
+	</resultMap>
+	<insert id="collection" parameterType="java.util.Map">
+		<![CDATA[ 
+		    MERGE INTO study_t_fav L
+			USING(SELECT * FROM DUAL)P
+			ON(L.FAV002 = #{fav002} AND L.FAV003= #{user001})
+			WHEN NOT MATCHED THEN
+	 		INSERT(FAV001,FAV002,FAV003,FAV004)
+			VALUES(#{fav001},#{fav002},#{user001},sysdate)
+		 ]]> 
+	</insert>
+</mapper>

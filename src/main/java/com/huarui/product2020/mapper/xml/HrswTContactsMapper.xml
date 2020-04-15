@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTContactsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTContacts">
+		<id column="CONT001" property="cont001" />
+		<result column="CONT002" property="cont002" />
+		<result column="CONT003" property="cont003" />
+		<result column="CONT004" property="cont004" />
+		<result column="CONT005" property="cont005" />
+	</resultMap>
+
+	<select id="findList" resultType="HrswTContacts">
+		SELECT B.USER001 "USER.USER001",
+		   B.USER002 AS "USER.USER002",
+	       B.USER004 AS "USER.USER004",
+	       B.USER005 AS "USER.USER005",
+	       B.USER006 AS "USER.USER006",
+	       B.USER014 AS "USER.USER014",
+ 	       TRUNC(MONTHS_BETWEEN(　　TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'),
+	                                      'YYYY-MM-DD'),
+	                            　　TO_DATE(TO_CHAR(B.USER007, 'YYYY-MM-DD'),
+	                                      'YYYY-MM-DD') 　　) / 12) AS "USER.USER022", 
+	       UPPER(SUBSTR(F_TRANS_PINYIN_CAPITAL(B.USER005),1,1)) AS "USER.USER023",
+	       UPPER(F_TRANS_PINYIN_CAPITAL(B.USER005)) AS "USER.USER024",
+	       C.ATTA006 AS "ATTACHMENT.ATTA006",
+	       C.ATTA007 AS "ATTACHMENT.ATTA007",
+		   A.CONT001,A.CONT002,A.CONT003,A.CONT004,A.CONT005
+		  FROM HRSW_T_CONTACTS A
+		 INNER JOIN HRSW_T_USER B
+		    ON A.CONT003 = B.USER001
+		  LEFT JOIN HRSW_T_ATTACHMENT C
+		    ON B.USER001 = C.ATTA002
+		   AND C.ATTA004 = 1
+		  INNER JOIN HRSW_T_USER D ON A.CONT002=D.USER001
+		 WHERE D.USER001 = #{cont002}
+		 <if test="user.user005 != null and user.user005 != ''">
+		 	AND B.USER005 LIKE '%'||#{user.user005}||'%'
+		 </if>
+		 
+		  <if test="cont003 != null and cont003 != ''">
+		 	AND B.USER001=#{cont003}
+		 </if>
+		 
+		AND A.CONT004 = #{cont004}
+		
+	</select>
+	
+	<select id="addContacts">
+		MERGE INTO HRSW_T_APPLYFOR A
+		USING (SELECT 1 FROM DUAL)
+		ON (A.APPL002 = #{appl002} AND A.APPL003 = #{appl003})
+		WHEN MATCHED THEN
+		  UPDATE SET A.APPL004 = SYSDATE, A.APPL005 = #{appl005}
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (APPL001, APPL002, APPL003, APPL004, APPL005)
+		  VALUES
+		    (#{appl001}, #{appl002}, #{appl003}, SYSDATE, #{appl005})
+	</select>
+
+</mapper>

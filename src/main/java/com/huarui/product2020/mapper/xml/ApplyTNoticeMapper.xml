@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ApplyTNoticeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ApplyTNotice">
+		<id column="NOTI001" property="noti001" />
+		<result column="NOTI002" property="noti002" />
+		<result column="NOTI003" property="noti003" />
+		<result column="NOTI004" property="noti004" />
+		<result column="NOTI005" property="noti005" />
+		<result column="NOTI006" property="noti006" />
+		<result column="NOTI007" property="noti007" />
+		<result column="NOTI008" property="noti008" />
+		<result column="NOTI009" property="noti009" />
+	</resultMap>
+
+</mapper>

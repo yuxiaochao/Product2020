@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTMaterialeditorMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTMaterialeditor">
+		<result column="MAED001" property="maed001" />
+		<result column="MAED002" property="maed002" />
+		<result column="MAED003" property="maed003" />
+	</resultMap>
+
+</mapper>

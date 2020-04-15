@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTTopcontactsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTTopcontacts">
+		<id column="TOCT001" property="toct001" />
+		<result column="TOCT002" property="toct002" />
+		<result column="TOCT003" property="toct003" />
+		<result column="TOCT004" property="toct004" />
+		<result column="TOCT005" property="toct005" />
+		<result column="TOCT006" property="toct006" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjhzd03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjhzd03">
+		<id column="JHZD0301" property="jhzd0301" />
+		<result column="JHZD0302" property="jhzd0302" />
+		<result column="JHZD0303" property="jhzd0303" />
+		<result column="JHZD0304" property="jhzd0304" />
+		<result column="JHZD0305" property="jhzd0305" />
+	</resultMap>
+	<select id="findByPage" resultType="com.huarui.product2020.entity.Tbjhzd03">
+	select JHZD0301,JHZD0302,JHZD0303,JHZD0304,JHZD0305,cour010
+	from tbJHZD03
+	left join xzxy_t_course
+	on cour001=JHZD0303
+	</select>
+</mapper>

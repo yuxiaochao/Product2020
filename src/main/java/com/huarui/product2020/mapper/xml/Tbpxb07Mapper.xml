@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb07Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb07">
+		<id column="PXB0701" property="pxb0701" />
+		<result column="PXB0702" property="pxb0702" />
+		<result column="PXB0703" property="pxb0703" />
+		<result column="PXB0704" property="pxb0704" />
+		<result column="PXB0705" property="pxb0705" />
+		<result column="PXB0706" property="pxb0706" />
+	</resultMap>
+	
+	<select id="findByClassHourRequirementList"  resultType="com.huarui.product2020.entity.Tbpxb07" parameterType="HashMap">
+		SELECT
+			A.PXB0701,
+			A.PXB0702,
+			A.PXB0703,
+			A.PXB0704,
+			A.PXB0705,
+			B.PXB0204,
+			B.PXB0203,
+			C.COUR010 AS PXB0203N,
+			B.PXB0211,
+			B.PXB0212,
+			B.PXB0210,
+			D.TEAC002 AS PXB0210N,
+			B.PXB0213,
+			B.PXB0214,
+			B.PXB0208,
+			B.PXB0205
+		FROM
+			TBPXB07 A
+		LEFT JOIN TBPXB02 B ON
+			A.PXB0703 = B.PXB0201
+		LEFT JOIN XZXY_T_COURSE C ON
+			B.PXB0203 = C.COUR001
+		LEFT JOIN XZXY_T_TEACHER D ON
+			B.PXB0210 = D.TEAC001
+		<where>
+			<![CDATA[  AND A.PXB0702 = #{pxb0702} ]]> 
+		</where>
+	</select>
+
+</mapper>

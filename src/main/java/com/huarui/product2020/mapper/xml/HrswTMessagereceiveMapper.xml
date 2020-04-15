@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMessagereceiveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMessagereceive">
+		<id column="MREC001" property="mrec001" />
+		<result column="MREC002" property="mrec002" />
+		<result column="MREC003" property="mrec003" />
+		<result column="MREC004" property="mrec004" />
+		<result column="MREC005" property="mrec005" />
+		<result column="MREC006" property="mrec006" />
+	</resultMap>
+
+</mapper>

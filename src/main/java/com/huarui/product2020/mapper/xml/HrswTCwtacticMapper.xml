@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCwtacticMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCwtactic">
+		<id column="CWTA001" property="cwta001" />
+		<result column="CWTA002" property="cwta002" />
+		<result column="CWTA003" property="cwta003" />
+		<result column="CWTA004" property="cwta004" />
+		<result column="CWTA005" property="cwta005" />
+		<result column="CWTA006" property="cwta006" />
+		<result column="CWTA007" property="cwta007" />
+		<result column="CWTA008" property="cwta008" />
+		<result column="CWTA009" property="cwta009" />
+		<result column="CWTA010" property="cwta010" />
+		<result column="CWTA011" property="cwta011" />
+		<result column="CWTA012" property="cwta012" />
+	</resultMap>
+
+</mapper>

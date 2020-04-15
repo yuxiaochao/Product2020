@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.ExamTReferencematerialMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.ExamTReferencematerial">
+		<id column="REMA001" property="rema001" />
+		<result column="REMA002" property="rema002" />
+		<result column="REMA003" property="rema003" />
+		<result column="REMA004" property="rema004" />
+		<result column="REMA005" property="rema005" />
+		<result column="REMA006" property="rema006" />
+		<result column="REMA007" property="rema007" />
+		<result column="REMA008" property="rema008" />
+		<result column="REMA009" property="rema009" />
+		<result column="REMA010" property="rema010" />
+		<result column="REMA011" property="rema011" />
+		<result column="REMA012" property="rema012" />
+		<result column="REMA013" property="rema013" />
+		<result column="REMA014" property="rema014" />
+		<result column="REMA015" property="rema015" />
+	</resultMap>
+
+</mapper>

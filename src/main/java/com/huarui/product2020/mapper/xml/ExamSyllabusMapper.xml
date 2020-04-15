@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huarui.product2020.mapper.ExamSyllabusMapper">
+     
+	<resultMap type="com.huarui.product2020.entity.ExamSyllabusEntity" id="ExamSyllabusMapper">
+		<result column="exsy001" property="exsy001" />
+		<result column="exsy002" property="exsy002" />
+		<result column="exsy003" property="exsy003" />
+		<result column="exsy004" property="exsy004" />
+		<result column="exsy005" property="exsy005" />
+		<result column="exsy006" property="exsy006" />
+		<result column="exsy007" property="exsy007" />
+		<result column="exsy008" property="exsy008" />
+		<result column="exsy009" property="exsy009" />
+		<result column="exsy010" property="exsy010" />
+		<result column="exsy011" property="exsy011" />
+	</resultMap>
+	<select id="findByCriteria" resultType="com.huarui.product2020.entity.ExamSyllabusEntity" parameterType="com.huarui.product2020.entity.ExamSyllabusEntity">
+		 <![CDATA[ SELECT A.EXSY001,A.EXSY002,A.EXSY003,A.EXSY004,A.EXSY005,A.EXSY006,A.EXSY007,A.EXSY008,A.EXSY009,A.EXSY010,A.EXSY011,
+		 		(SELECT COUNT(*) FROM hr_t_examSyllabus B WHERE A.EXSY001 = B.EXSY003) childCount
+		 		FROM hr_t_examSyllabus A
+		 		]]> 
+		<where>
+				<if test="exsy001 != null">
+				     <![CDATA[ AND EXSY001 = #{exsy001} ]]>
+				</if>
+				<if test="exsy002 != null">
+				     <![CDATA[ AND EXSY002 = #{exsy002} ]]>
+				</if>
+				<if test="exsy003 != null">
+				     <![CDATA[ AND EXSY003 = #{exsy003} ]]>
+				</if>
+				<if test="exsy004 != null">
+				     <![CDATA[ AND EXSY004 = #{exsy004} ]]>
+				</if>
+				<if test="exsy005 != null">
+				     <![CDATA[ AND EXSY005 = #{exsy005} ]]>
+				</if>
+				<if test="exsy006 != null">
+				     <![CDATA[ AND EXSY006 = #{exsy006} ]]>
+				</if>
+				<if test="exsy007 != null">
+				     <![CDATA[ AND EXSY007 = #{exsy007} ]]><!-- (or EXSY007 = (select o.orga002 from HRSW_T_ORGAN o where o.orga001= #{exsy007}) ) -->
+				</if>
+				<if test="exsy008 != null">
+				     <![CDATA[ AND EXSY008 = #{exsy008} ]]>
+				</if>
+				<if test="exsy009 != null">
+				     <![CDATA[ AND EXSY009 = #{exsy009} ]]>
+				</if>
+				<if test="exsy010 != null">
+				     <![CDATA[ AND EXSY010 = #{exsy010} ]]>
+				</if>
+				<if test="exsy011 != null">
+				     <![CDATA[ AND EXSY011 = #{exsy011} ]]>
+				</if>
+		</where>
+
+	</select>
+</mapper>

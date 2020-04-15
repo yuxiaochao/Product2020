@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy06Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy06">
+		<id column="CMDY0601" property="cmdy0601" />
+		<result column="CMDY0602" property="cmdy0602" />
+		<result column="CMDY0603" property="cmdy0603" />
+		<result column="CMDY0604" property="cmdy0604" />
+		<result column="CMDY0605" property="cmdy0605" />
+		<result column="CMDY0606" property="cmdy0606" />
+		<result column="CMDY0607" property="cmdy0607" />
+		<result column="CMDY0608" property="cmdy0608" />
+		<result column="CMDY0609" property="cmdy0609" />
+	</resultMap>
+
+	<select id="getCommodityById" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT CMDY0706 "cmdy0301" FROM tbCMDY07 WHERE CMDY0701 = #{zdfh0204}
+	</select>
+	
+	<select id="getPackageCommodityById" parameterType="java.lang.String" resultType="java.util.Map">
+		SELECT CMDY0602 "cmdy0301" FROM TBCMDY06 WHERE CMDY0601 = #{zdfh0204}
+	</select>
+	
+</mapper>

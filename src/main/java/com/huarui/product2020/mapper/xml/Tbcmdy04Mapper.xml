@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbcmdy04Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbcmdy04">
+		<id column="CMDY0401" property="cmdy0401" />
+		<result column="CMDY0402" property="cmdy0402" />
+		<result column="CMDY0403" property="cmdy0403" />
+		<result column="CMDY0404" property="cmdy0404" />
+		<result column="CMDY0405" property="cmdy0405" />
+		<result column="CMDY0406" property="cmdy0406" />
+		<result column="CMDY0407" property="cmdy0407" />
+		<result column="CMDY0408" property="cmdy0408" />
+		<result column="CMDY0409" property="cmdy0409" />
+		<result column="CMDY0410" property="cmdy0410" />
+		<result column="CMDY0411" property="cmdy0411" />
+		<result column="CMDY0412" property="cmdy0412" />
+		<result column="CMDY0413" property="cmdy0413" />
+		<result column="CMDY0414" property="cmdy0414" />
+		<result column="CMDY0415" property="cmdy0415" />
+		<result column="CMDY0417" property="cmdy0417" />
+		<result column="CMDY0418" property="cmdy0418" />
+		<result column="CMDY0419" property="cmdy0419" />
+		<result column="CMDY0420" property="cmdy0420" />
+		<result column="CMDY0416" property="cmdy0416" />
+		<result column="CMDY0421" property="cmdy0421" />
+		<result column="CMDY0422" property="cmdy0422" />
+		<result column="CMDY0423" property="cmdy0423" />
+	</resultMap>
+
+</mapper>

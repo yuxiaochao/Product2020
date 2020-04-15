@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbpxb03Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbpxb03">
+		<id column="PXB0301" property="pxb0301" />
+		<result column="PXB0302" property="pxb0302" />
+		<result column="PXB0303" property="pxb0303" />
+		<result column="PXB0304" property="pxb0304" />
+		<result column="PXB0305" property="pxb0305" />
+	</resultMap>
+	
+	
+	<!-- 根据培训班ID查询班务人员 -->
+	<select id="findClassPersonnel" resultType="com.huarui.product2020.entity.Tbpxb03" parameterType="HashMap">
+		SELECT
+			A.PXB0301,
+			A.PXB0302,
+			A.PXB0303,
+			A.PXB0304,
+			B.USER005 AS PXB0304N,
+			A.PXB0305
+		FROM
+			TBPXB03 A
+		LEFT JOIN HRSW_T_USER B ON
+			A.PXB0304 = B.USER001
+		<where>
+			<!-- 培训班ID -->
+			<if test = "pxb0302 != null">
+				 AND A.PXB0302 = #{pxb0302}
+			</if>
+		</where>
+	</select>
+
+</mapper>

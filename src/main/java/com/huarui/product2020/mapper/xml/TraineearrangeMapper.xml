@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.TraineearrangeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Traineearrange">
+		<id column="TRAR001" property="trar001" />
+		<result column="TRAR002" property="trar002" />
+		<result column="TRAR003" property="trar003" />
+	</resultMap>
+	
+	
+	<select id="findTodoArrangedMaleCount" resultType="java.lang.Integer" parameterType="HashMap">
+		SELECT
+			COUNT(1)
+		FROM
+			TBPXB06 T
+		WHERE
+			T.PXB0602 = #{hcar002}
+			AND T.PXB0606='男'
+			AND T.PXB0601 NOT IN (
+			SELECT
+				A.TRAR003
+			FROM
+				HR_T_TRAINEEARRANGE A
+			LEFT JOIN HR_T_ACCOMMODATIONARRANGE B ON
+				A.TRAR002 = B.HCAR001
+			WHERE
+				B.HCAR002 = #{hcar002} )
+	</select>
+	
+	
+	<select id="findTodoArrangedFemaleCount" resultType="java.lang.Integer" parameterType="HashMap">
+		SELECT
+			COUNT(1)
+		FROM
+			TBPXB06 T
+		WHERE
+			T.PXB0602 = #{hcar002}
+			AND T.PXB0606='女'
+			AND T.PXB0601 NOT IN (
+			SELECT
+				A.TRAR003
+			FROM
+				HR_T_TRAINEEARRANGE A
+			LEFT JOIN HR_T_ACCOMMODATIONARRANGE B ON
+				A.TRAR002 = B.HCAR001
+			WHERE
+				B.HCAR002 = #{hcar002} )
+	</select>
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTCatalogdomainMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTCatalogdomain">
+		<id column="CDOM001" property="cdom001" />
+		<result column="CDOM002" property="cdom002" />
+		<result column="CDOM003" property="cdom003" />
+		<result column="CDOM004" property="cdom004" />
+		<result column="CDOM005" property="cdom005" />
+		<result column="CDOM006" property="cdom006" />
+	</resultMap>
+
+</mapper>

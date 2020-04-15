@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.AccommodationarrangeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Accommodationarrange">
+		<id column="HCAR001" property="hcar001" />
+		<result column="HCAR002" property="hcar002" />
+		<result column="HCAR003" property="hcar003" />
+		<result column="HCAR004" property="hcar004" />
+		<result column="HCAR005" property="hcar005" />
+		<result column="HCAR006" property="hcar006" />
+	</resultMap>
+	
+	<select id="findList" resultType="com.huarui.product2020.entity.Accommodationarrange" parameterType="HashMap">
+		SELECT
+			A.HCAR001,
+			A.HCAR002,
+			A.HCAR003,
+			B.HOTE002 AS HCAR003N,
+			A.HCAR004,
+			C.HORO003 AS HCAR004N,
+			D.CATA002 AS HCAR007,
+			C.HORO006 AS HCAR008,
+			T.USERID AS HCAR009,
+			T.USERNAME AS HCAR009N
+		FROM
+			HR_T_ACCOMMODATIONARRANGE A
+		LEFT JOIN HR_T_HOTEL B ON
+			A.HCAR003 = B.HOTE001
+		LEFT JOIN HR_T_HOTELROOM C ON
+			A.HCAR004 = C.HORO001
+		LEFT JOIN HRSW_T_CATALOG D ON
+			C.HORO004 = D.CATA001
+		INNER JOIN (
+			SELECT
+				A.TRAR002, 
+				LISTAGG(B.PXB0601,',') WITHIN GROUP (ORDER BY B.PXB0612) USERID,
+				LISTAGG(B.PXB0605,',') WITHIN GROUP (ORDER BY B.PXB0612) USERNAME
+			FROM
+				HR_T_TRAINEEARRANGE A
+			LEFT JOIN TBPXB06 B ON
+				A.TRAR003 = B.PXB0601
+			GROUP BY A.TRAR002
+		) T ON A.HCAR001 = T.TRAR002
+		<where>
+			<!-- 根据培训班关联 -->
+			<![CDATA[ AND A.HCAR002 = #{hcar002} ]]> 
+			<if test="hcar005 != null"> 
+			     <![CDATA[ AND A.HCAR005 = TO_DATE(#{hcar005},'YYYY-MM-DD') ]]>
+			</if>
+			<if test="hcar005 != null"> 
+			     <![CDATA[ AND A.HCAR005 = TO_DATE(#{hcar006},'YYYY-MM-DD') ]]>
+			</if>
+		</where>
+		<if test="sortExpression != null">
+		 	<![CDATA[  ORDER BY ${sortExpression} ]]>
+		</if>
+		<if test="sortExpression == null">
+		 	<![CDATA[  ORDER BY A.HCAR005 DESC]]>
+		</if>
+	</select>
+
+</mapper>

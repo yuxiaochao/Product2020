@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.huarui.product2020.mapper.HrswTCalendarmemorandumMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.huarui.product2020.entity.HrswTCalendarmemorandum">
+		<id column="CAME001" property="came001" />
+		<result column="CAME002" property="came002" />
+		<result column="CAME003" property="came003" />
+		<result column="CAME004" property="came004" />
+		<result column="CAME005" property="came005" />
+		<result column="CAME006" property="came006" />
+		<result column="CAME007" property="came007" />
+		<result column="CAME008" property="came008" />
+		<result column="CAME009" property="came009" />
+	</resultMap>
+
+	<select id="queryScheduleList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		SELECT
+		  t.*,
+		CASE
+		    WHEN TO_DATE( TO_CHAR( STARTDATE, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ) < TO_DATE( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) 
+		    AND TO_DATE( TO_CHAR( ENDDATE, 'YYYY-MM-DD' ) || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) >= TO_DATE( #{nowDate} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS' ) THEN
+		      '0' ELSE '1' 
+		    END NEWDATE,
+		CASE
+		  WHEN STARTDATE < TO_DATE( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) THEN
+		  TO_DATE( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ELSE STARTDATE 
+		  END STARTDATEN,
+		CASE
+		  WHEN ENDDATE > TO_DATE( #{nowDate} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS' ) THEN
+		  TO_DATE( #{nowDate} || '23:59:59', 'YYYY-MM-DD HH24:MI:SS' ) ELSE ENDDATE 
+		  END ENDDATEN
+		FROM
+		  GBJXKH_V_DAILYTASK t 
+		WHERE
+		  USERID = #{user001} 
+		  AND TO_DATE( TO_CHAR( STARTDATE, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ) <= TO_DATE( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) 
+		  AND TO_DATE( TO_CHAR( ENDDATE, 'YYYY-MM-DD' ) || '23:59:59', 'YYYY-MM-DD HH24:MI:SS' ) >= TO_DATE( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) 
+		  AND TO_DATE( TO_CHAR( STARTDATE, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ) <= to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) 
+		  AND TO_DATE( TO_CHAR( ENDDATE, 'YYYY-MM-DD' ) || '23:59:59', 'YYYY-MM-DD HH24:MI:SS' ) >= to_date(#{nowDate} || '00:00:00','YYYY-MM-DD HH24:MI:SS' )
+   		]]>
+   		<!-- 开始日程提醒的时间、日程ID、文本内容、开始时间/截止时间、提醒方式、提醒用户 -->
+   		<!-- <![CDATA[
+   		SELECT * FROM (
+SELECT DISTINCT
+	CME003N,CAME001,CAME002,CAME003,CAME008,CTYPE,CUSER
+	
+FROM
+	(
+	SELECT
+	R.CAME003 CME003N,
+	R.*
+FROM
+	(
+  SELECT
+    A.CAME001,
+    A.CAME002,
+    A.CAME003,
+    A.CAME008,
+    A.CAME005 AS CUSER,
+    0 CTYPE
+  FROM
+    HRSW_T_CALENDARMEMORANDUM A
+  WHERE
+    A.CAME008 != 0
+    AND A.CAME009 = 0
+    AND TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) = TRUNC( A.CAME003 ) UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 1 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 2
+		AND MOD( TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) - TRUNC( A.CAME003 ), 7 ) = 0 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 3
+		AND MOD( TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) - TRUNC( A.CAME003 ), 14 ) = 0 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 4
+		AND TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) = TRUNC(
+		ADD_MONTHS( TO_DATE( TO_CHAR( A.CAME003, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ), 1 )) UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 5
+		AND TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) = TRUNC(
+		ADD_MONTHS( TO_DATE( TO_CHAR( A.CAME003, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ), 12 )) UNION
+	SELECT
+		A.MEET001 AS CAME001,
+		A.MEET002 AS CAME002,
+		A.MEET003 AS CAME003,
+		A.MEET007 AS CAME008,
+    B.METP005 AS CUSER,
+    1 CTYPE
+	FROM
+		HRSW_T_CALENDARMEETING A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.MEET001 = B.METP002
+	WHERE
+		A.MEET007 != 0 AND B.METP004 IN (1,2)
+		AND TRUNC( A.MEET003 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) UNION
+	SELECT
+		A.CALT001 AS CAME001,
+		A.CALT002 AS CAME002,
+		A.CALT005 AS CAME003,
+		A.CALT008 AS CAME008,
+    B.METP005 AS CUSER,
+    2 CTYPE
+	FROM
+		HRSW_T_CALENDARTASK A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.CALT001 = B.METP002
+	WHERE
+		A.CALT008 != 0
+		AND A.CALT008 < 6
+    AND B.METP004 IN (3,4,5)
+		AND TRUNC( A.CALT005 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) UNION
+	SELECT
+		A.CALT002 AS CAME001,
+		A.CALT002 AS CAME002,
+		A.CALT006 AS CAME003,
+		A.CALT008 AS CAME008,
+    B.METP005 AS CUSER,
+    2 CTYPE
+	FROM
+		HRSW_T_CALENDARTASK A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.CALT001 = B.METP002
+	WHERE
+		A.CALT008 != 0
+		AND A.CALT008 >= 6
+    AND B.METP004 IN (3,4,5)
+		AND TRUNC( A.CALT006 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) )UNION
+  SELECT
+    A.MEET001 AS CAME001,
+    A.MEET002 AS CAME002,
+    A.MEET003 AS CAME003,
+    A.MEET007 AS CAME008,
+    A.MEET008 AS CUSER,
+    1 CTYPE
+  FROM
+    HRSW_T_CALENDARMEETING A
+  WHERE
+    A.MEET007 != 0
+    AND TRUNC( A.MEET003 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) UNION
+  SELECT
+    A.CALT001 AS CAME001,
+    A.CALT002 AS CAME002,
+    A.CALT005 AS CAME003,
+    A.CALT008 AS CAME008,
+    A.CALT009 AS CUSER,
+    2 CTYPE
+  FROM
+    HRSW_T_CALENDARTASK A
+  WHERE
+    A.CALT008 != 0
+    AND A.CALT008 < 6
+    AND TRUNC( A.CALT005 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) UNION
+  SELECT
+    A.CALT002 AS CAME001,
+    A.CALT002 AS CAME002,
+    A.CALT006 AS CAME003,
+    A.CALT008 AS CAME008,
+    A.CALT009 AS CUSER,
+    2 CTYPE
+  FROM
+    HRSW_T_CALENDARTASK A
+  WHERE
+    A.CALT008 != 0
+    AND A.CALT008 >= 6
+    AND TRUNC( A.CALT006 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) )
+	) R UNION
+SELECT
+	R.CAME003 CME003N,
+	R.*
+FROM
+	(
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 1 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 2
+		AND MOD( TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) - TRUNC( A.CAME003 ), 7 ) = 0 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 3
+		AND MOD( TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) - TRUNC( A.CAME003 ), 14 ) = 0 UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 4
+		AND TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) = TRUNC(
+		ADD_MONTHS( TO_DATE( TO_CHAR( A.CAME003, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ), 1 )) UNION
+	SELECT
+		A.CAME001,
+		A.CAME002,
+		A.CAME003,
+		A.CAME008,
+    A.CAME005 AS CUSER,
+		0 CTYPE
+	FROM
+		HRSW_T_CALENDARMEMORANDUM A
+	WHERE
+		A.CAME008 != 0
+		AND A.CAME009 = 5
+		AND TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) = TRUNC(
+		ADD_MONTHS( TO_DATE( TO_CHAR( A.CAME003, 'YYYY-MM-DD' ), 'YYYY-MM-DD' ), 12 )) UNION
+	SELECT
+		A.MEET001 AS CAME001,
+		A.MEET002 AS CAME002,
+		A.MEET003 AS CAME003,
+		A.MEET007 AS CAME008,
+    B.METP005 AS CUSER,
+    1 CTYPE
+	FROM
+		HRSW_T_CALENDARMEETING A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.MEET001 = B.METP002
+	WHERE
+		A.MEET007 != 0
+    AND B.METP004 IN (1,2)
+		AND TRUNC( A.MEET003 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) + 1 ) UNION
+	SELECT
+		A.CALT001 AS CAME001,
+		A.CALT002 AS CAME002,
+		A.CALT005 AS CAME003,
+		A.CALT008 AS CAME008,
+    B.METP005 AS CUSER,
+    2 CTYPE
+	FROM
+		HRSW_T_CALENDARTASK A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.CALT001 = B.METP002
+	WHERE
+		A.CALT008 != 0
+		AND A.CALT008 < 6
+    AND B.METP004 IN (3,4,5)
+		AND TRUNC( A.CALT005 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) + 1 ) UNION
+	SELECT
+		A.CALT001 AS CAME001,
+		A.CALT002 AS CAME002,
+		A.CALT006 AS CAME003,
+		A.CALT008 AS CAME008,
+    B.METP005 AS CUSER,
+    2 CTYPE
+	FROM
+		HRSW_T_CALENDARTASK A
+    LEFT JOIN hrsw_t_MeetingTaskPeople B
+    ON A.CALT001 = B.METP002
+	WHERE
+		A.CALT008 != 0
+		AND A.CALT008 >= 6
+    AND B.METP004 IN (3,4,5)
+		AND TRUNC( A.CALT006 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) ) UNION
+  SELECT
+    A.MEET001 AS CAME001,
+    A.MEET002 AS CAME002,
+    A.MEET003 AS CAME003,
+    A.MEET007 AS CAME008,
+    A.MEET008 AS CUSER,
+    1 CTYPE
+  FROM
+    HRSW_T_CALENDARMEETING A
+  WHERE
+    A.MEET007 != 0
+    AND TRUNC( A.MEET003 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) + 1 ) UNION
+  SELECT
+    A.CALT001 AS CAME001,
+    A.CALT002 AS CAME002,
+    A.CALT005 AS CAME003,
+    A.CALT008 AS CAME008,
+    A.CALT009 AS CUSER,
+    2 CTYPE
+  FROM
+    HRSW_T_CALENDARTASK A
+  WHERE
+    A.CALT008 != 0
+    AND A.CALT008 < 6
+    AND TRUNC( A.CALT005 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) + 1 ) UNION
+  SELECT
+    A.CALT001 AS CAME001,
+    A.CALT002 AS CAME002,
+    A.CALT006 AS CAME003,
+    A.CALT008 AS CAME008,
+    A.CALT009 AS CUSER,
+    2 CTYPE
+  FROM
+    HRSW_T_CALENDARTASK A
+  WHERE
+    A.CALT008 != 0
+    AND A.CALT008 >= 6
+    AND TRUNC( A.CALT006 ) = TRUNC( to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ) )
+	) R
+	)
+WHERE
+	TRUNC( CME003N ) = TRUNC(to_date( #{nowDate} || '00:00:00', 'YYYY-MM-DD HH24:MI:SS' ))
+  order by CME003N) TT WHERE TT.CUSER = #{user001}
+   		 ]]> -->
+   		
+   		
+	</select>
+	
+	<select id="initAllCalendarInfo" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		SELECT A.FDATE, COUNT(B.STARTDATE) FNUM
+  		FROM (SELECT FDATE
+          FROM (SELECT TRUNC(to_date(#{thisTime},'YYYY-MM-DD'), 'MONTH') + LEVEL - 1 AS FDATE
+                  FROM DUAL
+                CONNECT BY LEVEL <= 31) T
+         WHERE TO_CHAR(FDATE, 'MM') = TO_CHAR(to_date(#{thisTime},'YYYY-MM-DD'), 'MM')) A
+  		LEFT JOIN (SELECT STARTDATE, ENDDATE
+               FROM GBJXKH_V_DAILYTASK
+              WHERE USERID = #{user001}) B
+    		ON TRUNC(B.STARTDATE) <= A.FDATE
+   		AND TRUNC(B.ENDDATE + 1) > A.FDATE
+   		GROUP BY A.FDATE
+ 		ORDER BY A.FDATE
+   		]]>
+	</select>
+	
+	<select id="initAllCalendarWeekInfo" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+ 		SELECT A.FDATE, COUNT(B.STARTDATE) FNUM
+      FROM (SELECT FDATE
+          FROM (SELECT TRUNC(to_date(#{thisTime},'YYYY-MM-DD'), 'D') + LEVEL - 1 AS FDATE
+                  FROM DUAL
+                CONNECT BY LEVEL <= 7) T) A
+      LEFT JOIN (SELECT STARTDATE, ENDDATE
+               FROM GBJXKH_V_DAILYTASK
+              WHERE USERID = #{user001}) B
+        ON TRUNC(B.STARTDATE) <= A.FDATE
+      AND TRUNC(B.ENDDATE + 1) > A.FDATE
+      GROUP BY A.FDATE
+    ORDER BY A.FDATE
+   		]]>
+	</select>
+	
+	<select id="meetingRoomList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ SELECT *
+  				FROM HRSW_T_CATALOG
+ 				WHERE CATA005 = #{CATA005}]]>
+	</select>
+	
+	<select id="initLeadershipList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<!-- '1' 本机构的负责人  '2' 上级机构责任人-->
+		<![CDATA[ 
+	SELECT DISTINCT * FROM (SELECT A.USER001,
+       A.USER002,
+       A.USER005,
+       A.USER006,
+       A.USER004,
+       B.USST003,
+       1 AS ISTYPE
+  FROM HRSW_T_USER A
+  LEFT JOIN HRSW_T_USERSTATUS B ON B.USST002 = A.USER001
+ WHERE A.USER002 = #{orga001}
+   AND A.USER026 = '1'
+UNION ALL
+SELECT A.USER001,
+       A.USER002,
+       A.USER005,
+       A.USER006,
+       A.USER004,
+       C.USST003,
+       2 AS ISTYPE
+  FROM HRSW_T_USER A
+  INNER JOIN (SELECT *
+               FROM HRSW_T_LEVELRELATION
+              WHERE LREL007 = 1
+                AND LREL002 = #{orga001}
+                AND LREL006 = 1) B
+    ON A.USER002 = B.LREL004
+  LEFT JOIN HRSW_T_USERSTATUS C ON C.USST002 = A.USER001
+ WHERE USER026 = '1') A ORDER BY ISTYPE
+]]>
+	</select>
+	
+	
+	<select id="initLeadershipList01" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<!-- '1' 本机构的负责人  '2' 上级机构责任人-->
+		<![CDATA[ 
+		SELECT B.JRAT003,A.JRAC004,C.*,D.ATTA007,E.USST003 FROM HRSW_T_JOBRIGHTSASSIGCHILD A 
+LEFT JOIN HRSW_T_JOBRIGHTSASSIGNMENT B ON A.JRAC002 = B.JRAT001
+LEFT JOIN HRSW_T_USER C ON B.JRAT003 = C.USER001
+LEFT JOIN HRSW_T_ATTACHMENT D ON B.JRAT003 = D.ATTA002 AND D.ATTA004 = 1
+LEFT JOIN HRSW_T_USERSTATUS E ON B.JRAT003 = E.USST002
+WHERE JRAC003 = #{orga001} 
+		]]>
+	</select>
+	
+	
+	<select id="workGroupList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ SELECT *
+  				FROM HRSW_T_GROUPS A
+ 				INNER JOIN HRSW_T_USERGROUP B
+    			ON A.GROU001 = B.USGR002
+				WHERE B.USGR003 = #{user001}]]>
+	</select>
+	
+	<select id="workGroupUserList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ select A.*,
+		       B.USER001,
+		       B.USER002,
+		       B.USER003,
+		       B.USER004,
+		       B.USER005,
+		       B.USER006,
+		       B.USER007,
+		       B.USER008,
+		       B.USER009,
+		       B.USER010,
+		       B.USER011,
+		       B.USER012,
+		       B.USER013,
+		       B.USER014,
+		       B.USER015,
+		       C.ATTA007
+		  FROM HRSW_T_USERGROUP A
+		  inner JOIN HRSW_T_USER B ON A.USGR003 = B.USER001
+		  LEFT JOIN HRSW_T_ATTACHMENT C ON C.ATTA002 = B.USER001 AND C.ATTA004 = 1
+		 WHERE A.USGR002 = #{groupId}
+		]]>
+	</select>
+	
+	<select id="getScheduleRemindList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		select * from GBJXKH_V_SCHEDULEREMINDER a where a.cuser = #{userid} order by CME003N desc
+   		]]>
+	</select>
+	
+	<select id="getScheduleUserList" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<![CDATA[ 
+		SELECT A.USERID FROM GBJXKH_V_ALLTASKINFO A WHERE A.THISID = #{keyid} ORDER BY A.STARTDATE DESC
+   		]]>
+	</select>
+
+</mapper>

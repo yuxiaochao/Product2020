@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.QuesTQuestacticMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.QuesTQuestactic">
+		<id column="QTAC001" property="qtac001" />
+		<result column="QTAC002" property="qtac002" />
+		<result column="QTAC003" property="qtac003" />
+		<result column="QTAC004" property="qtac004" />
+		<result column="QTAC005" property="qtac005" />
+		<result column="QTAC006" property="qtac006" />
+		<result column="QTAC007" property="qtac007" />
+		<result column="QTAC008" property="qtac008" />
+		<result column="QTAC009" property="qtac009" />
+		<result column="QTAC010" property="qtac010" />
+		<result column="QTAC011" property="qtac011" />
+	</resultMap>
+
+</mapper>

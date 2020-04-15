@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTMessagereaderMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTMessagereader">
+		<id column="MREA001" property="mrea001" />
+		<result column="MREA002" property="mrea002" />
+		<result column="MREA003" property="mrea003" />
+		<result column="MREA004" property="mrea004" />
+		<result column="MREA005" property="mrea005" />
+	</resultMap>
+
+    <insert id="insertMessagereader" parameterType="com.huarui.product2020.entity.HrswTMessagereader">
+         INSERT into hrsw_t_messageReader 
+         VALUES(#{mrea001},#{mrea002},#{mrea003},#{mrea004},SYSDATE)
+    </insert>
+</mapper>

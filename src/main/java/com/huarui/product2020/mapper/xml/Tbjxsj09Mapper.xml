@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.Tbjxsj09Mapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.Tbjxsj09">
+		<id column="JXSJ0901" property="jxsj0901" />
+		<result column="JXSJ0902" property="jxsj0902" />
+		<result column="JXSJ0903" property="jxsj0903" />
+		<result column="JXSJ0904" property="jxsj0904" />
+		<result column="JXSJ0905" property="jxsj0905" />
+	</resultMap>
+	<select id="findBatchByIds" parameterType="List" resultType="HashMap">
+		select JXSJ0901,JXSJ0903,JXSJ0904,PXB0605,USER028,
+				PXB0601,PXB0602,PXB0603,PXB0604,PXB0605,PXB0606,
+				ORGA005 as PXB0607,PXB0608,PXB0609,PXB0610,PXB0611,PXB0612
+			from tbJXSJ09
+			left join tbPXB06
+			on PXB0601=JXSJ0905
+			left join hrsw_t_user
+			on USER001=PXB0613
+			left join hrsw_t_organ
+			on ORGA001=PXB0607
+			<where>
+			JXSJ0903 in
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			 </foreach>
+			</where>
+	</select>
+	<insert id="insertBatch" parameterType="List">
+		insert into tbJXSJ09(JXSJ0901,JXSJ0902,JXSJ0903,JXSJ0904,JXSJ0905)
+		<foreach collection="list" index="index" item="item" separator="union all">
+			(
+			select 
+				#{item.jxsj0901},
+				#{item.jxsj0902},
+				#{item.jxsj0903},
+				#{item.jxsj0904},
+				#{item.jxsj0905}
+			from dual
+			)
+		</foreach>
+	</insert>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huarui.product2020.mapper.HrswTNewsrecommendMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.huarui.product2020.entity.HrswTNewsrecommend">
+		<id column="NERE001" property="nere001" />
+		<result column="NERE002" property="nere002" />
+		<result column="NERE003" property="nere003" />
+		<result column="NERE004" property="nere004" />
+		<result column="NERE005" property="nere005" />
+		<result column="NERE006" property="nere006" />
+		<result column="NERE007" property="nere007" />
+	</resultMap>
+
+</mapper>
